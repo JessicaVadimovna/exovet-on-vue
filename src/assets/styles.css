@@ -1,0 +1,61 @@
+@font-face {
+  font-family: 'Montserrat';
+  src: url('/assets/fonts/Montserrat/Montserrat-VariableFont_wght.ttf');
+}
+
+@font-face {
+  font-family: 'Comfortaa';
+  src: url('/assets/fonts/Comfortaa/static/Comfortaa-Regular.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'AmaticSC';
+  src: url('/assets/fonts/Amatic_SC/AmaticSC-Regular.ttf');
+}
+
+:root {
+  --primary-color: #A1808F;
+  --secondary-color: #E8C3C9;
+  --text-color: #5F5A5E;
+  --light-bg: #FDF8F9;
+  --white: #FFFFFF;
+  --shadow-sm: 0 4px 15px rgba(161, 128, 143, 0.1);
+  --shadow-md: 0 8px 25px rgba(161, 128, 143, 0.15);
+  --transition: all 0.3s ease;
+  --transition-fast: all 0.18s ease-in-out;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Comfortaa', Arial, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  --link-color: var(--white);
+  --link-color-rgb: 255, 255, 255;
+}
+
+h2 {
+  font-size: 36px;
+  margin-bottom: 20px;
+  color: var(--primary-color);
+  letter-spacing: 1px;
+  font-weight: 700;
+  padding-left: 15px;
+}
+
+h3 {
+  font-size: 24px;
+  margin: 30px 0 15px;
+  color: var(--primary-color);
+  position: relative;
+}
