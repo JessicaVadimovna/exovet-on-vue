@@ -41,7 +41,7 @@ export default defineComponent({
     const touchStartX = ref<number>(0)
     const touchEndX = ref<number>(0)
     const touchThreshold = 50
-    const sliderHeight = ref<string>('150px') // Увеличиваем начальную высоту
+    const sliderHeight = ref<string>('120px') // Уменьшаем начальную высоту
 
     // Вычисляем максимальную высоту слайдов
     const updateSliderHeight = (): void => {
@@ -78,7 +78,7 @@ export default defineComponent({
         slide.style.display = originalDisplay || 'block'
       })
 
-      sliderHeight.value = `${maxHeight + 30}px` // Увеличиваем запас
+      sliderHeight.value = `${maxHeight + 10}px` // Уменьшаем запас
       console.log('Slider height set to:', sliderHeight.value)
     }
 
@@ -138,7 +138,6 @@ export default defineComponent({
 
 <style scoped>
 .hero {
-  background: linear-gradient(135deg, var(--light-bg) 40%, #F4E4E7 100%);
   padding: 50px 20px;
   text-align: center;
   position: relative;
@@ -162,6 +161,7 @@ export default defineComponent({
 .hero-text h1 {
   font-size: 36px;
   color: var(--primary-color, #e91e63);
+  margin-top: 20px;
   margin-bottom: 20px;
   font-weight: 700;
   letter-spacing: 1px;
@@ -207,7 +207,7 @@ export default defineComponent({
 .slide p {
   font-size: 18px;
   color: var(--text-color, #333) !important;
-  padding: 15px 20px;
+  padding: 10px 20px; 
   background: rgba(232, 195, 201, 0.15);
   border-radius: 10px;
   line-height: 1.5;
@@ -224,10 +224,21 @@ export default defineComponent({
   text-decoration: none;
 }
 
+::v-deep(.slide p a[href^="tel"]) {
+  color: #a1808f;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+::v-deep(.slide p a[href^="tel"]:hover) {
+  color: #a56c86;
+}
+
+
 .pagination {
   display: flex;
   justify-content: center;
-  margin-top: 20px;
+  margin-top: 10px;
 }
 
 .dot {
