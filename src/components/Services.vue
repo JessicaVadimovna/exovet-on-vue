@@ -62,18 +62,18 @@ export default defineComponent({
   name: 'Services',
   setup() {
     const services = ref<Service[]>([
-      { image: '/assets/img/photo/Consultations.png', title: 'Консультации', description: 'Профессиональные рекомендации по уходу за экзотическими животными.' },
-      { image: '/assets/img/photo/PrimaryVisit.png', title: 'Первичный приём', description: 'Осмотр, сбор анамнеза, измерение физикальных показателей, назначение диагностики и лечения.' },
-      { image: '/assets/img/photo/Otoscopy.png', title: 'Отоскопия', description: 'Безболезненный осмотр наружного слухового прохода и барабанной перепонки.' },
-      { image: '/assets/img/photo/Dispensary.png', title: 'Диспансеризация', description: 'Плановые диагностические мероприятия для выявления заболеваний на ранней стадии.' },
-      { image: '/assets/img/photo/Vaccination.png', title: 'Вакцинация', description: 'Вакцинация хорьков, кроликов, енотов и других животных с учётом их особенностей.' },
-      { image: '/assets/img/photo/Inpatient.jpg', title: 'Стационар', description: 'Круглосуточный уход для животных в тяжёлом состоянии или после операций.' },
-      { image: '/assets/img/photo/Dentistry.png', title: 'Стоматология', description: 'Осмотр ротовой полости, диагностика и лечение (иногда под наркозом).' },
-      { image: '/assets/img/photo/Dermatology.png', title: 'Дерматология', description: 'Осмотр, диагностика и лечение кожных заболеваний.' },
-      { image: '/assets/img/photo/Surgery.png', title: 'Хирургия', description: 'Кастрация, стерилизация и другие операции с использованием безопасной анестезии.' },
-      { image: '/assets/img/photo/Anesthesia.png', title: 'Анестезия', description: 'Контроль жизненно важных функций животного во время операций.' },
-      { image: '/assets/img/photo/Traumatology.png', title: 'Травматология', description: 'Лечение травм и повреждений.' },
-      { image: '/assets/img/photo/Analytics.png', title: 'Анализы', description: 'Крови, бакпосевы, мочи, кала для точной диагностики. Цитология.' }
+      { image: './assets/img/photo/Consultations.png', title: 'Консультации', description: 'Профессиональные рекомендации по уходу за экзотическими животными.' },
+      { image: './assets/img/photo/PrimaryVisit.png', title: 'Первичный приём', description: 'Осмотр, сбор анамнеза, измерение физикальных показателей, назначение диагностики и лечения.' },
+      { image: './assets/img/photo/Otoscopy.png', title: 'Отоскопия', description: 'Безболезненный осмотр наружного слухового прохода и барабанной перепонки.' },
+      { image: './assets/img/photo/Dispensary.png', title: 'Диспансеризация', description: 'Плановые диагностические мероприятия для выявления заболеваний на ранней стадии.' },
+      { image: './assets/img/photo/Vaccination.png', title: 'Вакцинация', description: 'Вакцинация хорьков, кроликов, енотов и других животных с учётом их особенностей.' },
+      { image: './assets/img/photo/Inpatient.jpg', title: 'Стационар', description: 'Круглосуточный уход для животных в тяжёлом состоянии или после операций.' },
+      { image: './assets/img/photo/Dentistry.png', title: 'Стоматология', description: 'Осмотр ротовой полости, диагностика и лечение (иногда под наркозом).' },
+      { image: './assets/img/photo/Dermatology.png', title: 'Дерматология', description: 'Осмотр, диагностика и лечение кожных заболеваний.' },
+      { image: './assets/img/photo/Surgery.png', title: 'Хирургия', description: 'Кастрация, стерилизация и другие операции с использованием безопасной анестезии.' },
+      { image: './assets/img/photo/Anesthesia.png', title: 'Анестезия', description: 'Контроль жизненно важных функций животного во время операций.' },
+      { image: './assets/img/photo/Traumatology.png', title: 'Травматология', description: 'Лечение травм и повреждений.' },
+      { image: './assets/img/photo/Analytics.png', title: 'Анализы', description: 'Крови, бакпосевы, мочи, кала для точной диагностики. Цитология.' }
     ])
 
     const flippedIndex = ref(-1)

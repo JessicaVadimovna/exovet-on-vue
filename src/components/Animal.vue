@@ -39,18 +39,18 @@ export default defineComponent({
   name: 'AnimalSection',
   setup() {
     const animals = ref<Animal[]>([
-      { icon: '/assets/img/rat_icon.png', alt: 'Грызуны', text: 'Грызунов (крыс, хомяков, морских свинок)' },
-      { icon: '/assets/img/rabbit_icon.png', alt: 'Кролики', text: 'Кроликов' },
-      { icon: '/assets/img/squirrels_icon.png', alt: 'Бельчьи', text: 'Беличьих' },
-      { icon: '/assets/img/reptiles_icon.png', alt: 'Рептилии', text: 'Рептилий (черепах, ящериц, змей)' },
-      { icon: '/assets/img/bird_icon.png', alt: 'Птицы', text: 'Птиц' },
-      { icon: '/assets/img/bat_icon.png', alt: 'Крыланы', text: 'Крыланов' },
-      { icon: '/assets/img/hedgehogs_icon.png', alt: 'Ежи', text: 'Ежей' },
-      { icon: '/assets/img/ferrets_icon.png', alt: 'Хорьки', text: 'Хорьков' },
-      { icon: '/assets/img/raccoons_icon.png', alt: 'Еноты', text: 'Енотов' },
-      { icon: '/assets/img/mink_icon.png', alt: 'Норки', text: 'Норок' },
-      { icon: '/assets/img/fox_icon.png', alt: 'Лисицы', text: 'Лисиц' },
-      { icon: '/assets/img/puma_icon.png', alt: 'Крупные кошачьи', text: 'Крупных кошачьих и т. д.' }
+      { icon: './assets/img/rat_icon.png', alt: 'Грызуны', text: 'Грызунов (крыс, хомяков, морских свинок)' },
+      { icon: './assets/img/rabbit_icon.png', alt: 'Кролики', text: 'Кроликов' },
+      { icon: './assets/img/squirrels_icon.png', alt: 'Бельчьи', text: 'Беличьих' },
+      { icon: './assets/img/reptiles_icon.png', alt: 'Рептилии', text: 'Рептилий (черепах, ящериц, змей)' },
+      { icon: './assets/img/bird_icon.png', alt: 'Птицы', text: 'Птиц' },
+      { icon: './assets/img/bat_icon.png', alt: 'Крыланы', text: 'Крыланов' },
+      { icon: './assets/img/hedgehogs_icon.png', alt: 'Ежи', text: 'Ежей' },
+      { icon: './assets/img/ferrets_icon.png', alt: 'Хорьки', text: 'Хорьков' },
+      { icon: './assets/img/raccoons_icon.png', alt: 'Еноты', text: 'Енотов' },
+      { icon: './assets/img/mink_icon.png', alt: 'Норки', text: 'Норок' },
+      { icon: './assets/img/fox_icon.png', alt: 'Лисицы', text: 'Лисиц' },
+      { icon: './assets/img/puma_icon.png', alt: 'Крупные кошачьи', text: 'Крупных кошачьих и т. д.' }
     ])
 
     return { animals }

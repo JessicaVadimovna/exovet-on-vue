@@ -69,21 +69,18 @@ export default defineComponent({
 .footer-container {
   max-width: 1200px;
   margin: 0 auto;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: flex-start;
 }
 
 .footer-content {
   display: flex;
-  flex: 1;
   justify-content: space-between;
   gap: 30px;
+  margin-bottom: 30px;
 }
 
 .footer-info {
   flex: 1;
+  min-width: 0;
 }
 
 .footer-info h2 {
@@ -103,6 +100,7 @@ export default defineComponent({
   font-size: 16px;
   margin-bottom: 15px;
   line-height: 1.5;
+  word-wrap: break-word;
 }
 
 .footer-address strong,
@@ -118,6 +116,7 @@ export default defineComponent({
   color: var(--white);
   text-decoration: none;
   transition: color 0.3s ease;
+  word-break: break-all;
 }
 
 .footer-address a:hover,
@@ -151,11 +150,18 @@ export default defineComponent({
   align-items: center;
   justify-content: center;
   transition: transform 0.3s ease, background-color 0.3s ease;
+  flex-shrink: 0;
 }
 
 .social-icon:hover {
   transform: scale(1.1);
   background-color: #dadee2;
+}
+
+.social-icon img {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
 }
 
 .subscribe-label {
@@ -192,19 +198,21 @@ export default defineComponent({
 }
 
 .footer-bottom {
-  width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 30px;
   padding-top: 20px;
   border-top: 1px solid rgba(255, 255, 255, 0.2);
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 .footer-copyright,
+.footer-offer,
 .footer-madeby {
   font-size: 14px;
   color: var(--white);
+  margin: 0;
 }
 
 .footer-madeby a,
@@ -217,6 +225,178 @@ export default defineComponent({
 .footer-madeby a:hover,
 .footer-offer a:hover {
   color: #e5accf;
-  text-decoration: dashed;
+  text-decoration: underline;
+}
+
+/* Tablet styles */
+@media (max-width: 768px) {
+  .footer {
+    padding: 30px 15px 15px;
+  }
+  
+  .footer-content {
+    flex-direction: column;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .footer-info h2 {
+    font-size: 24px;
+    margin-bottom: 15px;
+    text-align: center;
+  }
+  
+  .footer-address,
+  .footer-phone,
+  .footer-email,
+  .footer-hours {
+    font-size: 15px;
+    margin-bottom: 12px;
+    text-align: center;
+  }
+  
+  .footer-social {
+    text-align: center;
+  }
+  
+  .social-icons {
+    justify-content: center;
+  }
+  
+  .footer-map {
+    flex: none;
+    max-width: 100%;
+  }
+  
+  .map-image {
+    height: 200px;
+  }
+  
+  .footer-bottom {
+    flex-direction: column;
+    text-align: center;
+    gap: 8px;
+  }
+  
+  .footer-copyright,
+  .footer-offer,
+  .footer-madeby {
+    font-size: 13px;
+  }
+}
+
+/* Mobile styles */
+@media (max-width: 480px) {
+  .footer {
+    padding: 25px 10px 15px;
+  }
+  
+  .footer-content {
+    gap: 15px;
+    margin-bottom: 15px;
+  }
+  
+  .footer-info h2 {
+    font-size: 20px;
+    margin-bottom: 12px;
+  }
+  
+  .footer-address,
+  .footer-phone,
+  .footer-email,
+  .footer-hours {
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+  
+  .footer-hours {
+    font-size: 13px;
+  }
+  
+  .social-label {
+    font-size: 15px;
+    margin-bottom: 8px;
+  }
+  
+  .social-icons {
+    gap: 12px;
+  }
+  
+  .social-icon {
+    width: 35px;
+    height: 35px;
+  }
+  
+  .social-icon img {
+    width: 25px;
+    height: 25px;
+  }
+  
+  .subscribe-label {
+    font-size: 13px;
+    margin-bottom: 8px;
+  }
+  
+  .subscribe-btn {
+    font-size: 13px;
+    padding: 6px 12px;
+  }
+  
+  .map-image {
+    height: 180px;
+    border-radius: 10px;
+  }
+  
+  .footer-bottom {
+    padding-top: 15px;
+    gap: 6px;
+  }
+  
+  .footer-copyright,
+  .footer-offer,
+  .footer-madeby {
+    font-size: 12px;
+  }
+}
+
+/* Extra small mobile */
+@media (max-width: 320px) {
+  .footer {
+    padding: 20px 8px 12px;
+  }
+  
+  .footer-info h2 {
+    font-size: 18px;
+  }
+  
+  .footer-address,
+  .footer-phone,
+  .footer-email {
+    font-size: 13px;
+  }
+  
+  .footer-hours {
+    font-size: 12px;
+  }
+  
+  .social-icon {
+    width: 32px;
+    height: 32px;
+  }
+  
+  .social-icon img {
+    width: 22px;
+    height: 22px;
+  }
+  
+  .map-image {
+    height: 150px;
+  }
+  
+  .footer-copyright,
+  .footer-offer,
+  .footer-madeby {
+    font-size: 11px;
+  }
 }
 </style>

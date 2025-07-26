@@ -109,31 +109,31 @@ export default defineComponent({
   name: 'ModernGallery',
   setup() {
     const images = ref([
-      { src: '/assets/img/photo/pet1.jpg', alt: 'Пациент 1' },
-      { src: '/assets/img/photo/pet2.jpg', alt: 'Пациент 2' },
-      { src: '/assets/img/photo/pet3.jpg', alt: 'Пациент 3' },
-      { src: '/assets/img/photo/pet4.jpg', alt: 'Пациент 4' },
-      { src: '/assets/img/photo/pet5.jpg', alt: 'Пациент 5' },
-      { src: '/assets/img/photo/pet6.png', alt: 'Пациент 6' },
-      { src: '/assets/img/photo/pet7.png', alt: 'Пациент 7' },
-      { src: '/assets/img/photo/pet8.png', alt: 'Пациент 8' },
-      { src: '/assets/img/photo/pet9.png', alt: 'Пациент 9' },
-      { src: '/assets/img/photo/pet10.png', alt: 'Пациент 10' },
-      { src: '/assets/img/photo/pet11.png', alt: 'Пациент 11' },
-      { src: '/assets/img/photo/pet12.png', alt: 'Пациент 12' },
-      { src: '/assets/img/photo/pet13.png', alt: 'Пациент 13' },
-      { src: '/assets/img/photo/pet14.png', alt: 'Пациент 14' },
-      { src: '/assets/img/photo/pet15.png', alt: 'Пациент 15' },
-      { src: '/assets/img/photo/pet16.png', alt: 'Пациент 16' },
-      { src: '/assets/img/photo/pet17.png', alt: 'Пациент 17' },
-      { src: '/assets/img/photo/pet18.png', alt: 'Пациент 18' },
-      { src: '/assets/img/photo/pet19.png', alt: 'Пациент 19' },
-      { src: '/assets/img/photo/pet20.png', alt: 'Пациент 20' },
-      { src: '/assets/img/photo/pet21.png', alt: 'Пациент 21' },
-      { src: '/assets/img/photo/pet22.png', alt: 'Пациент 22' },
-      { src: '/assets/img/photo/pet23.png', alt: 'Пациент 23' },
-      { src: '/assets/img/photo/pet24.png', alt: 'Пациент 24' },
-      { src: '/assets/img/photo/pet25.png', alt: 'Пациент 25' },
+      { src: './assets/img/photo/pet1.jpg', alt: 'Пациент 1' },
+      { src: './assets/img/photo/pet2.jpg', alt: 'Пациент 2' },
+      { src: './assets/img/photo/pet3.jpg', alt: 'Пациент 3' },
+      { src: './assets/img/photo/pet4.jpg', alt: 'Пациент 4' },
+      { src: './assets/img/photo/pet5.jpg', alt: 'Пациент 5' },
+      { src: './assets/img/photo/pet6.png', alt: 'Пациент 6' },
+      { src: './assets/img/photo/pet7.png', alt: 'Пациент 7' },
+      { src: './assets/img/photo/pet8.png', alt: 'Пациент 8' },
+      { src: './assets/img/photo/pet9.png', alt: 'Пациент 9' },
+      { src: './assets/img/photo/pet10.png', alt: 'Пациент 10' },
+      { src: './assets/img/photo/pet11.png', alt: 'Пациент 11' },
+      { src: './assets/img/photo/pet12.png', alt: 'Пациент 12' },
+      { src: './assets/img/photo/pet13.png', alt: 'Пациент 13' },
+      { src: './assets/img/photo/pet14.png', alt: 'Пациент 14' },
+      { src: './assets/img/photo/pet15.png', alt: 'Пациент 15' },
+      { src: './assets/img/photo/pet16.png', alt: 'Пациент 16' },
+      { src: './assets/img/photo/pet17.png', alt: 'Пациент 17' },
+      { src: './assets/img/photo/pet18.png', alt: 'Пациент 18' },
+      { src: './assets/img/photo/pet19.png', alt: 'Пациент 19' },
+      { src: './assets/img/photo/pet20.png', alt: 'Пациент 20' },
+      { src: './assets/img/photo/pet21.png', alt: 'Пациент 21' },
+      { src: './assets/img/photo/pet22.png', alt: 'Пациент 22' },
+      { src: './assets/img/photo/pet23.png', alt: 'Пациент 23' },
+      { src: './assets/img/photo/pet24.png', alt: 'Пациент 24' },
+      { src: './assets/img/photo/pet25.png', alt: 'Пациент 25' },
     ])
 
     const duplicatedImages = computed(() => [...images.value, ...images.value])
@@ -284,7 +284,7 @@ export default defineComponent({
 }
 
 .gallery {
-  background-image: url('/assets/img/back.png');
+  background-image: url('./assets/img/back.png');
   padding: 80px 0;
   min-height: 50vh;
   position: relative;
