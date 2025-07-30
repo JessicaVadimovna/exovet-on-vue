@@ -1,5 +1,23 @@
 <template>
   <section class="hero">
+    <!-- Анимированные частички -->
+    <div class="particles-container">
+      <div
+        v-for="particle in particles"
+        :key="particle.id"
+        class="particle"
+        :style="{
+          left: particle.x + '%',
+          top: particle.y + '%',
+          width: particle.size + 'px',
+          height: particle.size + 'px',
+          backgroundColor: particle.color,
+          animationDuration: particle.duration + 's',
+          animationDelay: particle.delay + 's'
+        }"
+      ></div>
+    </div>
+    
     <div class="hero-content">
       <div class="hero-image-wrapper">
         <img src="/assets/img/rat.gif" alt="ExoVet Clinic" class="hero-image" />
@@ -26,10 +44,21 @@ interface Slide {
   text: string
 }
 
+interface Particle {
+  id: number
+  x: number
+  y: number
+  size: number
+  color: string
+  duration: number
+  delay: number
+}
+
 export default defineComponent({
   name: 'Hero',
   setup() {
     const currentSlide = ref<number>(0)
+    const particles = ref<Particle[]>([])
     const slides: Slide[] = [
       { text: 'Мы заботимся о ваших необычных питомцах с любовью и профессионализмом!' },
       { text: 'Выбирая нас, вы получите профессиональную ветеринарную помощь' },
@@ -41,9 +70,44 @@ export default defineComponent({
     const touchStartX = ref<number>(0)
     const touchEndX = ref<number>(0)
     const touchThreshold = 50
-    const sliderHeight = ref<string>('120px') // Уменьшаем начальную высоту
+    const sliderHeight = ref<string>('120px')
 
-    // Вычисляем максимальную высоту слайдов
+    // Создание частичек
+    const createParticles = (): void => {
+      const colors = [
+        'rgba(233, 30, 99, 0.3)',
+        'rgba(233, 30, 99, 0.2)',
+        'rgba(233, 30, 99, 0.1)',
+        'rgba(161, 128, 143, 0.4)',
+        'rgba(165, 108, 134, 0.3)',
+        'rgba(232, 195, 201, 0.5)',
+        'rgba(255, 182, 193, 0.3)',
+        'rgba(240, 128, 128, 0.2)',
+        'rgba(255, 160, 122, 0.3)',
+        'rgba(255, 192, 203, 0.4)',
+        'rgba(221, 160, 221, 0.2)',
+        'rgba(218, 112, 214, 0.3)',
+        'rgba(186, 85, 211, 0.2)',
+        'rgba(147, 112, 219, 0.3)',
+        'rgba(138, 43, 226, 0.2)',
+        'rgba(200, 200, 200, 0.3)',
+        'rgba(180, 180, 180, 0.2)',
+        'rgba(220, 220, 220, 0.4)',
+        'rgba(160, 160, 160, 0.2)',
+        'rgba(240, 240, 240, 0.3)'
+      ]
+      
+      particles.value = Array.from({ length: 50 }, (_, index) => ({
+        id: index,
+        x: Math.random() * 100, // равномерно по всей ширине
+        y: Math.random() * 100, // равномерно по всей высоте
+        size: Math.random() * 12 + 2, // размер от 2 до 14px - большой разброс
+        color: colors[Math.floor(Math.random() * colors.length)],
+        duration: Math.random() * 20 + 8, // длительность от 8 до 28 секунд
+        delay: Math.random() * 10 // задержка до 10 секунд для разнообразия
+      }))
+    }
+
     const updateSliderHeight = (): void => {
       const slider = document.querySelector('.slider') as HTMLElement | null
       if (!slider) {
@@ -59,12 +123,10 @@ export default defineComponent({
 
       let maxHeight = 0
       slidesElements.forEach((slide: HTMLElement) => {
-        // Сохраняем исходные стили
         const originalOpacity = slide.style.opacity
         const originalPosition = slide.style.position
         const originalDisplay = slide.style.display
 
-        // Устанавливаем стили для измерения
         slide.style.opacity = '1'
         slide.style.position = 'static'
         slide.style.display = 'block'
@@ -72,19 +134,18 @@ export default defineComponent({
         const height = slide.offsetHeight
         if (height > maxHeight) maxHeight = height
 
-        // Восстанавливаем исходные стили
         slide.style.opacity = originalOpacity
         slide.style.position = originalPosition || 'absolute'
         slide.style.display = originalDisplay || 'block'
       })
 
-      sliderHeight.value = `${maxHeight + 10}px` // Уменьшаем запас
+      sliderHeight.value = `${maxHeight + 10}px`
       console.log('Slider height set to:', sliderHeight.value)
     }
 
     const showSlide = (index: number): void => {
-      const newIndex = (index + slides.length) % slides.length // Вычисляем индекс заранее
-      console.log('Switching to slide:', newIndex, 'Text:', slides[newIndex].text) // Логируем после вычисления
+      const newIndex = (index + slides.length) % slides.length
+      console.log('Switching to slide:', newIndex, 'Text:', slides[newIndex].text)
       currentSlide.value = newIndex
       if (slideInterval.value) clearInterval(slideInterval.value)
       slideInterval.value = setInterval(nextSlide, 5000)
@@ -122,7 +183,8 @@ export default defineComponent({
     }
 
     onMounted((): void => {
-      updateSliderHeight() // Вычисляем высоту при монтировании
+      createParticles()
+      updateSliderHeight()
       slideInterval.value = setInterval(nextSlide, 5000)
       console.log('Component mounted, initial slide:', currentSlide.value, 'Text:', slides[currentSlide.value].text)
     })
@@ -131,7 +193,16 @@ export default defineComponent({
       if (slideInterval.value) clearInterval(slideInterval.value)
     })
 
-    return { currentSlide, slides, sliderHeight, showSlide, handleTouchStart, handleTouchMove, handleTouchEnd }
+    return { 
+      currentSlide, 
+      slides, 
+      particles,
+      sliderHeight, 
+      showSlide, 
+      handleTouchStart, 
+      handleTouchMove, 
+      handleTouchEnd 
+    }
   }
 })
 </script>
@@ -141,8 +212,54 @@ export default defineComponent({
   padding: 50px 20px;
   text-align: center;
   position: relative;
-  background-image: url('/assets/img/summer.png');
-  background-size: cover;
+  min-height: 25vh;
+  overflow: hidden;
+  background-color: #faf3f0;
+}
+
+.particles-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.particle {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.5;
+  animation: gentle-float infinite ease-in-out;
+  z-index: 1;
+}
+
+@keyframes gentle-float {
+  0% {
+    transform: translateY(0px) translateX(0px) scale(1) rotate(0deg);
+    opacity: 0.3;
+  }
+  20% {
+    transform: translateY(-25px) translateX(15px) scale(1.3) rotate(72deg);
+    opacity: 0.7;
+  }
+  40% {
+    transform: translateY(-50px) translateX(-10px) scale(0.8) rotate(144deg);
+    opacity: 0.9;
+  }
+  60% {
+    transform: translateY(-30px) translateX(25px) scale(1.5) rotate(216deg);
+    opacity: 0.6;
+  }
+  80% {
+    transform: translateY(-10px) translateX(-20px) scale(0.9) rotate(288deg);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(0px) translateX(0px) scale(1) rotate(360deg);
+    opacity: 0.3;
+  }
 }
 
 .hero-content {
@@ -151,11 +268,9 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(5px);
-  border-radius: 25px;
   padding: 20px;
+  position: relative;
+  z-index: 2;
 }
 
 .hero-text h1 {
@@ -207,10 +322,8 @@ export default defineComponent({
 .slide p {
   font-size: 18px;
   color: var(--text-color, #333) !important;
-  padding: 10px 20px; 
-  background: rgba(232, 195, 201, 0.15);
-  border-radius: 10px;
-  line-height: 1.5;
+  padding: 15px 25px; 
+  line-height: 1.6;
   margin: 0;
 }
 
@@ -234,24 +347,61 @@ export default defineComponent({
   color: #a56c86;
 }
 
-
 .pagination {
   display: flex;
   justify-content: center;
-  margin-top: 10px;
+  margin-top: 15px;
 }
 
 .dot {
-  width: 10px;
-  height: 10px;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
-  background-color: #ccc;
-  margin: 0 5px;
+  background-color: rgba(200, 200, 200, 0.6);
+  margin: 0 6px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: all 0.3s ease;
+  border: 2px solid rgba(160, 160, 160, 0.4);
+}
+
+.dot:hover {
+  background-color: rgba(160, 160, 160, 0.8);
+  transform: scale(1.1);
 }
 
 .dot.active {
   background-color: var(--primary-color, #e91e63);
+  border-color: var(--primary-color, #e91e63);
+  transform: scale(1.2);
+}
+
+/* Адаптивность для мобильных устройств */
+@media (max-width: 768px) {
+  .hero {
+    padding: 30px 15px;
+  }
+  
+  .hero-text h1 {
+    font-size: 28px;
+  }
+  
+  .hero-image-wrapper {
+    width: 200px;
+    height: 200px;
+  }
+  
+  .slide p {
+    font-size: 16px;
+    padding: 12px 20px;
+  }
+  
+  .particle {
+    opacity: 0.3;
+  }
+  
+  /* Уменьшаем количество частичек на мобильных */
+  .particle:nth-child(n+26) {
+    display: none;
+  }
 }
 </style>
