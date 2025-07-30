@@ -20,7 +20,7 @@
     
     <div class="hero-content">
       <div class="hero-image-wrapper">
-        <img src="/assets/img/rat.gif" alt="ExoVet Clinic" class="hero-image" />
+        <img src="/assets/img/logo2.gif" alt="ExoVet Clinic" class="hero-image" />
       </div>
       <div class="hero-text">
         <h1>Ветеринарная клиника для экзотических животных</h1>
@@ -214,7 +214,7 @@ export default defineComponent({
   position: relative;
   min-height: 25vh;
   overflow: hidden;
-  background-color: #faf3f0;
+  background-color: #fcf6f8;
 }
 
 .particles-container {
@@ -283,8 +283,8 @@ export default defineComponent({
 }
 
 .hero-image-wrapper {
-  width: 250px;
-  height: 250px;
+  width: 350px;
+  height: 350px;
   border-radius: 50%;
   overflow: hidden;
   flex-shrink: 0;
