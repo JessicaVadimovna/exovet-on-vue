@@ -284,7 +284,6 @@ export default defineComponent({
 }
 
 .gallery {
-  background-image: url('./assets/img/back.png');
   padding: 80px 0;
   min-height: 50vh;
   position: relative;
@@ -364,14 +363,14 @@ export default defineComponent({
 .slider-wrapper::before {
   left: 0;
   background: linear-gradient(to right, 
-    rgba(228, 213, 213, 0.9) 0%, 
+    rgba(255, 255, 255, 0.9) 0%, 
     transparent 100%);
 }
 
 .slider-wrapper::after {
   right: 0;
   background: linear-gradient(to left, 
-    rgba(228, 213, 213, 0.9) 0%, 
+    rgba(255, 255, 255, 0.9) 0%, 
     transparent 100%);
 }
 
