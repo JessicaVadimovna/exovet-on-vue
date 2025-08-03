@@ -8,109 +8,39 @@
           <div class="divider"></div>
         </div>
       </div>
-      
-      <!-- Veterinarians Section with Swiper Slider -->
-      <div class="category">
-        <div class="category-header">
-          <h2 class="category-title">
-            <svg class="icon" viewBox="0 0 24 24">
-              <path d="M12,2L4,5V11.09C4,16.14 7.41,20.85 12,22C16.59,20.85 20,16.14 20,11.09V5L12,2M12.75,13.47L12.75,7H11.25V13.47L9.75,12L8.75,13L12,16.25L15.25,13L14.25,12L12.75,13.47Z" />
-            </svg>
-            Ветеринарные врачи
-          </h2>
-          <p class="category-description">Специалисты с высшим ветеринарным образованием и узкой специализацией</p>
-        </div>
-        <div class="swiper vet-slider">
-          <div class="swiper-wrapper">
-            <div v-for="(specialist, index) in veterinarians" :key="'vet-' + index" class="swiper-slide specialist-card">
-              <div class="card-front">
-                <div class="image-container">
-                  <img :src="specialist.image" class="specialist-image" alt="Specialist photo"/>
-                  <div class="image-overlay"></div>
-                </div>
-                <div class="specialist-content">
-                  <div class="specialist-header">
-                    <h3 class="specialist-name">{{ specialist.name }}</h3>
-                    <div class="specialist-title">{{ specialist.specialty }}</div>
-                  </div>
-                  <div v-if="specialist.experience" class="experience-badge">
-                    <svg class="icon" viewBox="0 0 24 24">
-                      <path d="M12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22C6.47,22 2,17.5 2,12A10,10 0 0,1 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z" />
-                    </svg>
-                    <span>Опыт: {{ specialist.experience }}</span>
-                  </div>
-                  <div class="specialist-footer">
-                    <button class="more-btn">
-                      <span>Подробнее</span>
-                      <svg class="arrow" viewBox="0 0 24 24">
-                        <path d="M4,11V13H16L10.5,18.5L11.92,19.92L19.84,12L11.92,4.08L10.5,5.5L16,11H4Z" />
-                      </svg>
-                    </button>
-                  </div>
-                </div>
-              </div>
-              <div class="card-back">
-                <div class="back-content">
-                  <div class="details">
-                    <div class="story-section">
-                      <h4 class="section-title">
-                        Профессиональный путь
-                      </h4>
-                      <div class="story-text">{{ specialist.motivation }}</div>
-                    </div>
-                    <div class="pets-section">
-                      <h4 class="section-title">
-                        Домашние питомцы
-                      </h4>
-                      <div class="pets-list">{{ specialist.pets || 'Нет' }}</div>
-                    </div>
-                  </div>
-                  <button class="back-btn">
-                    <svg class="icon" viewBox="0 0 24 24">
-                      <path d="M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20Z" />
-                    </svg>
-                    Назад
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- Swiper Navigation -->
-          <div class="swiper-button-prev"></div>
-          <div class="swiper-button-next"></div>
-          <!-- Swiper Pagination -->
-          <div class="swiper-pagination"></div>
-        </div>
+
+      <!-- Фильтры -->
+      <div class="filter-buttons">
+        <button
+          v-for="filter in filterOptions"
+          :key="filter.value"
+          :class="{ 'active': activeFilter === filter.value }"
+          @click="activeFilter = filter.value; resetSwiper()"
+        >
+          {{ filter.label }} ({{ filter.count }})
+        </button>
       </div>
 
-      <!-- Assistants Section -->
-      <div class="category">
-        <div class="category-header">
-          <h2 class="category-title">
-            <svg class="icon" viewBox="0 0 24 24">
-              <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M7.07,18.28C7.5,17.38 10.12,16.5 12,16.5C13.88,16.5 16.5,17.38 16.93,18.28C15.57,19.36 13.86,20 12,20C10.14,20 8.43,19.36 7.07,18.28M18.36,16.83C16.93,15.09 13.46,14.5 12,14.5C10.54,14.5 7.07,15.09 5.64,16.83C4.62,15.5 4,13.82 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,13.82 19.38,15.5 18.36,16.83M12,6C10.06,6 8.5,7.56 8.5,9.5C8.5,11.44 10.06,13 12,13C13.94,13 15.5,11.44 15.5,9.5C15.5,7.56 13.94,6 12,6M12,11A1.5,1.5 0 0,1 10.5,9.5A1.5,1.5 0 0,1 12,8A1.5,1.5 0 0,1 13.5,9.5A1.5,1.5 0 0,1 12,11Z" />
-            </svg>
-            Ассистенты
-          </h2>
-          <p class="category-description">Помощники врачей, обеспечивающие комфорт и уход за питомцами</p>
-        </div>
-        <div class="specialists-grid assistant-list">
-          <div v-for="(assistant, index) in assistants" :key="'assistant-' + index" class="specialist-card">
+      <!-- Swiper Slider -->
+      <div class="swiper vet-slider">
+        <div class="swiper-wrapper">
+          <div v-for="member in filteredMembers" :key="'member-' + member.id" class="swiper-slide specialist-card">
             <div class="card-front">
               <div class="image-container">
-                <img :src="assistant.image" class="specialist-image" alt="Assistant photo"/>
+                <img :src="member.image" class="specialist-image" alt="Specialist photo" />
                 <div class="image-overlay"></div>
               </div>
               <div class="specialist-content">
                 <div class="specialist-header">
-                  <h3 class="specialist-name">{{ assistant.name }}</h3>
-                  <div class="specialist-title">{{ assistant.specialty }}</div>
+                  <h3 class="specialist-name">{{ member.name }}</h3>
+                  <div class="specialist-title">{{ member.role }}</div>
+                  <div class="specialist-specialty">{{ member.specialization }}</div>
                 </div>
-                <div v-if="assistant.experience" class="experience-badge">
+                <div v-if="member.experience" class="experience-badge">
                   <svg class="icon" viewBox="0 0 24 24">
                     <path d="M12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22C6.47,22 2,17.5 2,12A10,10 0 0,1 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z" />
                   </svg>
-                  <span>Опыт: {{ assistant.experience }}</span>
+                  <span>Опыт: {{ member.experience }}</span>
                 </div>
                 <div class="specialist-footer">
                   <button class="more-btn">
@@ -126,16 +56,12 @@
               <div class="back-content">
                 <div class="details">
                   <div class="story-section">
-                    <h4 class="section-title">
-                      Профессиональный путь
-                    </h4>
-                    <div class="story-text">{{ assistant.motivation }}</div>
+                    <h4 class="section-title">Профессиональный путь</h4>
+                    <div class="story-text">{{ member.biography }}</div>
                   </div>
                   <div class="pets-section">
-                    <h4 class="section-title">
-                      Домашние питомцы
-                    </h4>
-                    <div class="pets-list">{{ assistant.pets || 'Нет' }}</div>
+                    <h4 class="section-title">Домашние питомцы</h4>
+                    <div class="pets-list">{{ member.pets || 'Нет' }}</div>
                   </div>
                 </div>
                 <button class="back-btn">
@@ -148,168 +74,150 @@
             </div>
           </div>
         </div>
-      </div>
-
-      <!-- Administrators Section -->
-      <div class="category">
-        <div class="category-header">
-          <h2 class="category-title">
-            <svg class="icon" viewBox="0 0 24 24">
-              <path d="M12,3C14.21,3 16,4.79 16,7C16,9.21 14.21,11 12,11C9.79,11 8,9.21 8,7C8,4.79 9.79,3 12,3M16,13.54C16,14.6 15.72,17.07 13.81,19.83L13,15L13.94,13.12C13.32,13.05 12.67,13 12,13C11.33,13 10.68,13.05 10.06,13.12L11,15L10.19,19.83C8.28,17.07 8,14.6 8,13.54C5.61,14.24 4,15.5 4,17V21H20V17C20,15.5 18.4,14.24 16,13.54Z" />
-            </svg>
-            Администраторы
-          </h2>
-          <p class="category-description">Организаторы работы клиники и ваши помощники</p>
-        </div>
-        <div class="specialists-grid admin-list">
-          <div v-for="(admin, index) in administrators" :key="'admin-' + index" class="specialist-card">
-            <div class="card-front">
-              <div class="image-container">
-                <img :src="admin.image" class="specialist-image" alt="Admin photo"/>
-                <div class="image-overlay"></div>
-              </div>
-              <div class="specialist-content">
-                <div class="specialist-header">
-                  <h3 class="specialist-name">{{ admin.name }}</h3>
-                  <div class="specialist-title">{{ admin.specialty }}</div>
-                </div>
-                <div v-if="admin.experience" class="experience-badge">
-                  <svg class="icon" viewBox="0 0 24 24">
-                    <path d="M12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22C6.47,22 2,17.5 2,12A10,10 0 0,1 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z" />
-                  </svg>
-                  <span>Опыт: {{ admin.experience }}</span>
-                </div>
-                <div class="specialist-footer">
-                  <button class="more-btn">
-                    <span>Подробнее</span>
-                    <svg class="arrow" viewBox="0 0 24 24">
-                      <path d="M4,11V13H16L10.5,18.5L11.92,19.92L19.84,12L11.92,4.08L10.5,5.5L16,11H4Z" />
-                    </svg>
-                  </button>
-                </div>
-              </div>
-            </div>
-            <div class="card-back">
-              <div class="back-content">
-                <div class="details">
-                  <div class="story-section">
-                    <h4 class="section-title">
-                      Профессиональный путь
-                    </h4>
-                    <div class="story-text">{{ admin.motivation }}</div>
-                  </div>
-                  <div class="pets-section">
-                    <h4 class="section-title">
-                      Домашние питомцы
-                    </h4>
-                    <div class="pets-list">{{ admin.pets || 'Нет' }}</div>
-                  </div>
-                </div>
-                <button class="back-btn">
-                  <svg class="icon" viewBox="0 0 24 24">
-                    <path d="M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20Z" />
-                  </svg>
-                  Назад
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+        <div class="swiper-button-prev"></div>
+        <div class="swiper-button-next"></div>
+        <div class="swiper-pagination"></div>
       </div>
     </div>
   </section>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted } from 'vue'
+import { defineComponent, ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
 import Swiper from 'swiper'
 import { Navigation, Pagination } from 'swiper/modules'
 
-
-interface Specialist {
+interface TeamMember {
+  id: number
   image: string
   name: string
-  specialty: string
-  experience?: string
-  motivation: string
-  pets?: string
+  role: string
+  specialization: string
+  biography: string
+  experience: string
+  pets: string
+  roleType: 'врач' | 'ассистент' | 'администратор'
 }
 
 export default defineComponent({
   name: 'Specialists',
   setup() {
-    const veterinarians = ref<Specialist[]>([
+    const veterinarians = ref<TeamMember[]>([
       {
+        id: 1,
         image: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&h=600&q=80',
         name: 'Еланцева Валерия Сергеевна',
-        specialty: 'Главный врач • Специалист по экзотическим животным',
+        role: 'Главный врач',
+        specialization: 'Специалист по экзотическим животным',
+        biography: 'Владелец клиники Exovet с образованием в области химии, которая нашла свое истинное призвание в ветеринарии. Специализируется на кожной и абдоминальной хирургии, стоматологии и терапии экзотических животных. Интерес к экзотическим питомцам возник после работы в зоомагазине и заботы о крысе Мэри, которая стала прототипом логотипа клиники.',
         experience: '6 лет',
-        motivation: 'Владелец клиники Exovet с образованием в области химии, которая нашла свое истинное призвание в ветеринарии. Специализируется на кожной и абдоминальной хирургии, стоматологии и терапии экзотических животных. Интерес к экзотическим питомцам возник после работы в зоомагазине и заботы о крысе Мэри, которая стала прототипом логотипа клиники.',
-        pets: 'Кот и кошка, которые приносят радость и являются частью жизни.'
+        pets: 'Кот и кошка, которые приносят радость и являются частью жизни.',
+        roleType: 'врач'
       },
       {
+        id: 2,
         image: 'https://images.unsplash.com/photo-1594824476967-48c8b964273f?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&h=600&q=80',
         name: 'Гаржилова Ксения Батоевна',
-        specialty: 'Терапевт • Врач УЗИ экзотических животных',
+        role: 'Терапевт',
+        specialization: 'Врач УЗИ экзотических животных',
+        biography: 'Вдохновилась профессией через рассказы дяди-ветеринара и работу ассистентом в его клинике в Улан-Удэ. Переехав в Иркутск, открыла для себя мир экзотических животных, которые ее просто очаровали. Теперь любимые пациенты не лают и не мяукают, а лишь изредка щелкают зубами по пальцам.',
         experience: '5 лет',
-        motivation: 'Вдохновилась профессией через рассказы дяди-ветеринара и работу ассистентом в его клинике в Улан-Удэ. Переехав в Иркутск, открыла для себя мир экзотических животных, которые ее просто очаровали. Теперь любимые пациенты не лают и не мяукают, а лишь изредка щелкают зубами по пальцам.',
-        pets: 'Маленькая черно-белая кошечка по кличке Миска.'
+        pets: 'Маленькая черно-белая кошечка по кличке Миска.',
+        roleType: 'врач'
       },
       {
+        id: 3,
         image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&h=600&q=80',
         name: 'Черных Елена Александровна',
-        specialty: 'Терапевт • Специалист по рептилиям и амфибиям',
+        role: 'Терапевт',
+        specialization: 'Специалист по рептилиям и амфибиям',
+        biography: 'Начинала с изготовления ортопедических изделий для собак и кошек, затем получила ветеринарное образование. Открыла для себя мир экзотических животных во время практики и влюбилась в рептилий. Теперь это узкая специализация, которой она посвящает всю свою профессиональную страсть.',
         experience: '4 года',
-        motivation: 'Начинала с изготовления ортопедических изделий для собак и кошек, затем получила ветеринарное образование. Открыла для себя мир экзотических животных во время практики и влюбилась в рептилий. Теперь это узкая специализация, которой она посвящает всю свою профессиональную страсть.',
-        pets: 'Две кошки, аксолотль и ковровый питон.'
+        pets: 'Две кошки, аксолотль и ковровый питон.',
+        roleType: 'врач'
       },
       {
+        id: 4,
         image: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&h=600&q=80',
         name: 'Тимофеева Арина Владимировна',
-        specialty: 'Терапевт • Специалист по орнитологии',
+        role: 'Терапевт',
+        specialization: 'Специалист по орнитологии',
+        biography: 'Получила специализацию в онлайн-школе «Webexovet». Детство с разнообразными питомцами, включая экзотику, определило выбор профессии. Решила освоить ветеринарную медицину птиц из-за острой нехватки орнитологов в Иркутске. Планирует расширить специализацию на других экзотических животных.',
         experience: '4 года врачом, 3 года в орнитологии',
-        motivation: 'Получила специализацию в онлайн-школе «Webexovet». Детство с разнообразными питомцами, включая экзотику, определило выбор профессии. Решила освоить ветеринарную медицину птиц из-за острой нехватки орнитологов в Иркутске. Планирует расширить специализацию на других экзотических животных.',
-        pets: 'Кот, планирует завести экзотического питомца.'
+        pets: 'Кот, планирует завести экзотического питомца.',
+        roleType: 'врач'
       }
     ])
 
-    const assistants = ref<Specialist[]>([
+    const assistants = ref<TeamMember[]>([
       {
+        id: 5,
         image: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&h=600&q=80',
         name: 'Пыхтунова Альбина Павловна',
-        specialty: 'Ассистент ветеринарного врача',
+        role: 'Ассистент ветеринарного врача',
+        specialization: '',
+        biography: 'Выросла в семье врачей, но выбрала ветеринарию, потому что с животными проще и теплее. Особенно любит кошек и экзотических животных. Ценит команду Exovet за поддержку и взаимоуважение. За день видит столько животных, сколько другие не встречают и за год, отдавая каждому тепло и внимание.',
         experience: '3 года',
-        motivation: 'Выросла в семье врачей, но выбрала ветеринарию, потому что с животными проще и теплее. Особенно любит кошек и экзотических животных. Ценит команду Exovet за поддержку и взаимоуважение. За день видит столько животных, сколько другие не встречают и за год, отдавая каждому тепло и внимание.',
-        pets: 'Пока нет, но каждый пациент получает заботу как свой.'
+        pets: 'Пока нет, но каждый пациент получает заботу как свой.',
+        roleType: 'ассистент'
       },
       {
+        id: 6,
         image: 'https://images.unsplash.com/photo-1554151228-14d9def656e4?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&h=600&q=80',
         name: 'Шахова Ника Максимовна',
-        specialty: 'Ассистент ветеринарного врача • Грумер',
+        role: 'Ассистент ветеринарного врача',
+        specialization: 'Грумер',
+        biography: 'Начала с курсов груминга и работы в салоне, где старалась спасать жизни малышей в колтунах и с паразитами. Превращает каждое посещение клиники в курорт для пушистиков, создавая атмосферу безопасности. Единственный грумер в Иркутске, который умеет стричь кроликов!',
         experience: '3 года',
-        motivation: 'Начала с курсов груминга и работы в салоне, где старалась спасать жизни малышей в колтунах и с паразитами. Превращает каждое посещение клиники в курорт для пушистиков, создавая атмосферу безопасности. Единственный грумер в Иркутске, который умеет стричь кроликов!',
-        pets: 'Белая шиншилла, котик-тапкогрыз и мамина собака бладхаунд.'
+        pets: 'Белая шиншилла, котик-тапкогрыз и мамина собака бладхаунд.',
+        roleType: 'ассистент'
       }
     ])
 
-    const administrators = ref<Specialist[]>([
+    const administrators = ref<TeamMember[]>([
       {
+        id: 7,
         image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&h=600&q=80',
         name: 'Дворянская Ульяна Дмитриевна',
-        specialty: 'Администратор',
+        role: 'Администратор',
+        specialization: '',
+        biography: 'Всегда любила животных и содержала различных экзотических питомцев. Мечтает в будущем помогать животным наравне с другими специалистами, а пока рада быть полезной в мелочах при контакте с маленькими пациентами. Осуществила подростковую мечту, забрав кошку из приюта.',
         experience: '2 года',
-        motivation: 'Всегда любила животных и содержала различных экзотических питомцев. Мечтает в будущем помогать животным наравне с другими специалистами, а пока рада быть полезной в мелочах при контакте с маленькими пациентами. Осуществила подростковую мечту, забрав кошку из приюта.',
-        pets: 'Голубоглазая кошечка Ася из приюта.'
+        pets: 'Голубоглазая кошечка Ася из приюта.',
+        roleType: 'администратор'
       }
     ])
 
-    onMounted(() => {
-      // Initialize Swiper for veterinarians
-      new Swiper('.vet-slider', {
+    const teamMembers = ref<TeamMember[]>([...veterinarians.value, ...assistants.value, ...administrators.value])
+    const activeFilter = ref('все')
+    let swiperInstance: Swiper | null = null
+
+    const filterOptions = computed(() => [
+      { value: 'все', label: 'Вся команда', count: teamMembers.value.length },
+      { value: 'врач', label: 'Врачи', count: teamMembers.value.filter(m => m.roleType === 'врач').length },
+      { value: 'ассистент', label: 'Ассистенты', count: teamMembers.value.filter(m => m.roleType === 'ассистент').length },
+      { value: 'администратор', label: 'Администрация', count: teamMembers.value.filter(m => m.roleType === 'администратор').length }
+    ])
+
+    const filteredMembers = computed(() => {
+      return activeFilter.value === 'все'
+        ? teamMembers.value
+        : teamMembers.value.filter(member => member.roleType === activeFilter.value)
+    })
+
+    const resetSwiper = async () => {
+      if (swiperInstance) {
+        swiperInstance.destroy(true, true)
+        swiperInstance = null
+      }
+      await nextTick() // Ждем обновления DOM
+      const isLoopEnabled = filteredMembers.value.length > 1 // Отключаем loop для 1 элемента
+      swiperInstance = new Swiper('.vet-slider', {
         modules: [Navigation, Pagination],
         slidesPerView: 1,
-        spaceBetween: 30,
-        loop: true,
+        spaceBetween: 20, // Уменьшено для узких экранов
+        loop: isLoopEnabled,
+        centeredSlides: filteredMembers.value.length <= 2, // Центрируем для 1 или 2 карточек
         navigation: {
           nextEl: '.swiper-button-next',
           prevEl: '.swiper-button-prev',
@@ -317,33 +225,55 @@ export default defineComponent({
         pagination: {
           el: '.swiper-pagination',
           clickable: true,
+          dynamicBullets: isLoopEnabled && filteredMembers.value.length > 3,
+          dynamicMainBullets: 3,
         },
         breakpoints: {
           768: {
-            slidesPerView: 2,
+            slidesPerView: filteredMembers.value.length > 1 ? 2 : 1,
+            spaceBetween: 25,
+            centeredSlides: filteredMembers.value.length === 2,
           },
           992: {
-            slidesPerView: 3,
+            slidesPerView: filteredMembers.value.length > 2 ? 3 : filteredMembers.value.length,
+            spaceBetween: 30,
+            centeredSlides: filteredMembers.value.length <= 2,
           },
         },
       })
 
-      // Initialize card flip functionality for all specialist cards
+      // Реинициализация обработчиков переворота карточек
       document.querySelectorAll('.specialist-card').forEach(card => {
         const moreBtn = card.querySelector('.more-btn')
         const backBtn = card.querySelector('.back-btn')
-        
-        moreBtn?.addEventListener('click', () => {
-          card.classList.add('flipped')
-        })
-        
-        backBtn?.addEventListener('click', () => {
-          card.classList.remove('flipped')
-        })
+        moreBtn?.removeEventListener('click', handleMoreClick)
+        backBtn?.removeEventListener('click', handleBackClick)
+        moreBtn?.addEventListener('click', handleMoreClick)
+        backBtn?.addEventListener('click', handleBackClick)
       })
+    }
+
+    const handleMoreClick = (event: Event) => {
+      const card = (event.currentTarget as HTMLElement).closest('.specialist-card')
+      card?.classList.add('flipped')
+    }
+
+    const handleBackClick = (event: Event) => {
+      const card = (event.currentTarget as HTMLElement).closest('.specialist-card')
+      card?.classList.remove('flipped')
+    }
+
+    onMounted(() => {
+      resetSwiper()
     })
 
-    return { veterinarians, assistants, administrators }
+    onUnmounted(() => {
+      if (swiperInstance) {
+        swiperInstance.destroy(true, true)
+      }
+    })
+
+    return { teamMembers, filterOptions, activeFilter, filteredMembers, resetSwiper }
   }
 })
 </script>
@@ -363,6 +293,8 @@ export default defineComponent({
   margin: 0 auto;
   position: relative;
   z-index: 1;
+  overflow: hidden;
+  padding: 0 20px;
 }
 
 .header {
@@ -432,45 +364,45 @@ export default defineComponent({
   border-radius: 2px;
 }
 
-.category {
-  margin-bottom: 100px;
-}
-
-.category-header {
-  text-align: center;
-  margin-bottom: 60px;
-}
-
-.category-title {
-  font-family: 'Playfair Display', serif;
-  font-size: 2.5rem;
-  color: #3a2a30;
-  margin-bottom: 15px;
+.filter-buttons {
   display: flex;
-  align-items: center;
   justify-content: center;
   gap: 15px;
+  margin-bottom: 40px;
+  flex-wrap: wrap;
 }
 
-.category-title .icon {
-  width: 36px;
-  height: 36px;
-  fill: #d67a8f;
-}
-
-.category-description {
+.filter-buttons button {
+  padding: 10px 20px;
+  border: 2px solid #d67a8f;
+  border-radius: 25px;
+  background: none;
+  color: #d67a8f;
   font-family: 'Montserrat', sans-serif;
-  font-size: 1.1rem;
-  color: #7a6a70;
-  max-width: 600px;
-  margin: 0 auto;
-  line-height: 1.6;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
-/* Swiper styles for veterinarians */
+.filter-buttons button.active {
+  background: #d67a8f;
+  color: white;
+}
+
+.filter-buttons button:hover:not(.active) {
+  background: #f9e8ee;
+}
+
+.swiper-container {
+  position: relative;
+  padding: 0 60px;
+  margin-bottom: 20px;
+}
+
 .vet-slider {
   position: relative;
   padding-bottom: 60px;
+  overflow: visible;
 }
 
 .swiper-slide.specialist-card {
@@ -482,7 +414,7 @@ export default defineComponent({
   transform-style: preserve-3d;
   min-height: 550px;
   overflow: hidden;
-  width: 320px;
+  height: auto;
 }
 
 .swiper-slide.specialist-card:hover {
@@ -490,7 +422,6 @@ export default defineComponent({
   transform: translateY(-5px);
 }
 
-/* Swiper navigation buttons */
 .swiper-button-prev,
 .swiper-button-next {
   color: #d67a8f;
@@ -500,45 +431,28 @@ export default defineComponent({
   border-radius: 50%;
   box-shadow: 0 4px 10px rgba(107, 76, 87, 0.2);
   transition: all 0.3s ease;
+  z-index: 10;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.swiper-button-prev {
+  left: 10px;
+}
+
+.swiper-button-next {
+  right: 10px;
 }
 
 .swiper-button-prev:hover,
 .swiper-button-next:hover {
   background: white;
-  transform: scale(1.1);
+  transform: scale(1.1) translateY(-50%);
 }
 
 .swiper-button-prev:after,
 .swiper-button-next:after {
   font-size: 20px;
-}
-
-
-/* Grid styles for assistants and administrators */
-.specialists-grid {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 30px;
-  perspective: 1000px;
-}
-
-.specialist-card {
-  background: white;
-  border-radius: 16px;
-  box-shadow: 0 10px 30px rgba(107, 76, 87, 0.1);
-  transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
-  position: relative;
-  transform-style: preserve-3d;
-  min-height: 550px;
-  overflow: hidden;
-  width: 320px;
-  max-width: 100%;
-}
-
-.specialist-card:hover {
-  box-shadow: 0 15px 40px rgba(107, 76, 87, 0.15);
-  transform: translateY(-5px);
 }
 
 .card-front, .card-back {
@@ -633,6 +547,14 @@ export default defineComponent({
   font-weight: 500;
 }
 
+.specialist-specialty {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.9rem;
+  color: #6b5a60;
+  text-align: center;
+  line-height: 1.5;
+}
+
 .experience-badge {
   display: inline-flex;
   align-items: center;
@@ -700,28 +622,6 @@ export default defineComponent({
   overflow-y: auto;
 }
 
-.back-header {
-  text-align: center;
-  margin-bottom: 30px;
-}
-
-.back-header .image-container {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  margin: 0 auto 15px;
-  border: 3px solid rgba(255,255,255,0.2);
-}
-
-.back-header .specialist-name {
-  color: white;
-  margin-bottom: 5px;
-}
-
-.back-header .specialist-title {
-  color: #f0c0cd;
-}
-
 .details {
   flex-grow: 1;
   display: flex;
@@ -747,7 +647,7 @@ export default defineComponent({
 
 .story-text {
   font-family: 'Montserrat', sans-serif;
-  font-size: 0.90rem;
+  font-size: 0.9rem;
   line-height: 1.7;
   color: #f0e6e9;
 }
@@ -790,196 +690,115 @@ export default defineComponent({
   fill: white;
 }
 
-.trust-section {
-  margin-top: 120px;
-  position: relative;
-}
-
-.trust-section::before {
-  content: '';
-  position: absolute;
-  top: -60px;
-  left: 0;
-  width: 100%;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(214, 122, 143, 0.5), transparent);
-}
-
-.trust-title {
-  font-family: 'Playfair Display', serif;
-  font-size: 2.5rem;
-  color: #3a2a30;
-  text-align: center;
-  margin-bottom: 70px;
-  position: relative;
-}
-
-.trust-title::after {
-  content: '';
-  position: absolute;
-  bottom: -20px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 80px;
-  height: 3px;
-  background: linear-gradient(90deg, #eab9cf, #d67a8f);
-  border-radius: 2px;
-}
-
-.trust-indicators {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 30px;
-}
-
-.trust-item {
-  background: white;
-  border-radius: 16px;
-  padding: 40px 30px;
-  text-align: center;
-  transition: all 0.3s ease;
-  box-shadow: 0 5px 15px rgba(107, 76, 87, 0.05);
-  position: relative;
-  overflow: hidden;
-}
-
-.trust-item::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 4px;
-  background: linear-gradient(90deg, #eab9cf, #d67a8f);
-}
-
-.trust-item:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 15px 30px rgba(107, 76, 87, 0.1);
-}
-
-.trust-icon {
-  width: 60px;
-  height: 60px;
-  margin: 0 auto 20px;
-  background: linear-gradient(135deg, #f8e8ec 0%, #f0d6de 100%);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #d67a8f;
-}
-
-.trust-icon svg {
-  width: 30px;
-  height: 30px;
-  fill: #d67a8f;
-}
-
-.trust-item-title {
-  font-family: 'Playfair Display', serif;
-  font-size: 1.3rem;
-  color: #3a2a30;
-  margin-bottom: 15px;
-}
-
-.trust-item-text {
-  font-family: 'Montserrat', sans-serif;
-  font-size: 0.95rem;
-  color: #7a6a70;
-  line-height: 1.6;
-}
-
 @media (max-width: 992px) {
+  .container {
+    max-width: 960px;
+  }
+
   .title {
     font-size: 2.8rem;
   }
-  
+
   .subtitle {
     font-size: 1.1rem;
   }
-  
-  .category-title {
-    font-size: 2rem;
+
+  .vet-slider {
+    margin: 0 30px;
+    max-width: calc(100% - 60px);
   }
-  
-  .trust-indicators {
-    grid-template-columns: repeat(2, 1fr);
+
+  .swiper-button-prev {
+    left: -40px;
+  }
+
+  .swiper-button-next {
+    right: -40px;
+  }
+
+  .swiper-slide.specialist-card {
+    width: 300px !important;
   }
 }
 
 @media (max-width: 768px) {
   .specialists {
-    padding: 80px 20px;
+    padding: 80px 15px;
   }
-  
+
+  .container {
+    max-width: 720px;
+  }
+
   .title {
     font-size: 2.2rem;
   }
-  
-  .category-title {
-    font-size: 1.8rem;
+
+  .subtitle {
+    font-size: 1rem;
   }
-  
-  .trust-title {
-    font-size: 2rem;
-    margin-bottom: 50px;
-  }
-  
-  .trust-indicators {
-    grid-template-columns: 1fr;
-    gap: 20px;
-  }
-  
-  .trust-item {
-    padding: 30px 25px;
-  }
-  
+
   .vet-slider {
-    padding: 0 20px 60px;
+    margin: 0 20px;
+    max-width: calc(100% - 40px);
+  }
+
+  .swiper-button-prev {
+    left: -30px;
+  }
+
+  .swiper-button-next {
+    right: -30px;
+  }
+
+  .swiper-slide.specialist-card {
+    width: 300px !important;
   }
 }
 
 @media (max-width: 480px) {
+  .container {
+    max-width: 100%;
+    padding: 0 10px;
+  }
+
   .title {
     font-size: 1.8rem;
   }
-  
+
   .subtitle {
-    font-size: 1rem;
+    font-size: 0.9rem;
   }
-  
-  .category-title {
-    font-size: 1.5rem;
-    flex-direction: column;
-    gap: 5px;
-  }
-  
+
   .specialist-name {
     font-size: 1.3rem;
   }
-  
-  .specialist-title {
-    font-size: 0.9rem;
+
+  .specialist-title, .specialist-specialty {
+    font-size: 0.85rem;
   }
-  
-  .specialists-grid {
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .trust-title {
-    font-size: 1.8rem;
-  }
-  
+
   .vet-slider {
-    padding: 0 15px 60px;
+    margin: 0 15px;
+    max-width: calc(100% - 30px);
+  }
+
+  .swiper-button-prev {
+    left: -20px;
+  }
+
+  .swiper-button-next {
+    right: -20px;
+  }
+
+  .swiper-slide.specialist-card {
+    width: 280px !important;
   }
 }
 </style>
 
 <style>
-/* без scoped */
+/* Без scoped для Swiper */
 .swiper-pagination-bullet {
   width: 12px;
   height: 12px;

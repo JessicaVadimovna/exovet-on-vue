@@ -1,738 +1,772 @@
 <template>
-  <section id="gallery" class="gallery">
-    <div class="container">
-      <div class="gallery-header">
-        <h1 class="gallery-title">
-          Наши пациенты 
-          <span class="heart-icon"><img src="/public/assets/img/emoji-heart.png" alt=""></span>
-        </h1>
-      </div>
+  <div class="gallery-container">
+    <!-- Заголовок -->
+    <div class="gallery-header">
+      <h1 class="gallery-title">
+        Галерея наших пациентов
+      </h1>
+      <p class="gallery-description">
+        Знакомьтесь с удивительными экзотическими животными, которых мы лечим и заботимся о них каждый день
+      </p>
+    </div>
 
-      <div class="slider-wrapper">
-        <div class="slider" ref="sliderRef">
-          <div class="slider-track" :class="{ paused: isPaused }">
-            <div 
-              v-for="(item, index) in duplicatedImages"
-              :key="index"
-              class="slide-item"
-              @click="openModal(item.src, item.alt, index)"
-              @mouseenter="pauseSlider"
-              @mouseleave="resumeSlider"
-            >
-              <div class="image-wrapper">
-                <img
-                  :src="item.src"
-                  :alt="item.alt"
-                  class="gallery-image"
-                  loading="lazy"
-                />
-                <div class="overlay">
-                  <div class="overlay-content">
-                    <span class="view-icon">👁</span>
-                    <span class="view-text">Посмотреть</span>
-                  </div>
-                </div>
-              </div>
-            </div>
+    <!-- Основная карусель -->
+    <div class="carousel-container" @mouseenter="pauseAutoPlay" @mouseleave="resumeAutoPlay">
+      <div class="carousel-wrapper">
+        <div class="slides-container">
+          <div 
+            v-for="(image, index) in galleryImages"
+            :key="image.id"
+            class="carousel-slide"
+            :class="{ 
+              'slide-active': index === currentIndex,
+              'slide-next': index === getNextIndex(),
+              'slide-prev': index === getPrevIndex()
+            }"
+            @click="openModal(image)"
+          >
+            <img
+              :src="image.src"
+              :alt="image.alt"
+              class="carousel-image"
+              @error="handleImageError"
+            />
+            <div class="carousel-overlay"></div>
           </div>
         </div>
-        
-        <div class="pagination">
-          <button
-            v-for="n in pageCount"
-            :key="n"
-            class="pagination-dot"
-            :class="{ active: currentPage === n - 1 }"
-            @click="goToPage(n - 1)"
-            :aria-label="`Go to page ${n}`"
-          ></button>
+      </div>
+
+      <!-- Кнопки навигации -->
+      <button
+        class="nav-button nav-button-left"
+        @click="prevSlide"
+        aria-label="Предыдущее изображение"
+      >
+        ←
+      </button>
+
+      <button
+        class="nav-button nav-button-right"
+        @click="nextSlide"
+        aria-label="Следующее изображение"
+      >
+        →
+      </button>
+
+      <!-- Кнопка автовоспроизведения -->
+      <button
+        class="autoplay-button"
+        @click="toggleAutoPlay"
+        :aria-label="isAutoPlaying ? 'Остановить автовоспроизведение' : 'Запустить автовоспроизведение'"
+      >
+        {{ isAutoPlaying ? '⏸' : '▶' }}
+      </button>
+    </div>
+
+    <!-- Точки навигации -->
+    <div class="dots-container">
+      <button
+        v-for="(image, index) in galleryImages"
+        :key="index"
+        class="dot"
+        :class="{ 'dot-active': index === currentIndex }"
+        @click="goToSlide(index)"
+        :aria-label="`Перейти к изображению ${index + 1}`"
+      ></button>
+    </div>
+
+    <!-- Превью полоса -->
+    <div class="preview-container">
+      <div class="preview-track" ref="previewTrack">
+        <div
+          v-for="(image, index) in galleryImages"
+          :key="image.id"
+          class="preview-item"
+          :class="{ 'preview-item-active': index === currentIndex }"
+          @click="selectImage(index, image)"
+        >
+          <img
+            :src="image.src"
+            :alt="image.alt"
+            class="preview-image"
+            @error="handleImageError"
+          />
+          <div class="preview-overlay"></div>
         </div>
       </div>
     </div>
 
-    <!-- Modal -->
-    <Transition name="modal">
-      <div 
-        v-if="isModalOpen" 
-        class="modal-backdrop" 
+    <!-- Модальное окно -->
+    <transition name="modal">
+      <div
+        v-if="selectedImage"
+        class="modal-backdrop"
         @click="closeModal"
-        @keydown.esc="closeModal"
-        @keydown.left="prevModalImage"
-        @keydown.right="nextModalImage"
-        tabindex="0" 
-        ref="modalRef"
       >
-        <div class="modal-container" @click.stop>
-          <button class="modal-close" @click="closeModal" aria-label="Close">
-            ✕
-          </button>
-          
-          <button 
-            class="modal-nav prev" 
-            @click="prevModalImage"
-            aria-label="Previous image"
-          >
-            ‹
-          </button>
-          
-          <div class="modal-content">
-            <img 
-              :src="modalImageSrc" 
-              :alt="modalAlt" 
+        <div class="modal-content" @click.stop>
+          <div class="modal-image-container">
+            <img
+              :src="selectedImage.src"
+              :alt="selectedImage.alt"
               class="modal-image"
+              @error="handleImageError"
             />
-            <div class="modal-info">
-              <h3>{{ modalAlt }}</h3>
-              <span class="modal-counter">
-                {{ currentIndex + 1 }} из {{ images.length }}
-              </span>
-            </div>
+            
+            <button
+              class="modal-close-button"
+              @click="closeModal"
+              aria-label="Закрыть модальное окно"
+            >
+              ×
+            </button>
           </div>
-          
-          <button 
-            class="modal-nav next" 
-            @click="nextModalImage"
-            aria-label="Next image"
-          >
-            ›
-          </button>
         </div>
       </div>
-    </Transition>
-  </section>
+    </transition>
+        </div>
+
+
 </template>
 
-<script lang="ts">
-import { defineComponent, ref, computed, onMounted, onUnmounted, nextTick, watch } from 'vue'
-
-export default defineComponent({
-  name: 'ModernGallery',
-  setup() {
-    const images = ref([
-      { src: './assets/img/photo/pet1.jpg', alt: 'Пациент 1' },
-      { src: './assets/img/photo/pet2.jpg', alt: 'Пациент 2' },
-      { src: './assets/img/photo/pet3.jpg', alt: 'Пациент 3' },
-      { src: './assets/img/photo/pet4.jpg', alt: 'Пациент 4' },
-      { src: './assets/img/photo/pet5.jpg', alt: 'Пациент 5' },
-      { src: './assets/img/photo/pet6.png', alt: 'Пациент 6' },
-      { src: './assets/img/photo/pet7.png', alt: 'Пациент 7' },
-      { src: './assets/img/photo/pet8.png', alt: 'Пациент 8' },
-      { src: './assets/img/photo/pet9.png', alt: 'Пациент 9' },
-      { src: './assets/img/photo/pet10.png', alt: 'Пациент 10' },
-      { src: './assets/img/photo/pet11.png', alt: 'Пациент 11' },
-      { src: './assets/img/photo/pet12.png', alt: 'Пациент 12' },
-      { src: './assets/img/photo/pet13.png', alt: 'Пациент 13' },
-      { src: './assets/img/photo/pet14.png', alt: 'Пациент 14' },
-      { src: './assets/img/photo/pet15.png', alt: 'Пациент 15' },
-      { src: './assets/img/photo/pet16.png', alt: 'Пациент 16' },
-      { src: './assets/img/photo/pet17.png', alt: 'Пациент 17' },
-      { src: './assets/img/photo/pet18.png', alt: 'Пациент 18' },
-      { src: './assets/img/photo/pet19.png', alt: 'Пациент 19' },
-      { src: './assets/img/photo/pet20.png', alt: 'Пациент 20' },
-      { src: './assets/img/photo/pet21.png', alt: 'Пациент 21' },
-      { src: './assets/img/photo/pet22.png', alt: 'Пациент 22' },
-      { src: './assets/img/photo/pet23.png', alt: 'Пациент 23' },
-      { src: './assets/img/photo/pet24.png', alt: 'Пациент 24' },
-      { src: './assets/img/photo/pet25.png', alt: 'Пациент 25' },
-    ])
-
-    const duplicatedImages = computed(() => [...images.value, ...images.value])
-    const isPaused = ref(false)
-    const isModalOpen = ref(false)
-    const modalImageSrc = ref('')
-    const modalAlt = ref('')
-    const currentIndex = ref(0)
-    const modalRef = ref<HTMLElement | null>(null)
-    const sliderRef = ref<HTMLElement | null>(null)
-    const currentPage = ref(0)
-    const itemsPerPage = ref(4) // Number of images per page, adjustable based on screen size
-
-    const pageCount = computed(() => Math.ceil(images.value.length / itemsPerPage.value))
-
-    // Calculate items per page based on screen width
-    const updateItemsPerPage = () => {
-      const width = window.innerWidth
-      if (width <= 480) {
-        itemsPerPage.value = 2
-      } else if (width <= 768) {
-        itemsPerPage.value = 3
-      } else {
-        itemsPerPage.value = 4
-      }
-    }
-
-    const openModal = (src: string, alt: string, index: number) => {
-      modalImageSrc.value = src
-      modalAlt.value = alt
-      currentIndex.value = index % images.value.length
-      isModalOpen.value = true
-      document.body.style.overflow = 'hidden'
-      nextTick(() => {
-        modalRef.value?.focus()
-      })
-    }
-
-    const closeModal = () => {
-      isModalOpen.value = false
-      document.body.style.overflow = 'auto'
-    }
-
-    const prevModalImage = () => {
-      currentIndex.value = (currentIndex.value - 1 + images.value.length) % images.value.length
-      modalImageSrc.value = images.value[currentIndex.value].src
-      modalAlt.value = images.value[currentIndex.value].alt
-    }
-
-    const nextModalImage = () => {
-      currentIndex.value = (currentIndex.value + 1) % images.value.length
-      modalImageSrc.value = images.value[currentIndex.value].src
-      modalAlt.value = images.value[currentIndex.value].alt
-    }
-
-    const pauseSlider = () => {
-      isPaused.value = true
-    }
-
-    const resumeSlider = () => {
-      isPaused.value = false
-    }
-
-    const goToPage = (page: number) => {
-      currentPage.value = Math.max(0, Math.min(page, pageCount.value - 1))
-      if (sliderRef.value) {
-        const slideWidth = sliderRef.value.querySelector('.slide-item')?.getBoundingClientRect().width || 320
-        sliderRef.value.scrollTo({
-          left: currentPage.value * slideWidth * itemsPerPage.value,
-          behavior: 'smooth'
-        })
-      }
-    }
-
-    // Update current page based on scroll position
-    const updateCurrentPage = () => {
-      if (sliderRef.value) {
-        const slideWidth = sliderRef.value.querySelector('.slide-item')?.getBoundingClientRect().width || 320
-        const scrollLeft = sliderRef.value.scrollLeft
-        const newPage = Math.floor(scrollLeft / (slideWidth * itemsPerPage.value))
-        currentPage.value = Math.max(0, Math.min(newPage, pageCount.value - 1))
-      }
-    }
-
-    // Watch for scroll changes
-    watch(() => sliderRef.value?.scrollLeft, () => {
-      updateCurrentPage()
-    })
-
-    // Update items per page on resize
-    onMounted(() => {
-      updateItemsPerPage()
-      window.addEventListener('resize', updateItemsPerPage)
-      document.addEventListener('keydown', handleKeyDown)
-      sliderRef.value?.addEventListener('scroll', updateCurrentPage)
-    })
-
-    onUnmounted(() => {
-      window.removeEventListener('resize', updateItemsPerPage)
-      document.removeEventListener('keydown', handleKeyDown)
-      sliderRef.value?.removeEventListener('scroll', updateCurrentPage)
-    })
-
-    // Keyboard navigation
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (isModalOpen.value) {
-        switch (e.key) {
-          case 'Escape':
-            closeModal()
-            break
-          case 'ArrowLeft':
-            prevModalImage()
-            break
-          case 'ArrowRight':
-            nextModalImage()
-            break
-        }
-      }
-    }
-
+<script>
+export default {
+  name: 'Gallery',
+  data() {
     return {
-      images,
-      duplicatedImages,
-      isPaused,
-      isModalOpen,
-      modalImageSrc,
-      modalAlt,
-      currentIndex,
-      modalRef,
-      sliderRef,
-      currentPage,
-      pageCount,
-      openModal,
-      closeModal,
-      prevModalImage,
-      nextModalImage,
-      pauseSlider,
-      resumeSlider,
-      goToPage,
+      currentIndex: 0,
+      selectedImage: null,
+      isAutoPlaying: true,
+      autoPlayInterval: null,
+      galleryImages: [
+        {
+          id: 1,
+          src: './assets/img/photo/pet1.jpg',
+          alt: 'Пациент 1',
+          title: 'Экзотический пациент 1',
+          description: 'Удивительное животное на профилактическом осмотре'
+        },
+        {
+          id: 2,
+          src: './assets/img/photo/pet2.jpg',
+          alt: 'Пациент 2',
+          title: 'Экзотический пациент 2',
+          description: 'Красивое животное получает необходимую медицинскую помощь'
+        },
+        {
+          id: 3,
+          src: './assets/img/photo/pet3.jpg',
+          alt: 'Пациент 3',
+          title: 'Экзотический пациент 3',
+          description: 'Заботливый уход за необычным питомцем'
+        },
+        {
+          id: 4,
+          src: './assets/img/photo/pet4.jpg',
+          alt: 'Пациент 4',
+          title: 'Экзотический пациент 4',
+          description: 'Профессиональное лечение экзотических животных'
+        },
+        {
+          id: 5,
+          src: './assets/img/photo/pet5.jpg',
+          alt: 'Пациент 5',
+          title: 'Экзотический пациент 5',
+          description: 'Индивидуальный подход к каждому пациенту'
+        },
+        {
+          id: 6,
+          src: './assets/img/photo/pet6.png',
+          alt: 'Пациент 6',
+          title: 'Экзотический пациент 6',
+          description: 'Современные методы диагностики и лечения'
+        },
+        {
+          id: 7,
+          src: './assets/img/photo/pet7.png',
+          alt: 'Пациент 7',
+          title: 'Экзотический пациент 7',
+          description: 'Деликатный подход к лечению'
+        },
+        {
+          id: 8,
+          src: './assets/img/photo/pet8.png',
+          alt: 'Пациент 8',
+          title: 'Экзотический пациент 8',
+          description: 'Здоровье и благополучие наших пациентов'
+        },
+        {
+          id: 9,
+          src: './assets/img/photo/pet9.png',
+          alt: 'Пациент 9',
+          title: 'Экзотический пациент 9',
+          description: 'Специализированная ветеринарная помощь'
+        },
+        {
+          id: 10,
+          src: './assets/img/photo/pet10.png',
+          alt: 'Пациент 10',
+          title: 'Экзотический пациент 10',
+          description: 'Профилактические осмотры и лечение'
+        },
+        {
+          id: 11,
+          src: './assets/img/photo/pet11.png',
+          alt: 'Пациент 11',
+          title: 'Экзотический пациент 11',
+          description: 'Комплексный уход за экзотическими животными'
+        },
+        {
+          id: 12,
+          src: './assets/img/photo/pet12.png',
+          alt: 'Пациент 12',
+          title: 'Экзотический пациент 12',
+          description: 'Опытные ветеринары для особых пациентов'
+        },
+        {
+          id: 13,
+          src: './assets/img/photo/pet13.png',
+          alt: 'Пациент 13',
+          title: 'Экзотический пациент 13',
+          description: 'Качественная медицинская помощь'
+        },
+        {
+          id: 14,
+          src: './assets/img/photo/pet14.png',
+          alt: 'Пациент 14',
+          title: 'Экзотический пациент 14',
+          description: 'Забота о редких и необычных животных'
+        },
+        {
+          id: 15,
+          src: './assets/img/photo/pet15.png',
+          alt: 'Пациент 15',
+          title: 'Экзотический пациент 15',
+          description: 'Персональный подход к лечению'
+        },
+        {
+          id: 16,
+          src: './assets/img/photo/pet16.png',
+          alt: 'Пациент 16',
+          title: 'Экзотический пациент 16',
+          description: 'Современное оборудование для диагностики'
+        },
+        {
+          id: 17,
+          src: './assets/img/photo/pet17.png',
+          alt: 'Пациент 17',
+          title: 'Экзотический пациент 17',
+          description: 'Безопасное и эффективное лечение'
+        },
+        {
+          id: 18,
+          src: './assets/img/photo/pet18.png',
+          alt: 'Пациент 18',
+          title: 'Экзотический пациент 18',
+          description: 'Реабилитация и восстановление'
+        },
+        {
+          id: 19,
+          src: './assets/img/photo/pet19.png',
+          alt: 'Пациент 19',
+          title: 'Экзотический пациент 19',
+          description: 'Профессиональная ветеринарная клиника'
+        },
+        {
+          id: 20,
+          src: './assets/img/photo/pet20.png',
+          alt: 'Пациент 20',
+          title: 'Экзотический пациент 20',
+          description: 'Любовь и забота о каждом животном'
+        },
+        {
+          id: 21,
+          src: './assets/img/photo/pet21.png',
+          alt: 'Пациент 21',
+          title: 'Экзотический пациент 21',
+          description: 'Экспертиза в области экзотических животных'
+        },
+        {
+          id: 22,
+          src: './assets/img/photo/pet22.png',
+          alt: 'Пациент 22',
+          title: 'Экзотический пациент 22',
+          description: 'Комфортная атмосфера для пациентов'
+        },
+        {
+          id: 23,
+          src: './assets/img/photo/pet23.png',
+          alt: 'Пациент 23',
+          title: 'Экзотический пациент 23',
+          description: 'Новейшие методы лечения'
+        },
+        {
+          id: 24,
+          src: './assets/img/photo/pet24.png',
+          alt: 'Пациент 24',
+          title: 'Экзотический пациент 24',
+          description: 'Здоровье превыше всего'
+        },
+        {
+          id: 25,
+          src: './assets/img/photo/pet25.png',
+          alt: 'Пациент 25',
+          title: 'Экзотический пациент 25',
+          description: 'Доверие наших клиентов и их питомцев'
+        }
+      ]
+    }
+  },
+  mounted() {
+    this.startAutoPlay()
+    this.$nextTick(() => {
+      this.updatePreviewPosition()
+    })
+  },
+  watch: {
+    currentIndex() {
+      this.updatePreviewPosition()
+    }
+  },
+  beforeUnmount() {
+    this.stopAutoPlay()
+  },
+  methods: {
+    nextSlide() {
+      this.currentIndex = (this.currentIndex + 1) % this.galleryImages.length
+    },
+    prevSlide() {
+      this.currentIndex = this.currentIndex === 0 
+        ? this.galleryImages.length - 1 
+        : this.currentIndex - 1
+    },
+    getNextIndex() {
+      return (this.currentIndex + 1) % this.galleryImages.length
+    },
+    getPrevIndex() {
+      return this.currentIndex === 0 
+        ? this.galleryImages.length - 1 
+        : this.currentIndex - 1
+    },
+    updatePreviewPosition() {
+      if (this.$refs.previewTrack) {
+        const itemWidth = 120 + 16 // ширина + gap
+        const containerWidth = this.$refs.previewTrack.parentElement.clientWidth
+        const trackWidth = this.galleryImages.length * itemWidth
+        const maxOffset = Math.max(0, trackWidth - containerWidth)
+        
+        let offset = (this.currentIndex * itemWidth) - (containerWidth / 2) + (itemWidth / 2)
+        offset = Math.max(0, Math.min(offset, maxOffset))
+        
+        this.$refs.previewTrack.style.transform = `translateX(-${offset}px)`
+      }
+    },
+    goToSlide(index) {
+      this.currentIndex = index
+    },
+    selectImage(index, image) {
+      this.goToSlide(index)
+      this.openModal(image)
+    },
+    openModal(image) {
+      this.selectedImage = image
+      document.body.style.overflow = 'hidden'
+    },
+    closeModal() {
+      this.selectedImage = null
+      document.body.style.overflow = 'auto'
+    },
+    toggleAutoPlay() {
+      this.isAutoPlaying = !this.isAutoPlaying
+      if (this.isAutoPlaying) {
+        this.startAutoPlay()
+      } else {
+        this.stopAutoPlay()
+      }
+    },
+    startAutoPlay() {
+      if (this.isAutoPlaying) {
+        this.autoPlayInterval = setInterval(() => {
+          this.nextSlide()
+        }, 4000)
+      }
+    },
+    stopAutoPlay() {
+      if (this.autoPlayInterval) {
+        clearInterval(this.autoPlayInterval)
+        this.autoPlayInterval = null
+      }
+    },
+    pauseAutoPlay() {
+      this.stopAutoPlay()
+    },
+    resumeAutoPlay() {
+      if (this.isAutoPlaying) {
+        this.startAutoPlay()
+      }
+    },
+    handleImageError(event) {
+      console.warn('Не удалось загрузить изображение:', event.target.src)
+      // Можно добавить изображение-заглушку
+      // event.target.src = '/path/to/fallback-image.jpg'
     }
   }
-})
+}
 </script>
 
 <style scoped>
-* {
-  box-sizing: border-box;
-}
-
-.gallery {
-  padding: 80px 0;
-  min-height: 50vh;
-  position: relative;
-  overflow: hidden;
-}
-
-.gallery::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(45deg, rgba(255,255,255,0.15) 0%, rgba(248,235,237,0.1) 50%, transparent 100%);
-  pointer-events: none;
-}
-
-.container {
+.gallery-container {
+  width: 100%;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 20px;
-  position: relative;
-  z-index: 1;
-
-    background: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(5px);
-  border-radius: 25px;
-  padding: 20px;
+  padding: 0 16px;
 }
 
 .gallery-header {
   text-align: center;
-  margin-bottom: 60px;
-  animation: fadeInUp 0.8s ease-out;
+  margin-bottom: 2rem;
 }
 
 .gallery-title {
-  font-size: 2.5rem;
-  font-weight: 800;
-  color: #5a3a41;
-  margin: 0 0 16px 0;
-  text-shadow: 0 4px 20px rgba(90, 58, 65, 0.2);
-  letter-spacing: -0.02em;
+  font-size: clamp(2rem, 5vw, 3rem);
+  margin-bottom: 1rem;
+  background: linear-gradient(to right, #ec4899, #ef4444);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: bold;
+}
+
+.gallery-description {
+  font-size: 1.125rem;
+  color: #6b7280;
+  max-width: 32rem;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.carousel-container {
+  position: relative;
+  margin-bottom: 2rem;
+}
+
+.carousel-wrapper {
+  position: relative;
+  height: clamp(300px, 50vh, 600px);
+  overflow: hidden;
+  border-radius: 1rem;
+  background: linear-gradient(135deg, #fdf2f8, #ffffff, #fef7ed);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+.slides-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.carousel-slide {
+  position: absolute;
+  inset: 0;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateX(100%) scale(0.8);
+  transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  z-index: 1;
+}
+
+.slide-active {
+  opacity: 1;
+  transform: translateX(0) scale(1);
+  z-index: 3;
+}
+
+.slide-next {
+  opacity: 0.3;
+  transform: translateX(50%) scale(0.9);
+  z-index: 2;
+}
+
+.slide-prev {
+  opacity: 0.3;
+  transform: translateX(-50%) scale(0.9);
+  z-index: 2;
+}
+
+.carousel-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: linear-gradient(135deg, #fdf2f8, #ffffff, #fef7ed);
+}
+
+.carousel-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.1), transparent);
+}
+
+.nav-button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  border-radius: 50%;
+  width: 56px;
+  height: 56px;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 16px;
-}
-
-.heart-icon {
-  font-size: 0.8em;
-  animation: heartbeat 2s ease-in-out infinite;
-  width: 52px;
-  height: 52px;
-  display: flex;
-}
-
-.slider-wrapper {
-  position: relative;
-  overflow: hidden;
-  border-radius: 24px;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.2);
-}
-
-.slider-wrapper::before,
-.slider-wrapper::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 120px;
-  z-index: 10;
-  pointer-events: none;
-}
-
-.slider-wrapper::before {
-  left: 0;
-  background: linear-gradient(to right, 
-    rgba(255, 255, 255, 0.9) 0%, 
-    transparent 100%);
-}
-
-.slider-wrapper::after {
-  right: 0;
-  background: linear-gradient(to left, 
-    rgba(255, 255, 255, 0.9) 0%, 
-    transparent 100%);
-}
-
-.slider {
-  overflow-x: auto;
-  scroll-behavior: smooth;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-
-.slider::-webkit-scrollbar {
-  display: none;
-}
-
-.slider-track {
-  display: flex;
-  width: max-content;
-  animation: slide 120s linear infinite;
-  transition: animation-play-state 0.3s ease;
-}
-
-.slider-track.paused {
-  animation-play-state: paused;
-}
-
-.slide-item {
-  flex-shrink: 0;
-  padding: 12px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #ec4899;
   cursor: pointer;
+  opacity: 0;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.15);
+  z-index: 10;
+  backdrop-filter: blur(10px);
 }
 
-.image-wrapper {
-  position: relative;
-  border-radius: 20px;
+.carousel-container:hover .nav-button {
+  opacity: 1;
+}
+
+.nav-button:hover {
+  background: rgba(255, 255, 255, 1);
+  transform: translateY(-50%) scale(1.1);
+  box-shadow: 0 12px 35px -5px rgba(236, 72, 153, 0.3);
+}
+
+.nav-button-left {
+  left: 1.5rem;
+}
+
+.nav-button-right {
+  right: 1.5rem;
+}
+
+.autoplay-button {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  color: #ec4899;
+  cursor: pointer;
+  opacity: 0;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.15);
+  z-index: 10;
+  backdrop-filter: blur(10px);
+}
+
+.carousel-container:hover .autoplay-button {
+  opacity: 1;
+}
+
+.autoplay-button:hover {
+  background: rgba(255, 255, 255, 1);
+  transform: scale(1.1);
+  box-shadow: 0 12px 35px -5px rgba(236, 72, 153, 0.3);
+}
+
+.dots-container {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: none;
+  background: #fce7f3;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.dot:hover {
+  background: #f9a8d4;
+}
+
+.dot-active {
+  background: #ec4899;
+  width: 32px;
+  border-radius: 6px;
+}
+
+.preview-container {
+  margin-top: 2rem;
   overflow: hidden;
-  background: rgba(255,255,255,0.9);
-  box-shadow: 0 8px 32px rgba(192, 136, 143, 0.2);
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  border: 2px solid rgba(232, 194, 200, 0.3);
+  padding: 0 1rem;
 }
 
-.image-wrapper:hover {
-  transform: translateY(-12px) scale(1.03);
-  box-shadow: 0 16px 48px rgba(181, 134, 141, 0.3);
-  border-color: rgba(232, 194, 200, 0.6);
+.preview-track {
+  display: flex;
+  gap: 1rem;
+  transition: transform 0.5s ease;
+  padding: 0.5rem 0;
 }
 
-.gallery-image {
-  width: clamp(200px, 25vw, 320px);
-  height: clamp(200px, 25vw, 320px);
+.preview-item {
+  flex-shrink: 0;
+  width: 120px;
+  height: 80px;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.preview-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.2);
+}
+
+.preview-item-active {
+  border-color: #ec4899;
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px -5px rgba(236, 72, 153, 0.3);
+}
+
+.preview-image {
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-  display: block;
-  transition: transform 0.4s ease;
+  transition: transform 0.3s ease;
 }
 
-.image-wrapper:hover .gallery-image {
+.preview-item:hover .preview-image {
   transform: scale(1.1);
 }
 
-.overlay {
+.preview-overlay {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(45deg, rgba(232, 194, 200, 0.9), rgba(181, 134, 141, 0.9));
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  inset: 0;
+  background: linear-gradient(45deg, transparent, rgba(236, 72, 153, 0.1));
   opacity: 0;
   transition: opacity 0.3s ease;
 }
 
-.image-wrapper:hover .overlay {
+.preview-item-active .preview-overlay,
+.preview-item:hover .preview-overlay {
   opacity: 1;
 }
 
-.overlay-content {
-  text-align: center;
-  color: white;
-  transform: translateY(10px);
-  transition: transform 0.3s ease;
+@media (max-width: 768px) {
+  .preview-item {
+    width: 100px;
+    height: 67px;
+  }
+  
+  .nav-button {
+    width: 48px;
+    height: 48px;
+    font-size: 1.25rem;
+  }
+  
+  .nav-button-left {
+    left: 1rem;
+  }
+  
+  .nav-button-right {
+    right: 1rem;
+  }
+  
+  .autoplay-button {
+    top: 1rem;
+    right: 1rem;
+    width: 40px;
+    height: 40px;
+  }
 }
 
-.image-wrapper:hover .overlay-content {
-  transform: translateY(0);
-}
-
-.view-icon {
-  font-size: 2rem;
-  display: block;
-  margin-bottom: 8px;
-}
-
-.view-text {
-  font-size: 1rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-}
-
-.pagination {
-  display: flex;
-  justify-content: center;
-  gap: 8px;
-  padding: 20px 0;
-  position: relative;
-  z-index: 15;
-}
-
-.pagination-dot {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.5);
-  border: 2px solid rgba(232, 194, 200, 0.3);
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.pagination-dot:hover {
-  background: rgba(232, 194, 200, 0.8);
-  border-color: rgba(232, 194, 200, 0.6);
-  transform: scale(1.2);
-}
-
-.pagination-dot.active {
-  background: rgba(232, 194, 200, 1);
-  border-color: rgba(232, 194, 200, 1);
-  transform: scale(1.4);
-}
-
-/* Modal Styles */
 .modal-backdrop {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(90, 58, 65, 0.9);
-  backdrop-filter: blur(10px);
+  inset: 0;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(4px);
+  z-index: 50;
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
-  padding: 20px;
-}
-
-.modal-container {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  max-width: 90vw;
-  max-height: 90vh;
-  background: rgba(255,255,255,0.1);
-  border-radius: 24px;
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(232, 194, 200, 0.3);
-  overflow: hidden;
-  box-shadow: 0 20px 60px rgba(90, 58, 65, 0.3);
+  padding: 1rem;
 }
 
 .modal-content {
-  text-align: center;
-  padding: 40px;
-  max-width: 100%;
-  max-height: 100%;
+  position: relative;
+  max-width: 64rem;
+  max-height: 90vh;
+  background: white;
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+.modal-image-container {
+  position: relative;
 }
 
 .modal-image {
-  max-width: 100%;
+  width: 100%;
+  height: auto;
   max-height: 70vh;
   object-fit: contain;
-  border-radius: 16px;
-  box-shadow: 0 16px 48px rgba(0,0,0,0.3);
+  background: linear-gradient(135deg, #f8fafc, #ffffff);
 }
 
-.modal-info {
-  margin-top: 24px;
-  color: #f8ebec;
-}
-
-.modal-info h3 {
-  margin: 0 0 8px 0;
+.modal-close-button {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: rgba(255, 255, 255, 0.8);
+  border: none;
+  border-radius: 0.5rem;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: 1.5rem;
-  font-weight: 600;
-  color: white;
-}
-
-.modal-counter {
-  color: rgba(248, 235, 236, 0.8);
-  font-size: 0.9rem;
-}
-
-.modal-close {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  width: 48px;
-  height: 48px;
-  background: rgba(255,255,255,0.2);
-  border: 2px solid rgba(232, 194, 200, 0.3);
-  border-radius: 50%;
-  color: white;
-  font-size: 20px;
+  color: #374151;
   cursor: pointer;
-  z-index: 1001;
-  transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
+  transition: background 0.3s ease;
 }
 
-.modal-close:hover {
-  background: rgba(232, 194, 200, 0.8);
-  border-color: rgba(232, 194, 200, 0.6);
-  transform: scale(1.1);
+.modal-close-button:hover {
+  background: rgba(255, 255, 255, 0.9);
 }
 
-.modal-nav {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 60px;
-  height: 60px;
-  background: rgba(255,255,255,0.2);
-  border: 2px solid rgba(232, 194, 200, 0.3);
-  border-radius: 50%;
-  color: white;
-  font-size: 24px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
+/* Анимации */
+.modal-enter-active,
+.modal-leave-active {
+  transition: opacity 0.3s ease;
 }
 
-.modal-nav:hover {
-  background: rgba(232, 194, 200, 0.8);
-  border-color: rgba(232, 194, 200, 0.6);
-  transform: translateY(-50%) scale(1.1);
-}
-
-.modal-nav.prev {
-  left: 20px;
-}
-
-.modal-nav.next {
-  right: 20px;
-}
-
-/* Animations */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(40px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes slide {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(-50%);
-  }
-}
-
-@keyframes heartbeat {
-  0%, 100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.1);
-  }
-}
-
-/* Modal transitions */
-.modal-enter-active, .modal-leave-active {
-  transition: all 0.3s ease;
-}
-
-.modal-enter-from, .modal-leave-to {
+.modal-enter-from,
+.modal-leave-to {
   opacity: 0;
-  transform: scale(0.9);
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-  .gallery {
-    padding: 60px 0;
-  }
-  
-  .container {
-    padding: 0 16px;
-  }
-  
-  .gallery-header {
-    margin-bottom: 40px;
-  }
-  
-  .slider-wrapper::before,
-  .slider-wrapper::after {
-    width: 80px;
-  }
-  
-  .pagination-dot {
-    width: 10px;
-    height: 10px;
-  }
-  
-  .modal-container {
-    margin: 20px;
-  }
-  
-  .modal-content {
-    padding: 20px;
-  }
-  
-  .modal-nav {
-    width: 48px;
-    height: 48px;
-    font-size: 20px;
-  }
-  
-  .modal-nav.prev {
-    left: 12px;
-  }
-  
-  .modal-nav.next {
-    right: 12px;
-  }
+.modal-enter-active .modal-content,
+.modal-leave-active .modal-content {
+  transition: transform 0.3s ease;
 }
 
-@media (max-width: 480px) {
-  .slider-wrapper::before,
-  .slider-wrapper::after {
-    width: 60px;
-  }
-  
-  .slide-item {
-    padding: 8px;
-  }
-  
-  .gallery-image {
-    width: clamp(160px, 35vw, 240px);
-    height: clamp(160px, 35vw, 240px);
-  }
-  
-  .modal-backdrop {
-    padding: 12px;
-  }
-  
-  .modal-image {
-    max-height: 60vh;
-  }
-  
-  .pagination-dot {
-    width: 8px;
-    height: 8px;
-  }
+.modal-enter-from .modal-content,
+.modal-leave-to .modal-content {
+  transform: scale(0.8);
 }
 </style>

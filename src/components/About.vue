@@ -624,7 +624,6 @@ export default defineComponent({
   position: relative;
   overflow: hidden;
   height: 100%;
-  cursor: pointer;
 }
 
 .card-content:hover {
