@@ -665,6 +665,9 @@ export default {
   opacity: 1;
 }
 
+
+
+
 @media (max-width: 768px) {
   .preview-item {
     width: 100px;

@@ -109,7 +109,7 @@ export default defineComponent({
     const veterinarians = ref<TeamMember[]>([
       {
         id: 1,
-        image: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&h=600&q=80',
+        image: './assets/img/specialists/VS.JPG',
         name: 'Еланцева Валерия Сергеевна',
         role: 'Главный врач',
         specialization: 'Специалист по экзотическим животным',
@@ -120,7 +120,7 @@ export default defineComponent({
       },
       {
         id: 2,
-        image: 'https://images.unsplash.com/photo-1594824476967-48c8b964273f?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&h=600&q=80',
+        image: './assets/img/specialists/KB.JPG',
         name: 'Гаржилова Ксения Батоевна',
         role: 'Терапевт',
         specialization: 'Врач УЗИ экзотических животных',
@@ -131,7 +131,7 @@ export default defineComponent({
       },
       {
         id: 3,
-        image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&h=600&q=80',
+        image: './assets/img/specialists/EA.jpg',
         name: 'Черных Елена Александровна',
         role: 'Терапевт',
         specialization: 'Специалист по рептилиям и амфибиям',
@@ -142,7 +142,7 @@ export default defineComponent({
       },
       {
         id: 4,
-        image: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&h=600&q=80',
+        image: './assets/img/specialists/AV.jpg',
         name: 'Тимофеева Арина Владимировна',
         role: 'Терапевт',
         specialization: 'Специалист по орнитологии',
@@ -156,7 +156,7 @@ export default defineComponent({
     const assistants = ref<TeamMember[]>([
       {
         id: 5,
-        image: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&h=600&q=80',
+        image: './assets/img/specialists/AP.png',
         name: 'Пыхтунова Альбина Павловна',
         role: 'Ассистент ветеринарного врача',
         specialization: '',
@@ -167,7 +167,7 @@ export default defineComponent({
       },
       {
         id: 6,
-        image: 'https://images.unsplash.com/photo-1554151228-14d9def656e4?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&h=600&q=80',
+        image: './assets/img/specialists/NM.jpg',
         name: 'Шахова Ника Максимовна',
         role: 'Ассистент ветеринарного врача',
         specialization: '',
@@ -181,7 +181,7 @@ export default defineComponent({
     const administrators = ref<TeamMember[]>([
       {
         id: 7,
-        image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&h=600&q=80',
+        image: './assets/img/specialists/UD.jpg',
         name: 'Дворянская Ульяна Дмитриевна',
         role: 'Администратор',
         specialization: '',

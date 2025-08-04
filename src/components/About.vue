@@ -18,14 +18,12 @@
           </TransitionGroup>
         </div>
       </div>
-
       <!-- Animals Section -->
       <div class="animals-section">
         <div class="section-header">
           <h3 class="section-title">Мы принимаем</h3>
           <p class="section-subtitle">Специализируемся на лечении экзотических животных</p>
         </div>
-        
         <div class="animal-groups">
           <div 
             v-for="(group, groupIndex) in animalGroups"
@@ -40,7 +38,6 @@
               </h4>
               <div class="group-line"></div>
             </div>
-            
             <div class="animals-grid">
               <div 
                 v-for="(animal, index) in group.animals"
@@ -50,7 +47,6 @@
               >
                 <div class="card-content">
                   <div class="icon-wrapper">
-                    <div class="icon-bg"></div>
                     <img 
                       :src="animal.icon" 
                       :alt="animal.alt"
@@ -68,7 +64,6 @@
             </div>
           </div>
         </div>
-
         <div class="cta-section">
           <div class="cta-card">
             <div class="cta-icon">
@@ -87,7 +82,6 @@
           </div>
         </div>
       </div>
-
       <div class="floating-elements">
         <div class="float-element float-1"></div>
         <div class="float-element float-2"></div>
@@ -295,45 +289,46 @@ export default defineComponent({
 
 <style scoped>
 :root {
-  --primary: #ff6f61;
-  --secondary: #ff9a8b;
-  --accent: #ffb3a7;
-  --light: #ffd7d2;
-  --ultra-light: #fff0f0;
-  --bg-main: #fff9f8;
-  --bg-card: rgba(255, 255, 255, 0.9);
-  --text-dark: #2d1b4e;
-  --text-medium: #4a2e6b;
-  --text-light: #6b5389;
-  --text-muted: #8e7aa8;
-  --shadow-soft: 0 6px 24px rgba(255, 111, 97, 0.2);
-  --shadow-hover: 0 12px 36px rgba(255, 111, 97, 0.3);
-  --shadow-strong: 0 16px 48px rgba(255, 111, 97, 0.35);
+  /* Розово-серые-белые тона */
+  --primary: #e91e63;
+  --secondary: #f8bbd0;
+  --accent: #f48fb1;
+  --light: #fce4ec;
+  --ultra-light: #fff8f7;
+  --bg-main: #fffaf9;
+  --bg-card: rgba(255, 255, 255, 0.95);
+  --text-dark: #4a148c;
+  --text-medium: #7b1fa2;
+  --text-light: #ab47bc;
+  --text-muted: #ce93d8;
+  --shadow-soft: 0 6px 24px rgba(233, 30, 99, 0.15);
+  --shadow-hover: 0 12px 36px rgba(233, 30, 99, 0.25);
+  --shadow-strong: 0 16px 48px rgba(233, 30, 99, 0.3);
   --radius-sm: 16px;
   --radius-md: 20px;
   --radius-lg: 28px;
   --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   --bounce: cubic-bezier(0.7, -0.4, 0.3, 1.4);
   --light-bg: #fff5f5;
-  --white: #fff9f9;
+  --white: #ffffff;
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.08);
   --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
-  --peach-primary: #ffb7b7;
-  --peach-secondary: #ffd3b6;
-  --pink-accent: #ff9aa2;
-  --pink-muted: #d8a1c4;
-  --pink-light: #ffdfd3;
-  --trust-gradient-start: #ffb7b7;
-  --trust-gradient-end: #ff9aa2;
+  --pink-primary: #e91e63;
+  --pink-secondary: #f8bbd0;
+  --pink-accent: #f48fb1;
+  --pink-muted: #ce93d8;
+  --pink-light: #fce4ec;
+  --trust-gradient-start: #e91e63;
+  --trust-gradient-end: #f48fb1;
   --text-color: #5a4a4a;
 }
 
 .about-animals-section {
-  padding: 6rem 1.5rem;
+  padding: 2rem 1.5rem;
   background: 
-    radial-gradient(circle at 20% 30%, var(--ultra-light) 0%, transparent 60%),
-    radial-gradient(circle at 80% 70%, rgba(255, 154, 139, 0.25) 0%, transparent 60%),
+    radial-gradient(circle at 20% 30%, var(--light) 0%, transparent 60%),
+    radial-gradient(circle at 80% 70%, rgba(248, 187, 208, 0.3) 0%, transparent 60%),
     linear-gradient(145deg, var(--bg-main) 0%, #fff7f6 50%, var(--ultra-light) 100%);
   position: relative;
   overflow: hidden;
@@ -349,7 +344,7 @@ export default defineComponent({
 
 /* About Section Styles */
 .about-section {
-  padding: 4rem 0;
+  padding: 0;
 }
 
 .trust-section {
@@ -357,14 +352,9 @@ export default defineComponent({
   position: relative;
 }
 
+/* Убрана линия перед "О нас" */
 .trust-section::before {
-  content: '';
-  position: absolute;
-  top: -60px;
-  left: 0;
-  width: 100%;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255, 154, 162, 0.5), transparent);
+  display: none;
 }
 
 .trust-title {
@@ -373,11 +363,10 @@ export default defineComponent({
   margin-bottom: 70px;
   position: relative;
   color: var(--text-dark);
-  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 50%, var(--accent) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  text-shadow: 0 2px 8px rgba(255, 111, 97, 0.2);
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  /* Убран градиент для лучшей читаемости */
+  color: #a1808f;
 }
 
 .trust-title::after {
@@ -399,15 +388,16 @@ export default defineComponent({
 }
 
 .trust-item {
-  background: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.9);
   border-radius: 16px;
   padding: 40px 30px;
   text-align: center;
   transition: all 0.3s ease;
-  box-shadow: 0 5px 15px rgba(255, 154, 162, 0.05);
+  box-shadow: 0 5px 15px rgba(233, 30, 99, 0.1);
   position: relative;
   overflow: hidden;
   backdrop-filter: blur(5px);
+  border: 1px solid rgba(233, 30, 99, 0.1);
 }
 
 .trust-item::before {
@@ -422,20 +412,21 @@ export default defineComponent({
 
 .trust-item:hover {
   transform: translateY(-10px);
-  box-shadow: 0 15px 30px rgba(255, 154, 162, 0.1);
-  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 15px 30px rgba(233, 30, 99, 0.2);
+  background: rgba(255, 255, 255, 0.98);
 }
 
 .trust-icon {
   width: 60px;
   height: 60px;
   margin: 0 auto 20px;
-  background: linear-gradient(135deg, rgba(255, 223, 211, 0.8), rgba(255, 182, 182, 0.6));
+  background: linear-gradient(135deg, rgba(252, 228, 236, 0.9), rgba(248, 187, 208, 0.7));
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--pink-accent);
+  box-shadow: 0 4px 10px rgba(233, 30, 99, 0.15);
 }
 
 .trust-icon svg {
@@ -446,15 +437,16 @@ export default defineComponent({
 
 .trust-item-title {
   font-size: 1.3rem;
-  color: var(--text-color);
+  color: var(--text-dark);
   margin-bottom: 15px;
+  font-weight: 700;
 }
 
 .trust-item-text {
   font-size: 0.95rem;
-  color: var(--text-color);
+  color: var(--text-medium);
   line-height: 1.6;
-  opacity: 0.9;
+  opacity: 0.95;
 }
 
 /* Animals Section Styles */
@@ -470,33 +462,9 @@ export default defineComponent({
 .section-title {
   font-size: clamp(2.75rem, 5.5vw, 4rem);
   font-weight: 900;
-  color: var(--text-dark);
   margin-bottom: 1.25rem;
-  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 50%, var(--accent) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  position: relative;
-  display: inline-block;
-  text-shadow: 0 2px 8px rgba(255, 111, 97, 0.2);
-}
-
-.section-title::after {
-  content: '';
-  position: absolute;
-  bottom: -10px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 80px;
-  height: 5px;
-  background: linear-gradient(90deg, var(--primary), var(--accent));
-  border-radius: 3px;
-  animation: pulse 2.5s ease-in-out infinite;
-}
-
-@keyframes pulse {
-  0%, 100% { transform: translateX(-50%) scaleX(1); }
-  50% { transform: translateX(-50%) scaleX(1.3); }
+  color: #a1808f;
+  letter-spacing: 0.02em;
 }
 
 .section-subtitle {
@@ -504,6 +472,7 @@ export default defineComponent({
   color: var(--text-medium);
   font-weight: 500;
   letter-spacing: 0.02em;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .animal-groups {
@@ -544,11 +513,14 @@ export default defineComponent({
   padding: 0.9rem 2.5rem;
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-soft);
-  border: 2px solid rgba(255, 111, 97, 0.15);
+  border: 2px solid rgba(233, 30, 99, 0.2);
   backdrop-filter: blur(12px);
   position: relative;
   overflow: hidden;
   transition: var(--transition);
+  color: var(--text-dark);
+  font-weight: 700;
+  letter-spacing: 0.02em;
 }
 
 .title-bg:hover {
@@ -618,18 +590,19 @@ export default defineComponent({
   align-items: center;
   gap: 0.75rem;
   box-shadow: var(--shadow-soft);
-  border: 1px solid rgba(255, 111, 97, 0.15);
+  border: 1px solid rgba(233, 30, 99, 0.15);
   transition: var(--transition);
   backdrop-filter: blur(15px);
   position: relative;
   overflow: hidden;
   height: 100%;
+  color: var(--text-dark);
 }
 
 .card-content:hover {
   transform: translateY(-10px) scale(1.03);
   box-shadow: var(--shadow-hover);
-  border-color: rgba(255, 111, 97, 0.4);
+  border-color: rgba(233, 30, 99, 0.4);
 }
 
 .card-glow {
@@ -638,7 +611,7 @@ export default defineComponent({
   left: -50%;
   width: 200%;
   height: 200%;
-  background: radial-gradient(circle, rgba(255, 111, 97, 0.15) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(233, 30, 99, 0.2) 0%, transparent 70%);
   opacity: 0;
   transition: opacity 0.3s ease;
   pointer-events: none;
@@ -648,10 +621,11 @@ export default defineComponent({
   opacity: 1;
 }
 
+/* Убраны тени и обводки у иконок */
 .icon-wrapper {
   width: 56px;
   height: 56px;
-  background: linear-gradient(135deg, var(--light), var(--accent));
+  background: transparent;
   border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
@@ -660,34 +634,19 @@ export default defineComponent({
   position: relative;
   transition: var(--transition);
   overflow: hidden;
-}
-
-.icon-bg {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(45deg, transparent 20%, rgba(255, 255, 255, 0.4) 50%, transparent 80%);
-  transform: translateX(-100%);
-  transition: transform 0.5s ease;
-}
-
-.card-content:hover .icon-wrapper {
-  transform: scale(1.15) rotate(8deg);
-}
-
-.card-content:hover .icon-bg {
-  transform: translateX(100%);
+  box-shadow: none;
+  border: none;
 }
 
 .animal-icon {
   width: 52px;
   height: 52px;
   object-fit: contain;
-  filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.15));
+  filter: none;
   z-index: 1;
   position: relative;
+  box-shadow: none;
+  border: none;
 }
 
 .text-content {
@@ -728,17 +687,18 @@ export default defineComponent({
   max-width: 650px;
   width: 100%;
   box-shadow: var(--shadow-strong);
-  border: 3px dashed rgba(255, 111, 97, 0.35);
+  border: 3px dashed rgba(233, 30, 99, 0.35);
   transition: var(--transition);
   backdrop-filter: blur(20px);
   position: relative;
   overflow: hidden;
+  color: var(--text-dark);
 }
 
 .cta-card:hover {
   transform: translateY(-8px) scale(1.03);
-  box-shadow: 0 24px 56px rgba(255, 111, 97, 0.45);
-  border-color: rgba(255, 111, 97, 0.7);
+  box-shadow: 0 24px 56px rgba(233, 30, 99, 0.45);
+  border-color: rgba(233, 30, 99, 0.7);
 }
 
 .cta-decoration {
@@ -747,7 +707,7 @@ export default defineComponent({
   right: -50%;
   width: 100%;
   height: 100%;
-  background: radial-gradient(circle, rgba(255, 154, 139, 0.25) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(248, 187, 208, 0.3) 0%, transparent 70%);
   animation: rotate 15s linear infinite;
   pointer-events: none;
 }
@@ -760,7 +720,7 @@ export default defineComponent({
 .cta-icon {
   width: 72px;
   height: 72px;
-  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  background: linear-gradient(135deg, var(--primary), var(--accent));
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -768,13 +728,13 @@ export default defineComponent({
   flex-shrink: 0;
   color: white;
   position: relative;
-  box-shadow: 0 10px 30px rgba(255, 111, 97, 0.5);
+  box-shadow: 0 10px 30px rgba(233, 30, 99, 0.5);
   transition: var(--transition);
 }
 
 .cta-card:hover .cta-icon {
   transform: scale(1.15) rotate(15deg);
-  box-shadow: 0 16px 40px rgba(255, 111, 97, 0.7);
+  box-shadow: 0 16px 40px rgba(233, 30, 99, 0.7);
 }
 
 .icon-pulse {
@@ -821,16 +781,17 @@ export default defineComponent({
 
 .cta-content p a:hover {
   text-decoration: none;
+  color: var(--primary);
 }
 
 ::v-deep(.cta-content p a[href^="tel"]) {
-  color: #a1808f;
+  color: var(--text-medium);
   text-decoration: none;
   font-weight: 700;
 }
 
 ::v-deep(.cta-content p a[href^="tel"]:hover) {
-  color: #a56c86;
+  color: var(--primary);
 }
 
 .floating-elements {
@@ -852,7 +813,7 @@ export default defineComponent({
 .float-1 {
   width: 140px;
   height: 140px;
-  background: linear-gradient(45deg, var(--primary), var(--secondary));
+  background: linear-gradient(45deg, var(--primary), var(--accent));
   top: 15%;
   right: 8%;
   animation: float 7s ease-in-out infinite;
@@ -870,7 +831,7 @@ export default defineComponent({
 .float-3 {
   width: 80px;
   height: 80px;
-  background: linear-gradient(45deg, var(--secondary), var(--primary));
+  background: linear-gradient(45deg, var(--accent), var(--primary));
   top: 55%;
   right: 20%;
   animation: float 9s ease-in-out infinite;
@@ -886,7 +847,7 @@ export default defineComponent({
   position: absolute;
   width: var(--particle-size);
   height: var(--particle-size);
-  background: radial-gradient(circle, rgba(255, 154, 139, 0.5) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(248, 187, 208, 0.6) 0%, transparent 70%);
   border-radius: 50%;
   animation: drift var(--particle-duration) linear infinite;
   animation-delay: var(--particle-delay);

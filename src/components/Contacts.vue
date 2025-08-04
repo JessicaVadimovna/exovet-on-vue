@@ -48,19 +48,40 @@
           Контакты
         </h1>
         
-        <p
+        <div
           class="description"
           :style="{ opacity: descriptionOpacity }"
         >
-          Ветеринарная клиника в Иркутске. Заботимся о здоровье ваших питомцев с любовью и профессионализмом.
-        </p>
+          <p class="description-text">
+            Ветеринарная клиника в Иркутске. Заботимся о здоровье ваших питомцев с любовью и профессионализмом.
+          </p>
+          <div class="working-hours">
+            <div class="working-hours-header">
+              <div class="icon-container working-hours-icon" :style="{ transform: `rotate(${clockRotate}deg)` }">
+                <ClockIcon class="icon" />
+              </div>
+              <h3 class="working-hours-title">Режим работы</h3>
+            </div>
+            <div class="working-hours-content">
+              <div class="working-hours-row">
+                <span class="working-hours-label">Ежедневно</span>
+                <span class="working-hours-time">10:00 - 20:00</span>
+              </div>
+              <div class="working-hours-status" :style="{ transform: `scale(${statusScale})` }">
+                <span class="status-icon" :class="{ 'open': isOpen, 'closed': !isOpen }">
+                  {{ isOpen ? 'Открыто' : 'Закрыто' }}
+                </span>
+              </div>
+              <p class="working-hours-note">* Приём по предварительному звонку</p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- Contact Cards and Working Hours -->
+    <!-- Contact Cards -->
     <div class="grid">
-      <!-- Contact Cards -->
-      <div v-for="(card, index) in contactCards" :key="index" class="card-container">
+      <div v-for="(card, index) in contactCards" :key="'contact-' + index" class="card-container">
         <div
           class="card"
           :style="{ 
@@ -113,55 +134,6 @@
           </div>
         </div>
       </div>
-
-      <!-- Working Hours -->
-      <div class="working-hours">
-        <div
-          class="working-hours-card"
-          :style="{ 
-            opacity: workingHoursOpacity, 
-            transform: `scale(${workingHoursScale})` 
-          }"
-        >
-          <div class="working-hours-header">
-            <div
-              class="working-hours-icon"
-              :style="{ transform: `rotate(${clockRotate}deg)` }"
-            >
-              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="12" r="10"/>
-                <path d="M12 6v6l4 2"/>
-              </svg>
-            </div>
-            <h4 class="working-hours-title">Режим работы</h4>
-          </div>
-          <div class="working-hours-content">
-            <div class="working-hours-row">
-              <span class="working-hours-label">Ежедневно</span>
-              <span class="working-hours-time">10:00 - 20:00</span>
-            </div>
-            
-            <div class="working-hours-status">
-              <div
-                class="status-icon"
-                :style="{ transform: `scale(${statusScale})` }"
-              >
-                <svg :class="['icon', isOpen ? 'text-green-500' : 'text-gray-400']" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-                  <polyline points="22 4 12 14.01 9 11.01"/>
-                </svg>
-              </div>
-              <span :class="[isOpen ? 'text-green-600' : 'text-gray-500']">
-                {{ isOpen ? 'Сейчас открыто' : 'Сейчас закрыто' }}
-              </span>
-            </div>
-            
-            <p class="working-hours-note">
-              * Приём по предварительному звонку
-            </p>
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 </template>
@@ -189,8 +161,6 @@ export default {
       cardOverlayScale: [1, 1, 1],
       cardHeaderScale: [1, 1, 1],
       cardButtonScale: [1, 1, 1],
-      workingHoursOpacity: 0,
-      workingHoursScale: 0.9,
       clockRotate: 0,
       statusScale: 1,
       currentHour: new Date().getHours(),
@@ -294,19 +264,7 @@ export default {
         }, 300 + index * 200);
       });
 
-      // Working hours animations
-      setTimeout(() => {
-        this.workingHoursOpacity = 1;
-        this.workingHoursScale = 1;
-      }, 600);
-
-      let clockTime = 0;
-      const animateClock = () => {
-        clockTime += 0.05;
-        this.clockRotate = (clockTime * 180 / Math.PI) % 360;
-        requestAnimationFrame(animateClock);
-      };
-
+      // Working hours status animation
       if (this.isOpen) {
         let statusTime = 0;
         const animateStatus = () => {
@@ -316,6 +274,14 @@ export default {
         };
         animateStatus();
       }
+
+      // Clock animation
+      let clockTime = 0;
+      const animateClock = () => {
+        clockTime += 0.05;
+        this.clockRotate = (clockTime * 180 / Math.PI) % 360;
+        requestAnimationFrame(animateClock);
+      };
 
       animateHeart();
       animateStethoscope();
@@ -355,6 +321,14 @@ export default {
         <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <line x1="22" y1="2" x2="11" y2="13"/>
           <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+        </svg>
+      `,
+    },
+    ClockIcon: {
+      template: `
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/>
+          <polyline points="12 6 12 12 16 14"/>
         </svg>
       `,
     },
@@ -450,6 +424,87 @@ export default {
   transition: opacity 0.5s ease;
 }
 
+.description-text {
+  margin-bottom: 1.5rem;
+}
+
+.working-hours {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 0.75rem;
+  padding: 1rem;
+  backdrop-filter: blur(4px);
+  text-align: left;
+  max-width: 20rem;
+  margin: 0 auto;
+}
+
+.working-hours-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.working-hours-icon {
+  padding: 0.5rem;
+  background: linear-gradient(to bottom right, #b0bec5, #90a4ae);
+  color: white;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.working-hours-title {
+  color: white;
+  font-size: 1.1rem;
+}
+
+.working-hours-content {
+  padding: 0.5rem 0;
+}
+
+.working-hours-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.working-hours-label {
+  color: #fce4ec;
+}
+
+.working-hours-time {
+  color: white;
+}
+
+.working-hours-status {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.status-icon {
+  transition: all 0.3s ease;
+  color: white;
+}
+
+.status-icon.open {
+  color: #a5d6a7;
+}
+
+.status-icon.closed {
+  color: #ef9a9a;
+}
+
+.working-hours-note {
+  font-size: 0.875rem;
+  color: #fce4ec;
+  font-style: italic;
+  margin-top: 0.5rem;
+}
+
 .grid {
   display: grid;
   grid-template-columns: repeat(1, 1fr);
@@ -540,75 +595,6 @@ export default {
 .button-icon {
   width: 1.25rem;
   height: 1.25rem;
-}
-
-.working-hours {
-  width: 100%;
-}
-
-.working-hours-card {
-  background: linear-gradient(to bottom right, white, #f5f5f5);
-  border: 1px solid #eceff1;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  border-radius: 0.75rem;
-  transition: all 0.5s ease;
-}
-
-.working-hours-header {
-  padding: 1.5rem 1.5rem 1rem;
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.working-hours-icon {
-  padding: 0.5rem;
-  background: linear-gradient(to bottom right, #b0bec5, #90a4ae);
-  color: white;
-  border-radius: 50%;
-  transition: all 0.3s ease;
-}
-
-.working-hours-title {
-  color: #37474f;
-}
-
-.working-hours-content {
-  padding: 0 1.5rem 1.5rem;
-}
-
-.working-hours-row {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 0.75rem;
-}
-
-.working-hours-label {
-  color: #607d8b;
-}
-
-.working-hours-time {
-  color: #37474f;
-}
-
-.working-hours-status {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem;
-  border-radius: 0.5rem;
-  background: linear-gradient(to right, #fff5f7, #f5f5f5);
-  border: 1px solid #fce4ec;
-}
-
-.status-icon {
-  transition: all 0.3s ease;
-}
-
-.working-hours-note {
-  font-size: 0.875rem;
-  color: #90a4ae;
-  font-style: italic;
 }
 
 .icon {
