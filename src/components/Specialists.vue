@@ -22,61 +22,65 @@
       </div>
 
       <!-- Swiper Slider -->
-      <div class="swiper vet-slider">
-        <div class="swiper-wrapper">
-          <div v-for="member in filteredMembers" :key="'member-' + member.id" class="swiper-slide specialist-card">
-            <div class="card-front">
-              <div class="image-container">
-                <img :src="member.image" class="specialist-image" alt="Specialist photo" />
-                <div class="image-overlay"></div>
-              </div>
-              <div class="specialist-content">
-                <div class="specialist-header">
-                  <h3 class="specialist-name">{{ member.name }}</h3>
-                  <div class="specialist-title">{{ member.role }}</div>
-                  <div class="specialist-specialty">{{ member.specialization }}</div>
+      <div class="swiper-container" :class="{ 'has-navigation': filteredMembers.length > 3 }">
+        <!-- Стрелки на границах экрана -->
+        <div class="swiper-button-prev screen-edge-nav" v-show="filteredMembers.length > 3"></div>
+        <div class="swiper-button-next screen-edge-nav" v-show="filteredMembers.length > 3"></div>
+        
+        <div class="swiper vet-slider" :class="{ 'centered': filteredMembers.length <= 3 }">
+          <div class="swiper-wrapper">
+            <div v-for="member in filteredMembers" :key="'member-' + member.id" class="swiper-slide specialist-card">
+              <div class="card-front">
+                <div class="image-container">
+                  <img :src="member.image" class="specialist-image" alt="Specialist photo" />
+                  <div class="image-overlay"></div>
                 </div>
-                <div v-if="member.experience" class="experience-badge">
-                  <svg class="icon" viewBox="0 0 24 24">
-                    <path d="M12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22C6.47,22 2,17.5 2,12A10,10 0 0,1 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z" />
-                  </svg>
-                  <span>Опыт: {{ member.experience }}</span>
-                </div>
-                <div class="specialist-footer">
-                  <button class="more-btn">
-                    <span>Подробнее</span>
-                    <svg class="arrow" viewBox="0 0 24 24">
-                      <path d="M4,11V13H16L10.5,18.5L11.92,19.92L19.84,12L11.92,4.08L10.5,5.5L16,11H4Z" />
+                <div class="specialist-content">
+                  <div class="specialist-header">
+                    <h3 class="specialist-name">{{ member.name }}</h3>
+                    <div class="specialist-title">{{ member.role }}</div>
+                    <div class="specialist-specialty">{{ member.specialization }}</div>
+                  </div>
+                  <div v-if="member.experience" class="experience-badge">
+                    <svg class="icon" viewBox="0 0 24 24">
+                      <path d="M12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22C6.47,22 2,17.5 2,12A10,10 0 0,1 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z" />
                     </svg>
+                    <span>Опыт: {{ member.experience }}</span>
+                  </div>
+                  <div class="specialist-footer">
+                    <button class="more-btn">
+                      <span>Подробнее</span>
+                      <svg class="arrow" viewBox="0 0 24 24">
+                        <path d="M4,11V13H16L10.5,18.5L11.92,19.92L19.84,12L11.92,4.08L10.5,5.5L16,11H4Z" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div class="card-back">
+                <div class="back-content">
+                  <div class="details">
+                    <div class="story-section">
+                      <h4 class="section-title">Профессиональный путь</h4>
+                      <div class="story-text">{{ member.biography }}</div>
+                    </div>
+                    <div class="pets-section">
+                      <h4 class="section-title">Домашние питомцы</h4>
+                      <div class="pets-list">{{ member.pets || 'Нет' }}</div>
+                    </div>
+                  </div>
+                  <button class="back-btn">
+                    <svg class="icon" viewBox="0 0 24 24">
+                      <path d="M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20Z" />
+                    </svg>
+                    Назад
                   </button>
                 </div>
               </div>
             </div>
-            <div class="card-back">
-              <div class="back-content">
-                <div class="details">
-                  <div class="story-section">
-                    <h4 class="section-title">Профессиональный путь</h4>
-                    <div class="story-text">{{ member.biography }}</div>
-                  </div>
-                  <div class="pets-section">
-                    <h4 class="section-title">Домашние питомцы</h4>
-                    <div class="pets-list">{{ member.pets || 'Нет' }}</div>
-                  </div>
-                </div>
-                <button class="back-btn">
-                  <svg class="icon" viewBox="0 0 24 24">
-                    <path d="M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20Z" />
-                  </svg>
-                  Назад
-                </button>
-              </div>
-            </div>
           </div>
+          <div class="swiper-pagination"></div>
         </div>
-        <div class="swiper-button-prev"></div>
-        <div class="swiper-button-next"></div>
-        <div class="swiper-pagination"></div>
       </div>
     </div>
   </section>
@@ -109,7 +113,7 @@ export default defineComponent({
         name: 'Еланцева Валерия Сергеевна',
         role: 'Главный врач',
         specialization: 'Специалист по экзотическим животным',
-        biography: 'Владелец клиники Exovet с образованием в области химии, которая нашла свое истинное призвание в ветеринарии. Специализируется на кожной и абдоминальной хирургии, стоматологии и терапии экзотических животных. Интерес к экзотическим питомцам возник после работы в зоомагазине и заботы о крысе Мэри, которая стала прототипом логотипа клиники.',
+        biography: 'Специализируется на кожной и абдоминальной хирургии, стоматологии и терапии экзотических животных. Интерес к экзотическим питомцам возник после работы в зоомагазине и заботы о крысе Мэри, которая стала прототипом логотипа клиники.',
         experience: '6 лет',
         pets: 'Кот и кошка, которые приносят радость и являются частью жизни.',
         roleType: 'врач'
@@ -166,7 +170,7 @@ export default defineComponent({
         image: 'https://images.unsplash.com/photo-1554151228-14d9def656e4?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&h=600&q=80',
         name: 'Шахова Ника Максимовна',
         role: 'Ассистент ветеринарного врача',
-        specialization: 'Грумер',
+        specialization: '',
         biography: 'Начала с курсов груминга и работы в салоне, где старалась спасать жизни малышей в колтунах и с паразитами. Превращает каждое посещение клиники в курорт для пушистиков, создавая атмосферу безопасности. Единственный грумер в Иркутске, который умеет стричь кроликов!',
         experience: '3 года',
         pets: 'Белая шиншилла, котик-тапкогрыз и мамина собака бладхаунд.',
@@ -210,35 +214,52 @@ export default defineComponent({
         swiperInstance.destroy(true, true)
         swiperInstance = null
       }
-      await nextTick() // Ждем обновления DOM
-      const isLoopEnabled = filteredMembers.value.length > 1 // Отключаем loop для 1 элемента
+      
+      await nextTick()
+      
+      const membersCount = filteredMembers.value.length
+      const isLoopEnabled = membersCount > 3
+      const showNavigation = membersCount > 3
+      
       swiperInstance = new Swiper('.vet-slider', {
         modules: [Navigation, Pagination],
-        slidesPerView: 1,
-        spaceBetween: 20, // Уменьшено для узких экранов
+        slidesPerView: Math.min(membersCount, 3),
+        spaceBetween: 30,
         loop: isLoopEnabled,
-        centeredSlides: filteredMembers.value.length <= 2, // Центрируем для 1 или 2 карточек
-        navigation: {
-          nextEl: '.swiper-button-next',
-          prevEl: '.swiper-button-prev',
-        },
-        pagination: {
+        centeredSlides: true,
+        watchSlidesProgress: true,
+        allowTouchMove: isLoopEnabled,
+        navigation: showNavigation ? {
+          nextEl: '.swiper-button-next.screen-edge-nav',
+          prevEl: '.swiper-button-prev.screen-edge-nav',
+        } : false,
+        pagination: showNavigation ? {
           el: '.swiper-pagination',
           clickable: true,
-          dynamicBullets: isLoopEnabled && filteredMembers.value.length > 3,
+          dynamicBullets: membersCount > 5,
           dynamicMainBullets: 3,
-        },
+        } : false,
         breakpoints: {
+          320: {
+            slidesPerView: 1,
+            spaceBetween: 20,
+            centeredSlides: true,
+          },
           768: {
-            slidesPerView: filteredMembers.value.length > 1 ? 2 : 1,
+            slidesPerView: Math.min(membersCount, 2),
             spaceBetween: 25,
-            centeredSlides: filteredMembers.value.length === 2,
+            centeredSlides: true,
           },
           992: {
-            slidesPerView: filteredMembers.value.length > 2 ? 3 : filteredMembers.value.length,
+            slidesPerView: Math.min(membersCount, 3),
             spaceBetween: 30,
-            centeredSlides: filteredMembers.value.length <= 2,
+            centeredSlides: true,
           },
+          1200: {
+            slidesPerView: Math.min(membersCount, 3),
+            spaceBetween: 30,
+            centeredSlides: true,
+          }
         },
       })
 
@@ -282,7 +303,7 @@ export default defineComponent({
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap');
 
 .specialists {
-  padding: 100px 20px;
+  padding: 100px 40px;
   background: #fefafb;
   position: relative;
   overflow: hidden;
@@ -293,7 +314,6 @@ export default defineComponent({
   margin: 0 auto;
   position: relative;
   z-index: 1;
-  overflow: hidden;
   padding: 0 20px;
 }
 
@@ -395,14 +415,19 @@ export default defineComponent({
 
 .swiper-container {
   position: relative;
-  padding: 0 60px;
   margin-bottom: 20px;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0 80px;
+  overflow: hidden;
 }
 
 .vet-slider {
   position: relative;
   padding-bottom: 60px;
   overflow: visible;
+  max-width: 100%;
 }
 
 .swiper-slide.specialist-card {
@@ -414,7 +439,9 @@ export default defineComponent({
   transform-style: preserve-3d;
   min-height: 550px;
   overflow: hidden;
-  height: auto;
+  width: 320px;
+  max-width: 320px;
+  flex-shrink: 0;
 }
 
 .swiper-slide.specialist-card:hover {
@@ -422,37 +449,42 @@ export default defineComponent({
   transform: translateY(-5px);
 }
 
-.swiper-button-prev,
-.swiper-button-next {
+/* Стрелки на границах контейнера секции */
+.swiper-button-prev.screen-edge-nav,
+.swiper-button-next.screen-edge-nav {
   color: #d67a8f;
-  background: rgba(255, 255, 255, 0.9);
-  width: 40px;
-  height: 40px;
+  background: rgba(255, 255, 255, 0.95);
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
-  box-shadow: 0 4px 10px rgba(107, 76, 87, 0.2);
+  box-shadow: 0 6px 20px rgba(107, 76, 87, 0.25);
   transition: all 0.3s ease;
   z-index: 10;
   top: 50%;
   transform: translateY(-50%);
+  margin-top: 0;
+  position: absolute;
 }
 
-.swiper-button-prev {
+.swiper-button-prev.screen-edge-nav {
   left: 10px;
 }
 
-.swiper-button-next {
+.swiper-button-next.screen-edge-nav {
   right: 10px;
 }
 
-.swiper-button-prev:hover,
-.swiper-button-next:hover {
+.swiper-button-prev.screen-edge-nav:hover,
+.swiper-button-next.screen-edge-nav:hover {
   background: white;
-  transform: scale(1.1) translateY(-50%);
+  transform: scale(1.1) translateY(-45%);
+  box-shadow: 0 8px 25px rgba(107, 76, 87, 0.35);
 }
 
-.swiper-button-prev:after,
-.swiper-button-next:after {
-  font-size: 20px;
+.swiper-button-prev.screen-edge-nav:after,
+.swiper-button-next.screen-edge-nav:after {
+  font-size: 24px;
+  font-weight: bold;
 }
 
 .card-front, .card-back {
@@ -690,9 +722,23 @@ export default defineComponent({
   fill: white;
 }
 
+/* Адаптивность */
+@media (max-width: 1400px) {
+  .swiper-container {
+    padding: 0 70px;
+  }
+}
+
+@media (max-width: 1200px) {
+  .swiper-container {
+    padding: 0 60px;
+  }
+}
+
 @media (max-width: 992px) {
   .container {
     max-width: 960px;
+    padding: 0 15px;
   }
 
   .title {
@@ -703,21 +749,19 @@ export default defineComponent({
     font-size: 1.1rem;
   }
 
-  .vet-slider {
-    margin: 0 30px;
-    max-width: calc(100% - 60px);
+  .swiper-container {
+    padding: 0 50px;
   }
 
-  .swiper-button-prev {
-    left: -40px;
+  .swiper-button-prev.screen-edge-nav,
+  .swiper-button-next.screen-edge-nav {
+    width: 50px;
+    height: 50px;
   }
 
-  .swiper-button-next {
-    right: -40px;
-  }
-
-  .swiper-slide.specialist-card {
-    width: 300px !important;
+  .swiper-button-prev.screen-edge-nav:after,
+  .swiper-button-next.screen-edge-nav:after {
+    font-size: 20px;
   }
 }
 
@@ -728,6 +772,7 @@ export default defineComponent({
 
   .container {
     max-width: 720px;
+    padding: 0 10px;
   }
 
   .title {
@@ -738,28 +783,26 @@ export default defineComponent({
     font-size: 1rem;
   }
 
-  .vet-slider {
-    margin: 0 20px;
-    max-width: calc(100% - 40px);
+  .swiper-container {
+    padding: 0 40px;
   }
 
-  .swiper-button-prev {
-    left: -30px;
+  .swiper-button-prev.screen-edge-nav,
+  .swiper-button-next.screen-edge-nav {
+    width: 45px;
+    height: 45px;
   }
 
-  .swiper-button-next {
-    right: -30px;
-  }
-
-  .swiper-slide.specialist-card {
-    width: 300px !important;
+  .swiper-button-prev.screen-edge-nav:after,
+  .swiper-button-next.screen-edge-nav:after {
+    font-size: 18px;
   }
 }
 
 @media (max-width: 480px) {
   .container {
     max-width: 100%;
-    padding: 0 10px;
+    padding: 0 5px;
   }
 
   .title {
@@ -778,27 +821,50 @@ export default defineComponent({
     font-size: 0.85rem;
   }
 
-  .vet-slider {
-    margin: 0 15px;
-    max-width: calc(100% - 30px);
+  .swiper-container {
+    padding: 0 30px;
   }
 
-  .swiper-button-prev {
-    left: -20px;
+  .swiper-button-prev.screen-edge-nav,
+  .swiper-button-next.screen-edge-nav {
+    width: 40px;
+    height: 40px;
   }
 
-  .swiper-button-next {
-    right: -20px;
+  .swiper-button-prev.screen-edge-nav:after,
+  .swiper-button-next.screen-edge-nav:after {
+    font-size: 16px;
   }
 
-  .swiper-slide.specialist-card {
-    width: 280px !important;
+  .filter-buttons {
+    gap: 10px;
+  }
+
+  .filter-buttons button {
+    padding: 8px 16px;
+    font-size: 0.85rem;
+  }
+}
+
+/* Скрытие кнопок навигации на очень маленьких экранах */
+@media (max-width: 320px) {
+  .swiper-container {
+    padding: 0 10px;
+  }
+  
+  .swiper-button-prev.screen-edge-nav,
+  .swiper-button-next.screen-edge-nav {
+    display: none !important;
   }
 }
 </style>
 
 <style>
 /* Без scoped для Swiper */
+.swiper-pagination {
+  bottom: 10px !important;
+}
+
 .swiper-pagination-bullet {
   width: 12px;
   height: 12px;
@@ -812,4 +878,10 @@ export default defineComponent({
   background-color: #c64382 !important;
   opacity: 1;
 }
-</style>
+
+/* Отключение кнопок когда нет возможности прокрутки */
+.swiper-button-disabled {
+  opacity: 0.3 !important;
+  cursor: not-allowed !important;
+}
+</style> 

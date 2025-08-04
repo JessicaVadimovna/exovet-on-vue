@@ -16,6 +16,7 @@
         <li><router-link to="/about" @click="closeMenu" class="nav-link">О нас</router-link></li>
         <li><router-link to="/services" @click="closeMenu" class="nav-link">Услуги</router-link></li>
         <li><router-link to="/specialists" @click="closeMenu" class="nav-link">Специалисты</router-link></li>
+        <li><router-link to="/gallery" @click="closeMenu" class="nav-link">Галерея</router-link></li>
         <li><router-link to="/prices" @click="closeMenu" class="nav-link">Прайс</router-link></li>
         <li><router-link to="/contacts" @click="closeMenu" class="nav-link">Контакты</router-link></li>
       </ul>
