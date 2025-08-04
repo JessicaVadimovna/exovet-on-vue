@@ -33,9 +33,15 @@
             <a href="https://t.me/exovet_irk38" class="subscribe-btn">Telegram-канал</a>
           </div>
         </div>
-        <div class="footer-map">
-          <img src="/assets/img/map.png" alt="Map" class="map-image" />
-        </div>
+
+<div class="map-wrapper">
+  <iframe
+    src="https://www.openstreetmap.org/export/embed.html?bbox=104.30940806865692%2C52.28133275560028%2C104.31807696819305%2C52.28425680472971&amp;layer=mapnik&amp;marker=52.282794804284634%2C104.31374251842499"
+    style="border: #999999 solid 1px; border-radius: 15px;"
+    frameborder="0"
+  ></iframe>
+</div>
+
       </div>
       <div class="footer-bottom">
         <p class="footer-copyright">© ExoVet, 2025</p>
@@ -228,6 +234,58 @@ export default defineComponent({
   text-decoration: underline;
 }
 
+.map-wrapper {
+  width: 100%;
+  max-width: 550px; /* макс ширина для больших экранов */
+  aspect-ratio: 550 / 350; /* поддерживаем пропорции */
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  margin: 0 auto; /* центрируем блок */
+}
+
+.map-wrapper iframe {
+  width: 100%;
+  height: 100%;
+  display: block;
+  border: none;
+}
+
+.footer-content {
+  display: flex;
+  justify-content: space-between;
+  gap: 30px;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+}
+
+.footer-info {
+  flex: 1 1 250px;
+  min-width: 250px;
+}
+
+.map-wrapper {
+  flex-shrink: 0;
+  width: 100%;
+  max-width: 550px;
+  aspect-ratio: 550 / 350;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  margin: 0 auto;
+  min-width: 280px; /* можно подогнать */
+}
+
+.map-wrapper iframe {
+  border: 1px solid #999999;
+  border-radius: 15px;
+  width: 100%;
+  height: 100%;
+  display: block;
+  border: none;
+}
+
+
 /* Tablet styles */
 @media (max-width: 768px) {
   .footer {
@@ -282,6 +340,12 @@ export default defineComponent({
   .footer-offer,
   .footer-madeby {
     font-size: 13px;
+  }
+}
+
+@media (max-width: 600px) {
+  .map-wrapper {
+    max-width: 100%; /* карта занимает всю ширину экрана */
   }
 }
 
