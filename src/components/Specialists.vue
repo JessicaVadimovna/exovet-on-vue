@@ -32,8 +32,20 @@
             <div v-for="member in filteredMembers" :key="'member-' + member.id" class="swiper-slide specialist-card">
               <div class="card-front">
                 <div class="image-container">
-                  <img :src="member.image" class="specialist-image" alt="Specialist photo" />
-                  <div class="image-overlay"></div>
+                  <div class="image-wrapper">
+                    <img :src="member.image" class="specialist-image" alt="Specialist photo" />
+                    <div class="image-overlay"></div>
+                  </div>
+                  
+                  <!-- Бейдж роли -->
+                  <div class="role-badge" :class="getRoleBadgeClass(member.roleType)">
+                    <svg class="badge-icon" viewBox="0 0 24 24">
+                      <path :d="getRoleIcon(member.roleType)" />
+                    </svg>
+                    <span>{{ getRoleLabel(member.roleType) }}</span>
+                  </div>
+                  
+                  
                 </div>
                 <div class="specialist-content">
                   <div class="specialist-header">
@@ -134,7 +146,7 @@ export default defineComponent({
         image: './assets/img/specialists/EA.jpg',
         name: 'Черных Елена Александровна',
         role: 'Терапевт',
-        specialization: 'Специалист по рептилиям и амфибиям',
+        specialization: 'Специалист герпетолог ( лечение рептилий и амфибий )',
         biography: 'Начинала с изготовления ортопедических изделий для собак и кошек, затем получила ветеринарное образование. Открыла для себя мир экзотических животных во время практики и влюбилась в рептилий. Теперь это узкая специализация, которой она посвящает всю свою профессиональную страсть.',
         experience: '4 года',
         pets: 'Две кошки, аксолотль и ковровый питон.',
@@ -145,9 +157,9 @@ export default defineComponent({
         image: './assets/img/specialists/AV.jpg',
         name: 'Тимофеева Арина Владимировна',
         role: 'Терапевт',
-        specialization: 'Специалист по орнитологии',
+        specialization: 'Специалист орнитолог',
         biography: 'Получила специализацию в онлайн-школе «Webexovet». Детство с разнообразными питомцами, включая экзотику, определило выбор профессии. Решила освоить ветеринарную медицину птиц из-за острой нехватки орнитологов в Иркутске. Планирует расширить специализацию на других экзотических животных.',
-        experience: '4 года врачом, 3 года в орнитологии',
+        experience: '4 года',
         pets: 'Кот, планирует завести экзотического питомца.',
         roleType: 'врач'
       }
@@ -208,6 +220,33 @@ export default defineComponent({
         ? teamMembers.value
         : teamMembers.value.filter(member => member.roleType === activeFilter.value)
     })
+
+    const getRoleBadgeClass = (roleType: string) => {
+      switch (roleType) {
+        case 'врач': return 'doctor'
+        case 'ассистент': return 'assistant'
+        case 'администратор': return 'admin'
+        default: return 'doctor'
+      }
+    }
+
+    const getRoleLabel = (roleType: string) => {
+      switch (roleType) {
+        case 'врач': return 'Врач'
+        case 'ассистент': return 'Ассистент'
+        case 'администратор': return 'Администратор'
+        default: return 'Врач'
+      }
+    }
+
+    const getRoleIcon = (roleType: string) => {
+      switch (roleType) {
+        case 'врач': return 'M19.5,8A1.5,1.5 0 0,0 21,6.5A1.5,1.5 0 0,0 19.5,5A1.5,1.5 0 0,0 18,6.5A1.5,1.5 0 0,0 19.5,8M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M15.5,8A1.5,1.5 0 0,0 17,6.5A1.5,1.5 0 0,0 15.5,5A1.5,1.5 0 0,0 14,6.5A1.5,1.5 0 0,0 15.5,8M12,14C13.11,14 14,13.11 14,12C14,10.89 13.11,10 12,10C10.89,10 10,10.89 10,12C10,13.11 10.89,14 12,14Z'
+        case 'ассистент': return 'M12,2A3,3 0 0,1 15,5V11A3,3 0 0,1 12,14A3,3 0 0,1 9,11V5A3,3 0 0,1 12,2M19,11C19,14.53 16.39,17.44 13,17.93V21H11V17.93C7.61,17.44 5,14.53 5,11H7A5,5 0 0,0 12,16A5,5 0 0,0 17,11H19Z'
+        case 'администратор': return 'M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z'
+        default: return 'M19.5,8A1.5,1.5 0 0,0 21,6.5A1.5,1.5 0 0,0 19.5,5A1.5,1.5 0 0,0 18,6.5A1.5,1.5 0 0,0 19.5,8M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M15.5,8A1.5,1.5 0 0,0 17,6.5A1.5,1.5 0 0,0 15.5,5A1.5,1.5 0 0,0 14,6.5A1.5,1.5 0 0,0 15.5,8M12,14C13.11,14 14,13.11 14,12C14,10.89 13.11,10 12,10C10.89,10 10,10.89 10,12C10,13.11 10.89,14 12,14Z'
+      }
+    }
 
     const resetSwiper = async () => {
       if (swiperInstance) {
@@ -294,7 +333,16 @@ export default defineComponent({
       }
     })
 
-    return { teamMembers, filterOptions, activeFilter, filteredMembers, resetSwiper }
+    return { 
+      teamMembers, 
+      filterOptions, 
+      activeFilter, 
+      filteredMembers, 
+      resetSwiper,
+      getRoleBadgeClass,
+      getRoleLabel,
+      getRoleIcon
+    }
   }
 })
 </script>
@@ -432,21 +480,26 @@ export default defineComponent({
 
 .swiper-slide.specialist-card {
   background: white;
-  border-radius: 16px;
-  box-shadow: 0 10px 30px rgba(107, 76, 87, 0.1);
+  border-radius: 20px;
+  box-shadow: 0 15px 35px rgba(107, 76, 87, 0.12);
   transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
   position: relative;
   transform-style: preserve-3d;
-  min-height: 550px;
+  min-height: 580px;
   overflow: hidden;
   width: 320px;
   max-width: 320px;
   flex-shrink: 0;
+  border: 2px solid rgba(214, 122, 143, 0.1);
 }
 
-.swiper-slide.specialist-card:hover {
-  box-shadow: 0 15px 40px rgba(107, 76, 87, 0.15);
-  transform: translateY(-5px);
+.specialist-card:hover {
+  box-shadow: 0 20px 45px rgba(107, 76, 87, 0.18);
+  border-color: rgba(214, 122, 143, 0.3);
+}
+
+.specialist-card:not(.flipped):hover {
+  transform: translateY(-8px);
 }
 
 /* Стрелки на границах контейнера секции */
@@ -464,6 +517,7 @@ export default defineComponent({
   transform: translateY(-50%);
   margin-top: 0;
   position: absolute;
+  backdrop-filter: blur(10px);
 }
 
 .swiper-button-prev.screen-edge-nav {
@@ -497,6 +551,7 @@ export default defineComponent({
   height: 100%;
   box-sizing: border-box;
   transition: transform 0.6s ease;
+  border-radius: 20px;
 }
 
 .card-front {
@@ -513,6 +568,7 @@ export default defineComponent({
   color: white;
   display: flex;
   flex-direction: column;
+  z-index: 3;
 }
 
 .specialist-card.flipped .card-front {
@@ -525,9 +581,27 @@ export default defineComponent({
 
 .image-container {
   position: relative;
+  width: 220px;
+  height: 220px;
+  margin: 25px auto 0;
+  transition: all 0.3s ease;
+}
+
+.image-wrapper {
+  position: relative;
   width: 100%;
-  height: 280px;
+  height: 100%;
   overflow: hidden;
+  border-radius: 50%;
+  box-shadow: 0 8px 25px rgba(107, 76, 87, 0.25);
+  border: 4px solid rgba(214, 122, 143, 0.2);
+  transition: all 0.3s ease;
+}
+
+.specialist-card:hover .image-wrapper {
+  box-shadow: 0 12px 35px rgba(107, 76, 87, 0.35);
+  border-color: rgba(214, 122, 143, 0.4);
+  transform: scale(1.02);
 }
 
 .image-overlay {
@@ -536,18 +610,132 @@ export default defineComponent({
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0));
+  background: linear-gradient(135deg, rgba(214, 122, 143, 0.1), rgba(214, 122, 143, 0.05));
+  transition: opacity 0.3s ease;
+}
+
+.specialist-card:hover .image-overlay {
+  opacity: 0.7;
 }
 
 .specialist-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center;
   transition: transform 0.5s ease;
 }
 
 .specialist-card:hover .specialist-image {
-  transform: scale(1.05);
+  transform: scale(1.08);
+}
+
+/* Скрытие бейджей при переворачивании карточки */
+.specialist-card.flipped .role-badge,
+.specialist-card.flipped .experience-badge-img,
+.specialist-card.flipped .specialty-badge {
+  opacity: 0 !important;
+  transform: scale(0) !important;
+  pointer-events: none !important;
+  visibility: hidden !important;
+}
+
+/* Бейджи на изображении */
+.role-badge {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: 20px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  transition: all 0.3s ease;
+  z-index: 5;
+}
+
+.role-badge.doctor {
+  background: linear-gradient(135deg, rgba(214, 122, 143, 0.95), rgba(234, 185, 207, 0.95));
+  color: white;
+}
+
+.role-badge.assistant {
+  background: linear-gradient(135deg, rgba(76, 175, 80, 0.95), rgba(129, 199, 132, 0.95));
+  color: white;
+}
+
+.role-badge.admin {
+  background: linear-gradient(135deg, rgba(63, 81, 181, 0.95), rgba(121, 134, 203, 0.95));
+  color: white;
+}
+
+.experience-badge-img {
+  position: absolute;
+  bottom: 15px;
+  left: 15px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, rgba(255, 193, 7, 0.95), rgba(255, 213, 79, 0.95));
+  color: #8a6914;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  transition: all 0.3s ease;
+  z-index: 5;
+}
+
+.specialty-badge {
+  position: absolute;
+  top: 50%;
+  left: 5px;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(156, 39, 176, 0.95), rgba(186, 104, 200, 0.95));
+  color: white;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  transition: all 0.3s ease;
+  z-index: 5;
+}
+
+.badge-icon {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+  flex-shrink: 0;
+}
+
+.specialty-badge .badge-icon {
+  width: 20px;
+  height: 20px;
+}
+
+/* Эффекты при наведении на бейджи */
+.role-badge:hover,
+.experience-badge-img:hover,
+.specialty-badge:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
 }
 
 .specialist-content {
@@ -568,6 +756,7 @@ export default defineComponent({
   color: #3a2a30;
   margin-bottom: 10px;
   text-align: center;
+  line-height: 1.3;
 }
 
 .specialist-title {
@@ -576,7 +765,8 @@ export default defineComponent({
   color: #d67a8f;
   text-align: center;
   line-height: 1.5;
-  font-weight: 500;
+  font-weight: 600;
+  margin-bottom: 5px;
 }
 
 .specialist-specialty {
@@ -585,21 +775,29 @@ export default defineComponent({
   color: #6b5a60;
   text-align: center;
   line-height: 1.5;
+  font-style: italic;
 }
 
 .experience-badge {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: #f9f0f3;
+  background: linear-gradient(135deg, #f9f0f3, #f5e8ed);
   color: #6b4c57;
-  padding: 8px 16px;
-  border-radius: 20px;
+  padding: 10px 18px;
+  border-radius: 25px;
   font-family: 'Montserrat', sans-serif;
   font-size: 0.85rem;
   font-weight: 600;
   margin: 0 auto 20px;
-  box-shadow: 0 4px 6px rgba(214, 122, 143, 0.1);
+  box-shadow: 0 4px 12px rgba(214, 122, 143, 0.15);
+  border: 1px solid rgba(214, 122, 143, 0.2);
+  transition: all 0.3s ease;
+}
+
+.experience-badge:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(214, 122, 143, 0.25);
 }
 
 .experience-badge .icon {
@@ -617,22 +815,39 @@ export default defineComponent({
   background: linear-gradient(135deg, #eab9cf 0%, #d67a8f 100%);
   color: white;
   border: none;
-  padding: 12px 24px;
+  padding: 14px 28px;
   border-radius: 30px;
   font-family: 'Montserrat', sans-serif;
   font-weight: 600;
   font-size: 0.95rem;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(214, 122, 143, 0.3);
+  box-shadow: 0 6px 20px rgba(214, 122, 143, 0.3);
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
+  position: relative;
+  overflow: hidden;
+}
+
+.more-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.5s ease;
+}
+
+.more-btn:hover::before {
+  left: 100%;
 }
 
 .more-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(214, 122, 143, 0.4);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(214, 122, 143, 0.4);
 }
 
 .more-btn .arrow {
@@ -643,7 +858,7 @@ export default defineComponent({
 }
 
 .more-btn:hover .arrow {
-  transform: translateX(3px);
+  transform: translateX(4px);
 }
 
 .back-content {
@@ -663,12 +878,13 @@ export default defineComponent({
 
 .section-title {
   font-family: 'Playfair Display', serif;
-  font-size: 1rem;
+  font-size: 1.1rem;
   margin-bottom: 15px;
   display: flex;
   align-items: center;
   gap: 10px;
   color: white;
+  font-weight: 600;
 }
 
 .section-title .icon {
@@ -697,7 +913,7 @@ export default defineComponent({
   background: transparent;
   color: white;
   border: 2px solid rgba(255, 255, 255, 0.3);
-  padding: 10px 25px;
+  padding: 12px 28px;
   border-radius: 30px;
   font-family: 'Montserrat', sans-serif;
   font-weight: 600;
@@ -708,12 +924,13 @@ export default defineComponent({
   align-self: center;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
 }
 
 .back-btn:hover {
   background: rgba(255, 255, 255, 0.1);
   border-color: white;
+  transform: translateY(-2px);
 }
 
 .back-btn .icon {
@@ -721,6 +938,30 @@ export default defineComponent({
   height: 16px;
   fill: white;
 }
+
+
+/* Стили для неактивных точек пагинации */
+.vet-slider :deep(.swiper-pagination-bullet) {
+  width: 12px; /* Измените размер точки */
+  height: 12px; /* Измените размер точки */
+  border-radius: 50%; /* Оставляем круглой */
+  background-color: #b0bec5; /* Цвет неактивной точки (например, серый) */
+  opacity: 1; /* Убедитесь, что она видна */
+  transition: background-color 0.3s ease; /* Плавный переход цвета */
+  margin: 0 4px;
+}
+
+/* Стили для активной точки пагинации */
+.vet-slider :deep(.swiper-pagination-bullet-active) {
+  background-color: #d67a8f; /* Цвет активной точки (например, розовый из вашей палитры) */
+  width: 14px; /* Слегка увеличим активную точку */
+  height: 14px;
+  /* Можно добавить тень или border */
+  box-shadow: 0 0 5px rgba(214, 122, 143, 0.5);
+}
+
+
+
 
 /* Адаптивность */
 @media (max-width: 1400px) {
@@ -753,6 +994,16 @@ export default defineComponent({
     padding: 0 50px;
   }
 
+  .image-container {
+    width: 200px;
+    height: 200px;
+  }
+
+  .image-wrapper {
+    width: 100%;
+    height: 100%;
+  }
+
   .swiper-button-prev.screen-edge-nav,
   .swiper-button-next.screen-edge-nav {
     width: 50px;
@@ -783,6 +1034,16 @@ export default defineComponent({
     font-size: 1rem;
   }
 
+  .image-container {
+    width: 180px;
+    height: 180px;
+  }
+
+  .image-wrapper {
+    width: 100%;
+    height: 100%;
+  }
+
   .swiper-container {
     padding: 0 40px;
   }
@@ -796,6 +1057,27 @@ export default defineComponent({
   .swiper-button-prev.screen-edge-nav:after,
   .swiper-button-next.screen-edge-nav:after {
     font-size: 18px;
+  }
+
+  .role-badge,
+  .experience-badge-img {
+    font-size: 0.7rem;
+    padding: 6px 10px;
+  }
+
+  .specialty-badge {
+    width: 35px;
+    height: 35px;
+  }
+
+  .badge-icon {
+    width: 14px;
+    height: 14px;
+  }
+
+  .specialty-badge .badge-icon {
+    width: 18px;
+    height: 18px;
   }
 }
 
@@ -821,6 +1103,16 @@ export default defineComponent({
     font-size: 0.85rem;
   }
 
+  .image-container {
+    width: 160px;
+    height: 160px;
+  }
+
+  .image-wrapper {
+    width: 100%;
+    height: 100%;
+  }
+
   .swiper-container {
     padding: 0 30px;
   }
@@ -844,6 +1136,28 @@ export default defineComponent({
     padding: 8px 16px;
     font-size: 0.85rem;
   }
+
+  .role-badge,
+  .experience-badge-img {
+    font-size: 0.65rem;
+    padding: 5px 8px;
+  }
+
+  .specialty-badge {
+    width: 30px;
+    height: 30px;
+    left: 2px;
+  }
+
+  .badge-icon {
+    width: 12px;
+    height: 12px;
+  }
+
+  .specialty-badge .badge-icon {
+    width: 16px;
+    height: 16px;
+  }
 }
 
 /* Скрытие кнопок навигации на очень маленьких экранах */
@@ -856,32 +1170,16 @@ export default defineComponent({
   .swiper-button-next.screen-edge-nav {
     display: none !important;
   }
+
+  .image-container {
+    width: 140px;
+    height: 140px;
+  }
+
+  .role-badge,
+  .experience-badge-img,
+  .specialty-badge {
+    display: none;
+  }
 }
 </style>
-
-<style>
-/* Без scoped для Swiper */
-.swiper-pagination {
-  bottom: 10px !important;
-}
-
-.swiper-pagination-bullet {
-  width: 12px;
-  height: 12px;
-  margin: 0 6px !important;
-  background-color: #f38bb7 !important;
-  opacity: 0.5;
-  transition: all 0.3s ease;
-}
-
-.swiper-pagination-bullet-active {
-  background-color: #c64382 !important;
-  opacity: 1;
-}
-
-/* Отключение кнопок когда нет возможности прокрутки */
-.swiper-button-disabled {
-  opacity: 0.3 !important;
-  cursor: not-allowed !important;
-}
-</style> 
