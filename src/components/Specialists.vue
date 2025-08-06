@@ -1,107 +1,63 @@
 <template>
-  <section id="specialists" class="specialists">
-    <div class="container">
-      <div class="header">
-        <div class="header-content">
-          <h1 class="title">Наша <span class="highlight">команда</span></h1>
-          <p class="subtitle">Мы — команда профессионалов, объединенных любовью к животным и стремлением обеспечить лучший уход для ваших питомцев. Каждый член нашей команды привносит уникальный опыт и заботу в работу клиники.</p>
-          <div class="divider"></div>
-        </div>
-      </div>
+  <main class="testimonials">
+    <h1>Наша <span class="highlight">команда</span></h1>
 
-      <!-- Фильтры -->
-      <div class="filter-buttons">
-        <button
-          v-for="filter in filterOptions"
-          :key="filter.value"
-          :class="{ 'active': activeFilter === filter.value }"
-          @click="activeFilter = filter.value; resetSwiper()"
-        >
-          {{ filter.label }} ({{ filter.count }})
-        </button>
-      </div>
+    <!-- Фильтры -->
+    <div class="filter-buttons">
+      <button
+        v-for="filter in filterOptions"
+        :key="filter.value"
+        :class="{ active: activeFilter === filter.value }"
+        @click="activeFilter = filter.value; updateSlider()"
+      >
+        {{ filter.label }} ({{ filter.count }})
+      </button>
+    </div>
 
-      <!-- Swiper Slider -->
-      <div class="swiper-container" :class="{ 'has-navigation': filteredMembers.length > 3 }">
-        <!-- Стрелки на границах экрана -->
-        <div class="swiper-button-prev screen-edge-nav" v-show="filteredMembers.length > 3"></div>
-        <div class="swiper-button-next screen-edge-nav" v-show="filteredMembers.length > 3"></div>
-        
-        <div class="swiper vet-slider" :class="{ 'centered': filteredMembers.length <= 3 }">
-          <div class="swiper-wrapper">
-            <div v-for="member in filteredMembers" :key="'member-' + member.id" class="swiper-slide specialist-card">
-              <div class="card-front">
-                <div class="image-container">
-                  <div class="image-wrapper">
-                    <img :src="member.image" class="specialist-image" alt="Specialist photo" />
-                    <div class="image-overlay"></div>
-                  </div>
-                  
-                  <!-- Бейдж роли -->
-                  <div class="role-badge" :class="getRoleBadgeClass(member.roleType)">
-                    <svg class="badge-icon" viewBox="0 0 24 24">
-                      <path :d="getRoleIcon(member.roleType)" />
-                    </svg>
-                    <span>{{ getRoleLabel(member.roleType) }}</span>
-                  </div>
-                  
-                  
-                </div>
-                <div class="specialist-content">
-                  <div class="specialist-header">
-                    <h3 class="specialist-name">{{ member.name }}</h3>
-                    <div class="specialist-title">{{ member.role }}</div>
-                    <div class="specialist-specialty">{{ member.specialization }}</div>
-                  </div>
-                  <div v-if="member.experience" class="experience-badge">
-                    <svg class="icon" viewBox="0 0 24 24">
-                      <path d="M12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22C6.47,22 2,17.5 2,12A10,10 0 0,1 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z" />
-                    </svg>
-                    <span>Опыт: {{ member.experience }}</span>
-                  </div>
-                  <div class="specialist-footer">
-                    <button class="more-btn">
-                      <span>Подробнее</span>
-                      <svg class="arrow" viewBox="0 0 24 24">
-                        <path d="M4,11V13H16L10.5,18.5L11.92,19.92L19.84,12L11.92,4.08L10.5,5.5L16,11H4Z" />
-                      </svg>
-                    </button>
-                  </div>
-                </div>
-              </div>
-              <div class="card-back">
-                <div class="back-content">
-                  <div class="details">
-                    <div class="story-section">
-                      <h4 class="section-title">Профессиональный путь</h4>
-                      <div class="story-text">{{ member.biography }}</div>
-                    </div>
-                    <div class="pets-section">
-                      <h4 class="section-title">Домашние питомцы</h4>
-                      <div class="pets-list">{{ member.pets || 'Нет' }}</div>
-                    </div>
-                  </div>
-                  <button class="back-btn">
-                    <svg class="icon" viewBox="0 0 24 24">
-                      <path d="M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20Z" />
-                    </svg>
-                    Назад
-                  </button>
-                </div>
-              </div>
+    <div class="slider">
+      <div class="slide-row" ref="slideRow">
+        <div v-for="member in filteredMembers" :key="'member-' + member.id" class="slide-col">
+          <div class="content">
+            <!-- <p>{{ member.biography }}</p> -->
+            <h2>{{ member.name }}</h2>
+            <p>{{ member.role }}</p>
+            <p v-if="member.specialization" class="specialization">{{ member.specialization }}</p>
+            <p v-if="member.experience" class="experience">Опыт: {{ member.experience }}</p>
+                        <button class="more-btn" @click="currentIndex = filteredMembers.indexOf(member); updateSlider()">
+              Подробнее
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+            <!-- <p v-if="member.pets" class="pets">Питомцы: {{ member.pets }}</p> -->
+          </div>
+          <div class="hero">
+            <img :src="member.image" alt="avatar" />
+            <div class="role-badge" :class="getRoleBadgeClass(member.roleType)">
+              <svg class="badge-icon" viewBox="0 0 24 24">
+                <path :d="getRoleIcon(member.roleType)" />
+              </svg>
+              <span>{{ getRoleLabel(member.roleType) }}</span>
             </div>
           </div>
-          <div class="swiper-pagination"></div>
         </div>
       </div>
     </div>
-  </section>
+
+    <div class="indicator" v-if="filteredMembers.length > 1">
+      <span
+        v-for="(member, index) in filteredMembers"
+        :key="'indicator-' + index"
+        class="btn"
+        :class="{ active: currentIndex === index }"
+        @click="currentIndex = index; updateSlider()"
+      ></span>
+    </div>
+  </main>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
-import Swiper from 'swiper'
-import { Navigation, Pagination } from 'swiper/modules'
+import { defineComponent, ref, computed, onMounted, onUnmounted } from 'vue'
 
 interface TeamMember {
   id: number
@@ -116,7 +72,7 @@ interface TeamMember {
 }
 
 export default defineComponent({
-  name: 'Specialists',
+  name: 'TeamTestimonials',
   setup() {
     const veterinarians = ref<TeamMember[]>([
       {
@@ -146,7 +102,7 @@ export default defineComponent({
         image: './assets/img/specialists/EA.jpg',
         name: 'Черных Елена Александровна',
         role: 'Терапевт',
-        specialization: 'Специалист герпетолог ( лечение рептилий и амфибий )',
+        specialization: 'Специалист герпетолог (лечение рептилий и амфибий)',
         biography: 'Начинала с изготовления ортопедических изделий для собак и кошек, затем получила ветеринарное образование. Открыла для себя мир экзотических животных во время практики и влюбилась в рептилий. Теперь это узкая специализация, которой она посвящает всю свою профессиональную страсть.',
         experience: '4 года',
         pets: 'Две кошки, аксолотль и ковровый питон.',
@@ -206,7 +162,9 @@ export default defineComponent({
 
     const teamMembers = ref<TeamMember[]>([...veterinarians.value, ...assistants.value, ...administrators.value])
     const activeFilter = ref('все')
-    let swiperInstance: Swiper | null = null
+    const currentIndex = ref(0)
+    const slideRow = ref<HTMLElement | null>(null)
+    const main = ref<HTMLElement | null>(null)
 
     const filterOptions = computed(() => [
       { value: 'все', label: 'Вся команда', count: teamMembers.value.length },
@@ -216,9 +174,11 @@ export default defineComponent({
     ])
 
     const filteredMembers = computed(() => {
-      return activeFilter.value === 'все'
+      const members = activeFilter.value === 'все'
         ? teamMembers.value
         : teamMembers.value.filter(member => member.roleType === activeFilter.value)
+      currentIndex.value = 0 // Reset index when filter changes
+      return members
     })
 
     const getRoleBadgeClass = (roleType: string) => {
@@ -242,103 +202,39 @@ export default defineComponent({
     const getRoleIcon = (roleType: string) => {
       switch (roleType) {
         case 'врач': return 'M19.5,8A1.5,1.5 0 0,0 21,6.5A1.5,1.5 0 0,0 19.5,5A1.5,1.5 0 0,0 18,6.5A1.5,1.5 0 0,0 19.5,8M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M15.5,8A1.5,1.5 0 0,0 17,6.5A1.5,1.5 0 0,0 15.5,5A1.5,1.5 0 0,0 14,6.5A1.5,1.5 0 0,0 15.5,8M12,14C13.11,14 14,13.11 14,12C14,10.89 13.11,10 12,10C10.89,10 10,10.89 10,12C10,13.11 10.89,14 12,14Z'
-        case 'ассистент': return 'M12,2A3,3 0 0,1 15,5V11A3,3 0 0,1 12,14A3,3 0 0,1 9,11V5A3,3 0 0,1 12,2M19,11C19,14.53 16.39,17.44 13,17.93V21H11V17.93C7.61,17.44 5,14.53 5,11H7A5,5 0 0,0 12,16A5,5 0 0,0 17,11H19Z'
+        case 'ассистент': return 'M12,2A3,3 0 0,1 15,5V11A3,3 0 0,1 12,14A3,3 0 0,1 9,11V5A3,3 0 0,1 12,2M19,11C19,14.53 16.39,17.44 13,17.93V21H11V17.93C7.61,17.44 5,11H7A5,5 0 0,0 12,16A5,5 0 0,0 17,11H19Z'
         case 'администратор': return 'M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z'
         default: return 'M19.5,8A1.5,1.5 0 0,0 21,6.5A1.5,1.5 0 0,0 19.5,5A1.5,1.5 0 0,0 18,6.5A1.5,1.5 0 0,0 19.5,8M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M15.5,8A1.5,1.5 0 0,0 17,6.5A1.5,1.5 0 0,0 15.5,5A1.5,1.5 0 0,0 14,6.5A1.5,1.5 0 0,0 15.5,8M12,14C13.11,14 14,13.11 14,12C14,10.89 13.11,10 12,10C10.89,10 10,10.89 10,12C10,13.11 10.89,14 12,14Z'
       }
     }
 
-    const resetSwiper = async () => {
-      if (swiperInstance) {
-        swiperInstance.destroy(true, true)
-        swiperInstance = null
+    const updateSlider = () => {
+      if (slideRow.value && main.value) {
+        const mainWidth = main.value.offsetWidth
+        const translateValue = currentIndex.value * -mainWidth
+        slideRow.value.style.transform = `translateX(${translateValue}px)`
       }
-      
-      await nextTick()
-      
-      const membersCount = filteredMembers.value.length
-      const isLoopEnabled = membersCount > 3
-      const showNavigation = membersCount > 3
-      
-      swiperInstance = new Swiper('.vet-slider', {
-        modules: [Navigation, Pagination],
-        slidesPerView: Math.min(membersCount, 3),
-        spaceBetween: 30,
-        loop: isLoopEnabled,
-        centeredSlides: true,
-        watchSlidesProgress: true,
-        allowTouchMove: isLoopEnabled,
-        navigation: showNavigation ? {
-          nextEl: '.swiper-button-next.screen-edge-nav',
-          prevEl: '.swiper-button-prev.screen-edge-nav',
-        } : false,
-        pagination: showNavigation ? {
-          el: '.swiper-pagination',
-          clickable: true,
-          dynamicBullets: membersCount > 5,
-          dynamicMainBullets: 3,
-        } : false,
-        breakpoints: {
-          320: {
-            slidesPerView: 1,
-            spaceBetween: 20,
-            centeredSlides: true,
-          },
-          768: {
-            slidesPerView: Math.min(membersCount, 2),
-            spaceBetween: 25,
-            centeredSlides: true,
-          },
-          992: {
-            slidesPerView: Math.min(membersCount, 3),
-            spaceBetween: 30,
-            centeredSlides: true,
-          },
-          1200: {
-            slidesPerView: Math.min(membersCount, 3),
-            spaceBetween: 30,
-            centeredSlides: true,
-          }
-        },
-      })
-
-      // Реинициализация обработчиков переворота карточек
-      document.querySelectorAll('.specialist-card').forEach(card => {
-        const moreBtn = card.querySelector('.more-btn')
-        const backBtn = card.querySelector('.back-btn')
-        moreBtn?.removeEventListener('click', handleMoreClick)
-        backBtn?.removeEventListener('click', handleBackClick)
-        moreBtn?.addEventListener('click', handleMoreClick)
-        backBtn?.addEventListener('click', handleBackClick)
-      })
-    }
-
-    const handleMoreClick = (event: Event) => {
-      const card = (event.currentTarget as HTMLElement).closest('.specialist-card')
-      card?.classList.add('flipped')
-    }
-
-    const handleBackClick = (event: Event) => {
-      const card = (event.currentTarget as HTMLElement).closest('.specialist-card')
-      card?.classList.remove('flipped')
     }
 
     onMounted(() => {
-      resetSwiper()
+      main.value = document.querySelector('main')
+      updateSlider()
+      window.addEventListener('resize', updateSlider)
     })
 
     onUnmounted(() => {
-      if (swiperInstance) {
-        swiperInstance.destroy(true, true)
-      }
+      window.removeEventListener('resize', updateSlider)
     })
 
-    return { 
-      teamMembers, 
-      filterOptions, 
-      activeFilter, 
-      filteredMembers, 
-      resetSwiper,
+    return {
+      teamMembers,
+      filterOptions,
+      activeFilter,
+      filteredMembers,
+      currentIndex,
+      slideRow,
+      main,
+      updateSlider,
       getRoleBadgeClass,
       getRoleLabel,
       getRoleIcon
@@ -348,54 +244,28 @@ export default defineComponent({
 </script>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Playfair+Display:wght@700&display=swap");
 
-.specialists {
-  padding: 100px 40px;
-  background: #fefafb;
-  position: relative;
-  overflow: hidden;
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: "Poppins", sans-serif;
 }
 
-.container {
-  max-width: 1200px;
+.testimonials {
+  width: 1200px;
+  padding: 80px 15px;
+  position: relative;
   margin: 0 auto;
-  position: relative;
-  z-index: 1;
-  padding: 0 20px;
 }
 
-.header {
+.testimonials h1 {
   text-align: center;
-  margin-bottom: 80px;
-  position: relative;
-}
-
-.header::after {
-  content: '';
-  position: absolute;
-  bottom: -40px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 200px;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(214, 122, 143, 0.5), transparent);
-}
-
-.header-content {
-  max-width: 800px;
-  margin: 0 auto;
-}
-
-.title {
+  font-size: clamp(2rem, 4vw, 2.6rem);
   font-family: 'Playfair Display', serif;
-  font-size: 3.5rem;
-  font-weight: 700;
-  color: #2d1e24;
-  margin-bottom: 20px;
-  line-height: 1.2;
-  position: relative;
-  display: inline-block;
+  color: #83557b;
+  margin-bottom: 40px;
 }
 
 .highlight {
@@ -415,23 +285,6 @@ export default defineComponent({
   transform: skewY(-2deg);
 }
 
-.subtitle {
-  font-family: 'Montserrat', sans-serif;
-  font-size: 1.3rem;
-  color: #6b5a60;
-  margin-bottom: 30px;
-  font-weight: 400;
-  line-height: 1.6;
-}
-
-.divider {
-  width: 100px;
-  height: 4px;
-  background: linear-gradient(90deg, #eab9cf, #d67a8f);
-  margin: 0 auto;
-  border-radius: 2px;
-}
-
 .filter-buttons {
   display: flex;
   justify-content: center;
@@ -446,7 +299,7 @@ export default defineComponent({
   border-radius: 25px;
   background: none;
   color: #d67a8f;
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -461,186 +314,79 @@ export default defineComponent({
   background: #f9e8ee;
 }
 
-.swiper-container {
-  position: relative;
-  margin-bottom: 20px;
-  max-width: 1200px;
-  margin-left: auto;
-  margin-right: auto;
-  padding: 0 80px;
-  overflow: hidden;
-}
-
-.vet-slider {
-  position: relative;
-  padding-bottom: 60px;
-  overflow: visible;
-  max-width: 100%;
-}
-
-.swiper-slide.specialist-card {
-  background: white;
-  border-radius: 20px;
-  box-shadow: 0 15px 35px rgba(107, 76, 87, 0.12);
-  transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
-  position: relative;
-  transform-style: preserve-3d;
-  min-height: 580px;
-  overflow: hidden;
-  width: 320px;
-  max-width: 320px;
-  flex-shrink: 0;
-  border: 2px solid rgba(214, 122, 143, 0.1);
-}
-
-.specialist-card:hover {
-  box-shadow: 0 20px 45px rgba(107, 76, 87, 0.18);
-  border-color: rgba(214, 122, 143, 0.3);
-}
-
-.specialist-card:not(.flipped):hover {
-  transform: translateY(-8px);
-}
-
-/* Стрелки на границах контейнера секции */
-.swiper-button-prev.screen-edge-nav,
-.swiper-button-next.screen-edge-nav {
-  color: #d67a8f;
-  background: rgba(255, 255, 255, 0.95);
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  box-shadow: 0 6px 20px rgba(107, 76, 87, 0.25);
-  transition: all 0.3s ease;
-  z-index: 10;
-  top: 50%;
-  transform: translateY(-50%);
-  margin-top: 0;
-  position: absolute;
-  backdrop-filter: blur(10px);
-}
-
-.swiper-button-prev.screen-edge-nav {
-  left: 10px;
-}
-
-.swiper-button-next.screen-edge-nav {
-  right: 10px;
-}
-
-.swiper-button-prev.screen-edge-nav:hover,
-.swiper-button-next.screen-edge-nav:hover {
-  background: white;
-  transform: scale(1.1) translateY(-45%);
-  box-shadow: 0 8px 25px rgba(107, 76, 87, 0.35);
-}
-
-.swiper-button-prev.screen-edge-nav:after,
-.swiper-button-next.screen-edge-nav:after {
-  font-size: 24px;
-  font-weight: bold;
-}
-
-.card-front, .card-back {
-  padding: 0;
-  backface-visibility: hidden;
-  position: absolute;
-  top: 0;
-  left: 0;
+.slider {
   width: 100%;
-  height: 100%;
-  box-sizing: border-box;
-  transition: transform 0.6s ease;
-  border-radius: 20px;
+  overflow: hidden;
 }
 
-.card-front {
-  background: white;
+.slide-row {
   display: flex;
-  flex-direction: column;
-  z-index: 2;
-  transform: rotateY(0deg);
-}
-
-.card-back {
-  background: linear-gradient(135deg, #6b4c57 0%, #8b6f7a 100%);
-  transform: rotateY(180deg);
-  color: white;
-  display: flex;
-  flex-direction: column;
-  z-index: 3;
-}
-
-.specialist-card.flipped .card-front {
-  transform: rotateY(180deg);
-}
-
-.specialist-card.flipped .card-back {
-  transform: rotateY(360deg);
-}
-
-.image-container {
-  position: relative;
-  width: 220px;
-  height: 220px;
-  margin: 25px auto 0;
-  transition: all 0.3s ease;
-}
-
-.image-wrapper {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  border-radius: 50%;
-  box-shadow: 0 8px 25px rgba(107, 76, 87, 0.25);
-  border: 4px solid rgba(214, 122, 143, 0.2);
-  transition: all 0.3s ease;
-}
-
-.specialist-card:hover .image-wrapper {
-  box-shadow: 0 12px 35px rgba(107, 76, 87, 0.35);
-  border-color: rgba(214, 122, 143, 0.4);
-  transform: scale(1.02);
-}
-
-.image-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(135deg, rgba(214, 122, 143, 0.1), rgba(214, 122, 143, 0.05));
-  transition: opacity 0.3s ease;
-}
-
-.specialist-card:hover .image-overlay {
-  opacity: 0.7;
-}
-
-.specialist-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
+  width: calc(100% * var(--slide-count));
   transition: transform 0.5s ease;
 }
 
-.specialist-card:hover .specialist-image {
-  transform: scale(1.08);
+.slide-col {
+  position: relative;
+  width: 100%;
+  height: 400px;
+  flex-shrink: 0;
 }
 
-/* Скрытие бейджей при переворачивании карточки */
-.specialist-card.flipped .role-badge,
-.specialist-card.flipped .experience-badge-img,
-.specialist-card.flipped .specialty-badge {
-  opacity: 0 !important;
-  transform: scale(0) !important;
-  pointer-events: none !important;
-  visibility: hidden !important;
+.hero {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
 }
 
-/* Бейджи на изображении */
+.hero img {
+  height: 100%;
+  width: 320px;
+  object-fit: cover;
+  border-radius: 10px;
+  pointer-events: none;
+  user-select: none;
+}
+
+.content {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 520px;
+  height: 270px;
+  color: #4d4352;
+  background: rgba(255, 255, 255, 0.7);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(4.5px);
+  border-radius: 10px;
+  padding: 45px;
+  z-index: 2;
+  user-select: none;
+}
+
+.content p {
+  font-size: 1.25rem;
+  font-weight: 400;
+  line-height: 1.3;
+}
+
+.content h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-top: 35px;
+  color: #4d4352;
+}
+
+.content .specialization,
+.content .experience,
+.content .pets {
+  font-size: 0.95rem;
+  font-style: italic;
+  color: #6b5a60;
+  margin-top: 10px;
+}
+
 .role-badge {
   position: absolute;
   top: 15px;
@@ -650,11 +396,10 @@ export default defineComponent({
   gap: 6px;
   padding: 8px 12px;
   border-radius: 20px;
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 0.75rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
   backdrop-filter: blur(10px);
   border: 2px solid rgba(255, 255, 255, 0.3);
@@ -677,47 +422,6 @@ export default defineComponent({
   color: white;
 }
 
-.experience-badge-img {
-  position: absolute;
-  bottom: 15px;
-  left: 15px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 12px;
-  border-radius: 20px;
-  background: linear-gradient(135deg, rgba(255, 193, 7, 0.95), rgba(255, 213, 79, 0.95));
-  color: #8a6914;
-  font-family: 'Montserrat', sans-serif;
-  font-size: 0.75rem;
-  font-weight: 700;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-  backdrop-filter: blur(10px);
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  transition: all 0.3s ease;
-  z-index: 5;
-}
-
-.specialty-badge {
-  position: absolute;
-  top: 50%;
-  left: 5px;
-  transform: translateY(-50%);
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  background: linear-gradient(135deg, rgba(156, 39, 176, 0.95), rgba(186, 104, 200, 0.95));
-  color: white;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-  backdrop-filter: blur(10px);
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  transition: all 0.3s ease;
-  z-index: 5;
-}
-
 .badge-icon {
   width: 16px;
   height: 16px;
@@ -725,461 +429,114 @@ export default defineComponent({
   flex-shrink: 0;
 }
 
-.specialty-badge .badge-icon {
-  width: 20px;
-  height: 20px;
-}
-
-/* Эффекты при наведении на бейджи */
-.role-badge:hover,
-.experience-badge-img:hover,
-.specialty-badge:hover {
-  transform: scale(1.1);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-}
-
-.specialist-content {
-  padding: 25px;
-  flex-grow: 1;
+.indicator {
   display: flex;
-  flex-direction: column;
+  justify-content: center;
+  margin-top: 4rem;
 }
 
-.specialist-header {
-  margin-bottom: 20px;
-}
-
-.specialist-name {
-  font-family: 'Playfair Display', serif;
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: #3a2a30;
-  margin-bottom: 10px;
-  text-align: center;
-  line-height: 1.3;
-}
-
-.specialist-title {
-  font-family: 'Montserrat', sans-serif;
-  font-size: 0.95rem;
-  color: #d67a8f;
-  text-align: center;
-  line-height: 1.5;
-  font-weight: 600;
-  margin-bottom: 5px;
-}
-
-.specialist-specialty {
-  font-family: 'Montserrat', sans-serif;
-  font-size: 0.9rem;
-  color: #6b5a60;
-  text-align: center;
-  line-height: 1.5;
-  font-style: italic;
-}
-
-.experience-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: linear-gradient(135deg, #f9f0f3, #f5e8ed);
-  color: #6b4c57;
-  padding: 10px 18px;
-  border-radius: 25px;
-  font-family: 'Montserrat', sans-serif;
-  font-size: 0.85rem;
-  font-weight: 600;
-  margin: 0 auto 20px;
-  box-shadow: 0 4px 12px rgba(214, 122, 143, 0.15);
-  border: 1px solid rgba(214, 122, 143, 0.2);
-  transition: all 0.3s ease;
-}
-
-.experience-badge:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 18px rgba(214, 122, 143, 0.25);
-}
-
-.experience-badge .icon {
-  width: 16px;
-  height: 16px;
-  fill: #d67a8f;
-}
-
-.specialist-footer {
-  margin-top: auto;
-  text-align: center;
-}
-
-.more-btn {
-  background: linear-gradient(135deg, #eab9cf 0%, #d67a8f 100%);
-  color: white;
-  border: none;
-  padding: 14px 28px;
-  border-radius: 30px;
-  font-family: 'Montserrat', sans-serif;
-  font-weight: 600;
-  font-size: 0.95rem;
+.indicator .btn {
+  display: inline-block;
+  height: 15px;
+  width: 15px;
+  margin: 4px;
+  border-radius: 15px;
+  background: #fff;
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 6px 20px rgba(214, 122, 143, 0.3);
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  position: relative;
-  overflow: hidden;
+  transition: all 0.5s ease-in-out;
 }
 
-.more-btn::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-  transition: left 0.5s ease;
+.indicator .btn.active {
+  width: 30px;
+  background: #d67a8f;
 }
 
-.more-btn:hover::before {
-  left: 100%;
-}
-
-.more-btn:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 25px rgba(214, 122, 143, 0.4);
-}
-
-.more-btn .arrow {
-  width: 18px;
-  height: 18px;
-  fill: white;
-  transition: transform 0.3s ease;
-}
-
-.more-btn:hover .arrow {
-  transform: translateX(4px);
-}
-
-.back-content {
-  padding: 30px;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  overflow-y: auto;
-}
-
-.details {
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 25px;
-}
-
-.section-title {
-  font-family: 'Playfair Display', serif;
-  font-size: 1.1rem;
-  margin-bottom: 15px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  color: white;
-  font-weight: 600;
-}
-
-.section-title .icon {
-  width: 20px;
-  height: 20px;
-  fill: #f0c0cd;
-}
-
-.story-text {
-  font-family: 'Montserrat', sans-serif;
-  font-size: 0.9rem;
-  line-height: 1.7;
-  color: #f0e6e9;
-}
-
-.pets-list {
-  font-family: 'Montserrat', sans-serif;
-  font-size: 0.9rem;
-  font-style: italic;
-  color: #f0e6e9;
-  padding-left: 15px;
-  border-left: 3px solid #d67a8f;
-}
-
-.back-btn {
-  background: transparent;
-  color: white;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  padding: 12px 28px;
-  border-radius: 30px;
-  font-family: 'Montserrat', sans-serif;
-  font-weight: 600;
-  font-size: 0.9rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  margin-top: 20px;
-  align-self: center;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.back-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: white;
-  transform: translateY(-2px);
-}
-
-.back-btn .icon {
-  width: 16px;
-  height: 16px;
-  fill: white;
-}
-
-
-/* Стили для неактивных точек пагинации */
-.vet-slider :deep(.swiper-pagination-bullet) {
-  width: 12px; /* Измените размер точки */
-  height: 12px; /* Измените размер точки */
-  border-radius: 50%; /* Оставляем круглой */
-  background-color: #b0bec5; /* Цвет неактивной точки (например, серый) */
-  opacity: 1; /* Убедитесь, что она видна */
-  transition: background-color 0.3s ease; /* Плавный переход цвета */
-  margin: 0 4px;
-}
-
-/* Стили для активной точки пагинации */
-.vet-slider :deep(.swiper-pagination-bullet-active) {
-  background-color: #d67a8f; /* Цвет активной точки (например, розовый из вашей палитры) */
-  width: 14px; /* Слегка увеличим активную точку */
-  height: 14px;
-  /* Можно добавить тень или border */
-  box-shadow: 0 0 5px rgba(214, 122, 143, 0.5);
-}
-
-
-
-
-/* Адаптивность */
-@media (max-width: 1400px) {
-  .swiper-container {
-    padding: 0 70px;
-  }
-}
-
-@media (max-width: 1200px) {
-  .swiper-container {
-    padding: 0 60px;
-  }
-}
-
-@media (max-width: 992px) {
-  .container {
-    max-width: 960px;
-    padding: 0 15px;
+@media (max-width: 850px) {
+  .testimonials {
+    width: 500px;
   }
 
-  .title {
-    font-size: 2.8rem;
+  .slide-row {
+    width: calc(100% * var(--slide-count));
   }
 
-  .subtitle {
-    font-size: 1.1rem;
+  .slide-col {
+    width: 100%;
+    height: 250px;
   }
 
-  .swiper-container {
-    padding: 0 50px;
-  }
-
-  .image-container {
+  .hero img {
     width: 200px;
+  }
+
+  .content {
+    width: 320px;
     height: 200px;
+    padding: 20px;
   }
 
-  .image-wrapper {
-    width: 100%;
-    height: 100%;
+  .content p {
+    font-size: 0.9rem;
   }
 
-  .swiper-button-prev.screen-edge-nav,
-  .swiper-button-next.screen-edge-nav {
-    width: 50px;
-    height: 50px;
+  .content h2 {
+    font-size: 1.2rem;
+    margin-top: 20px;
   }
 
-  .swiper-button-prev.screen-edge-nav:after,
-  .swiper-button-next.screen-edge-nav:after {
-    font-size: 20px;
-  }
-}
-
-@media (max-width: 768px) {
-  .specialists {
-    padding: 80px 15px;
+  .content .specialization,
+  .content .experience,
+  .content .pets {
+    font-size: 0.85rem;
   }
 
-  .container {
-    max-width: 720px;
-    padding: 0 10px;
-  }
-
-  .title {
-    font-size: 2.2rem;
-  }
-
-  .subtitle {
-    font-size: 1rem;
-  }
-
-  .image-container {
-    width: 180px;
-    height: 180px;
-  }
-
-  .image-wrapper {
-    width: 100%;
-    height: 100%;
-  }
-
-  .swiper-container {
-    padding: 0 40px;
-  }
-
-  .swiper-button-prev.screen-edge-nav,
-  .swiper-button-next.screen-edge-nav {
-    width: 45px;
-    height: 45px;
-  }
-
-  .swiper-button-prev.screen-edge-nav:after,
-  .swiper-button-next.screen-edge-nav:after {
-    font-size: 18px;
-  }
-
-  .role-badge,
-  .experience-badge-img {
+  .role-badge {
     font-size: 0.7rem;
     padding: 6px 10px;
-  }
-
-  .specialty-badge {
-    width: 35px;
-    height: 35px;
   }
 
   .badge-icon {
     width: 14px;
     height: 14px;
   }
-
-  .specialty-badge .badge-icon {
-    width: 18px;
-    height: 18px;
-  }
 }
 
-@media (max-width: 480px) {
-  .container {
-    max-width: 100%;
-    padding: 0 5px;
+@media (max-width: 550px) {
+  .testimonials {
+    width: 300px;
   }
 
-  .title {
-    font-size: 1.8rem;
+  .slide-row {
+    width: calc(100% * var(--slide-count));
   }
 
-  .subtitle {
-    font-size: 0.9rem;
-  }
-
-  .specialist-name {
-    font-size: 1.3rem;
-  }
-
-  .specialist-title, .specialist-specialty {
-    font-size: 0.85rem;
-  }
-
-  .image-container {
-    width: 160px;
-    height: 160px;
-  }
-
-  .image-wrapper {
+  .slide-col {
     width: 100%;
-    height: 100%;
+    height: 300px;
   }
 
-  .swiper-container {
-    padding: 0 30px;
+  .hero {
+    top: 60%;
+    height: 100px;
+    z-index: 5;
   }
 
-  .swiper-button-prev.screen-edge-nav,
-  .swiper-button-next.screen-edge-nav {
-    width: 40px;
-    height: 40px;
+  .hero img {
+    width: 100px;
   }
 
-  .swiper-button-prev.screen-edge-nav:after,
-  .swiper-button-next.screen-edge-nav:after {
-    font-size: 16px;
+  .content {
+    width: 300px;
   }
 
-  .filter-buttons {
-    gap: 10px;
-  }
-
-  .filter-buttons button {
-    padding: 8px 16px;
-    font-size: 0.85rem;
-  }
-
-  .role-badge,
-  .experience-badge-img {
+  .role-badge {
     font-size: 0.65rem;
     padding: 5px 8px;
-  }
-
-  .specialty-badge {
-    width: 30px;
-    height: 30px;
-    left: 2px;
   }
 
   .badge-icon {
     width: 12px;
     height: 12px;
-  }
-
-  .specialty-badge .badge-icon {
-    width: 16px;
-    height: 16px;
-  }
-}
-
-/* Скрытие кнопок навигации на очень маленьких экранах */
-@media (max-width: 320px) {
-  .swiper-container {
-    padding: 0 10px;
-  }
-  
-  .swiper-button-prev.screen-edge-nav,
-  .swiper-button-next.screen-edge-nav {
-    display: none !important;
-  }
-
-  .image-container {
-    width: 140px;
-    height: 140px;
-  }
-
-  .role-badge,
-  .experience-badge-img,
-  .specialty-badge {
-    display: none;
   }
 }
 </style>

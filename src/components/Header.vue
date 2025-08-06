@@ -2,7 +2,7 @@
   <header>
     <nav>
       <router-link to="/" class="logo_name">
-        <img src="/assets/img/logo_name.png" alt="ExoVet Logo" />
+        <img src="/assets/img/ex.png" alt="ExoVet Logo" />
       </router-link>
       
       <!-- Анимированная кнопка бургер-меню -->
@@ -48,7 +48,7 @@ export default defineComponent({
 <style scoped>
 header {
   background: linear-gradient(135deg, var(--secondary-color) 40%, #D9A7B0 100%);
-  padding: 20px;
+  padding: 20px 0;
   position: sticky;
   top: 0;
   z-index: 100;
@@ -58,11 +58,22 @@ header {
 
 nav {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-between; /* Измените это */
   align-items: center;
   max-width: 1200px;
   margin: 0 auto;
   position: relative;
+}
+
+.nav-menu {
+  list-style: none;
+  display: flex;
+  gap: 20px;
+  white-space: nowrap;
+  justify-content: flex-end; /* Добавьте это */
+  align-items: center;
+  margin: 0; /* Добавьте это */
+  padding: 0; /* Добавьте это */
 }
 
 .logo_name {
