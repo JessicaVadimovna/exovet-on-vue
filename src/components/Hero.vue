@@ -1,26 +1,24 @@
 <template>
   <section class="hero">
-    <!-- Анимированные частички -->
-    <div class="particles-container">
+    <!-- Анимированные пузыри -->
+    <div class="bubble-container">
       <div
-        v-for="particle in particles"
-        :key="particle.id"
-        class="particle"
+        v-for="bubble in bubbles"
+        :key="bubble.id"
+        class="bubble"
         :style="{
-          left: particle.x + '%',
-          top: particle.y + '%',
-          width: particle.size + 'px',
-          height: particle.size + 'px',
-          backgroundColor: particle.color,
-          animationDuration: particle.duration + 's',
-          animationDelay: particle.delay + 's'
+          left: bubble.x + 'vw',
+          width: bubble.size + 'px',
+          height: bubble.size + 'px',
+          animationDuration: bubble.duration + 's',
+          animationDelay: bubble.delay + 's'
         }"
       ></div>
     </div>
     
     <div class="hero-content">
       <div class="hero-image-wrapper">
-        <img src="/assets/img/logo2.gif" alt="ExoVet Clinic" class="hero-image" />
+        <img src="/assets/img/logo2.gif" alt="ExoVet Clinic" class="hero-image" draggable="false" />
       </div>
       <div class="hero-text">
         <h1>Ветеринарная клиника для экзотических животных</h1>
@@ -44,12 +42,10 @@ interface Slide {
   text: string
 }
 
-interface Particle {
+interface Bubble {
   id: number
   x: number
-  y: number
   size: number
-  color: string
   duration: number
   delay: number
 }
@@ -58,54 +54,39 @@ export default defineComponent({
   name: 'Hero',
   setup() {
     const currentSlide = ref<number>(0)
-    const particles = ref<Particle[]>([])
+    const bubbles = ref<Bubble[]>([])
     const slides: Slide[] = [
       { text: 'Мы заботимся о ваших необычных питомцах с любовью и профессионализмом!' },
-      { text: 'Выбирая нас, вы получите профессиональную ветеринарную помощь' },
       { text: 'Часы работы: ежедневно с 10:00-20:00 (по предварительному звонку)' },
-      { text: 'ExoVet - это специализированная клиника, которая предоставляет экспертную ветеринарную помощь исключительно экзотическим животным.' },
+      { text: 'Мы используем только современные методы диагностики и лечения' },
+      { text: 'Мы заботимся о здоровье и благополучии ваших питомцев' },
+      { text: 'Мы готовы ответить на все ваши вопросы и помочь в любой ситуации' },
+      { text: 'Мы предлагаем индивидуальный подход к каждому питомцу' },
+      { text: 'Мы рады видеть вас и ваших питомцев в нашей клинике!' },
       { text: 'Записаться на прием: <a href="tel:+79526220616">+7 (952) 622-06-16</a>' }
     ]
     const slideInterval = ref<number | null>(null)
+    const bubbleInterval = ref<number | null>(null)
     const touchStartX = ref<number>(0)
     const touchEndX = ref<number>(0)
     const touchThreshold = 50
     const sliderHeight = ref<string>('120px')
 
-    // Создание частичек
-    const createParticles = (): void => {
-      const colors = [
-        'rgba(233, 30, 99, 0.3)',
-        'rgba(233, 30, 99, 0.2)',
-        'rgba(233, 30, 99, 0.1)',
-        'rgba(161, 128, 143, 0.4)',
-        'rgba(165, 108, 134, 0.3)',
-        'rgba(232, 195, 201, 0.5)',
-        'rgba(255, 182, 193, 0.3)',
-        'rgba(240, 128, 128, 0.2)',
-        'rgba(255, 160, 122, 0.3)',
-        'rgba(255, 192, 203, 0.4)',
-        'rgba(221, 160, 221, 0.2)',
-        'rgba(218, 112, 214, 0.3)',
-        'rgba(186, 85, 211, 0.2)',
-        'rgba(147, 112, 219, 0.3)',
-        'rgba(138, 43, 226, 0.2)',
-        'rgba(200, 200, 200, 0.3)',
-        'rgba(180, 180, 180, 0.2)',
-        'rgba(220, 220, 220, 0.4)',
-        'rgba(160, 160, 160, 0.2)',
-        'rgba(240, 240, 240, 0.3)'
-      ]
-      
-      particles.value = Array.from({ length: 50 }, (_, index) => ({
-        id: index,
-        x: Math.random() * 100, // равномерно по всей ширине
-        y: Math.random() * 100, // равномерно по всей высоте
-        size: Math.random() * 12 + 2, // размер от 2 до 14px - большой разброс
-        color: colors[Math.floor(Math.random() * colors.length)],
-        duration: Math.random() * 20 + 8, // длительность от 8 до 28 секунд
-        delay: Math.random() * 10 // задержка до 10 секунд для разнообразия
-      }))
+    // Создание пузырьков
+    const createBubble = (): void => {
+      const newBubble: Bubble = {
+        id: Date.now() + Math.random(), // Уникальный ID
+        x: Math.random() * 100, // Позиция по X в процентах
+        size: Math.random() * 80 + 20, // Размер от 20 до 100px
+        duration: 6 + Math.random() * 6, // Длительность анимации от 6 до 12 секунд
+        delay: Math.random() * 2 // Задержка до 2 секунд
+      }
+      bubbles.value.push(newBubble)
+
+      // Удаление пузырька после завершения анимации
+      setTimeout(() => {
+        bubbles.value = bubbles.value.filter(b => b.id !== newBubble.id)
+      }, (newBubble.duration + newBubble.delay) * 1000)
     }
 
     const updateSliderHeight = (): void => {
@@ -183,20 +164,21 @@ export default defineComponent({
     }
 
     onMounted((): void => {
-      createParticles()
       updateSliderHeight()
       slideInterval.value = setInterval(nextSlide, 5000)
+      bubbleInterval.value = setInterval(createBubble, 300)
       console.log('Component mounted, initial slide:', currentSlide.value, 'Text:', slides[currentSlide.value].text)
     })
 
     onBeforeUnmount((): void => {
       if (slideInterval.value) clearInterval(slideInterval.value)
+      if (bubbleInterval.value) clearInterval(bubbleInterval.value)
     })
 
     return { 
       currentSlide, 
       slides, 
-      particles,
+      bubbles,
       sliderHeight, 
       showSlide, 
       handleTouchStart, 
@@ -217,7 +199,7 @@ export default defineComponent({
   background-color: #fcf6f8;
 }
 
-.particles-container {
+.bubble-container {
   position: absolute;
   top: 0;
   left: 0;
@@ -227,38 +209,29 @@ export default defineComponent({
   z-index: 1;
 }
 
-.particle {
+.bubble {
   position: absolute;
+  bottom: -100px;
   border-radius: 50%;
-  opacity: 0.5;
-  animation: gentle-float infinite ease-in-out;
-  z-index: 1;
+  background: radial-gradient(
+    circle at 30% 30%,
+    rgba(255, 245, 245, 0.9), /* Brighter starting point */
+    rgba(233, 30, 99, 0.5) /* Vibrant pinkish hue for contrast */
+  );
+  opacity: 0.8; /* Slightly increased opacity for visibility */
+  animation: rise linear infinite;
+  backdrop-filter: blur(2px);
+  border: 2px solid rgba(216, 99, 138, 0.7); /* Bolder, matching border */
 }
 
-@keyframes gentle-float {
+@keyframes rise {
   0% {
-    transform: translateY(0px) translateX(0px) scale(1) rotate(0deg);
-    opacity: 0.3;
-  }
-  20% {
-    transform: translateY(-25px) translateX(15px) scale(1.3) rotate(72deg);
+    transform: translateY(0) scale(1);
     opacity: 0.7;
   }
-  40% {
-    transform: translateY(-50px) translateX(-10px) scale(0.8) rotate(144deg);
-    opacity: 0.9;
-  }
-  60% {
-    transform: translateY(-30px) translateX(25px) scale(1.5) rotate(216deg);
-    opacity: 0.6;
-  }
-  80% {
-    transform: translateY(-10px) translateX(-20px) scale(0.9) rotate(288deg);
-    opacity: 0.8;
-  }
   100% {
-    transform: translateY(0px) translateX(0px) scale(1) rotate(360deg);
-    opacity: 0.3;
+    transform: translateY(-120vh) scale(1.1);
+    opacity: 0;
   }
 }
 
@@ -395,12 +368,12 @@ export default defineComponent({
     padding: 12px 20px;
   }
   
-  .particle {
-    opacity: 0.3;
+  .bubble {
+    opacity: 0.5;
   }
   
-  /* Уменьшаем количество частичек на мобильных */
-  .particle:nth-child(n+26) {
+  /* Уменьшаем количество пузырьков на мобильных */
+  .bubble:nth-child(n+26) {
     display: none;
   }
 }

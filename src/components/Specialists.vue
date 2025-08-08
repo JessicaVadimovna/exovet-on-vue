@@ -8,56 +8,112 @@
         v-for="filter in filterOptions"
         :key="filter.value"
         :class="{ active: activeFilter === filter.value }"
-        @click="activeFilter = filter.value; updateSlider()"
+        @click="activeFilter = filter.value; currentIndex = 0; flippedCards.clear()"
       >
         {{ filter.label }} ({{ filter.count }})
       </button>
     </div>
 
-    <div class="slider">
-      <div class="slide-row" ref="slideRow">
-        <div v-for="member in filteredMembers" :key="'member-' + member.id" class="slide-col">
-          <div class="content">
-            <!-- <p>{{ member.biography }}</p> -->
-            <h2>{{ member.name }}</h2>
-            <p>{{ member.role }}</p>
-            <p v-if="member.specialization" class="specialization">{{ member.specialization }}</p>
-            <p v-if="member.experience" class="experience">Опыт: {{ member.experience }}</p>
-                        <button class="more-btn" @click="currentIndex = filteredMembers.indexOf(member); updateSlider()">
-              Подробнее
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </button>
-            <!-- <p v-if="member.pets" class="pets">Питомцы: {{ member.pets }}</p> -->
-          </div>
-          <div class="hero">
-            <img :src="member.image" alt="avatar" />
-            <div class="role-badge" :class="getRoleBadgeClass(member.roleType)">
-              <svg class="badge-icon" viewBox="0 0 24 24">
-                <path :d="getRoleIcon(member.roleType)" />
-              </svg>
-              <span>{{ getRoleLabel(member.roleType) }}</span>
+    <div class="slider-container">
+      <!-- Стрелка назад -->
+      <button 
+        class="nav-arrow nav-arrow-left" 
+        @click="previousSlide"
+        :disabled="currentIndex === 0"
+        :class="{ disabled: currentIndex === 0 }"
+      >
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+
+      <div class="slider">
+        <div 
+          class="slide-row" 
+          :style="{ 
+            transform: `translateX(-${currentIndex * 100}%)`
+          }"
+        >
+          <div v-for="(member) in filteredMembers" :key="'member-' + member.id" class="slide-col">
+            <div class="specialist-card">
+              <!-- Фото специалиста -->
+              <div class="hero">
+                <img :src="member.image" :alt="member.name" />
+                <div class="role-badge" :class="getRoleBadgeClass(member.roleType)">
+                  <svg class="badge-icon" viewBox="0 0 24 24">
+                    <path :d="getRoleIcon(member.roleType)" />
+                  </svg>
+                  <span>{{ getRoleLabel(member.roleType) }}</span>
+                </div>
+              </div>
+              <!-- Карточка с информацией -->
+              <div class="content-wrapper">
+                <!-- Передняя сторона - основная информация -->
+                <div class="content" :class="{ hidden: flippedCards.has(member.id) }">
+                  <h2>{{ member.name }}</h2>
+                  <p class="role">{{ member.role }}</p>
+                  <p v-if="member.specialization" class="specialization">{{ member.specialization }}</p>
+                  <p v-if="member.experience" class="experience">Опыт: {{ member.experience }}</p>
+                  <button class="more-btn" @click="toggleCard(member.id)">
+                    Подробнее
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                      <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </button>
+                </div>
+                <!-- Задняя сторона - подробная биография -->
+                <div class="content biography-content" :class="{ visible: flippedCards.has(member.id) }">
+                  <div class="back-header">
+                    <h3>{{ member.name }}</h3>
+                    <button class="close-btn" @click="toggleCard(member.id)">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                        <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </button>
+                  </div>
+                  <div class="biography-text">
+                    <p>{{ member.biography }}</p>
+                    <div class="additional-info">
+                      <div v-if="member.pets" class="info-item">
+                        <strong>Питомцы:</strong> {{ member.pets }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
+
+      <!-- Стрелка вперед -->
+      <button 
+        class="nav-arrow nav-arrow-right" 
+        @click="nextSlide"
+        :disabled="currentIndex === filteredMembers.length - 1"
+        :class="{ disabled: currentIndex === filteredMembers.length - 1 }"
+      >
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
     </div>
 
+    <!-- Индикатор -->
     <div class="indicator" v-if="filteredMembers.length > 1">
       <span
         v-for="(member, index) in filteredMembers"
         :key="'indicator-' + index"
         class="btn"
         :class="{ active: currentIndex === index }"
-        @click="currentIndex = index; updateSlider()"
+        @click="currentIndex = index; flippedCards.clear()"
       ></span>
     </div>
   </main>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, onMounted, onUnmounted } from 'vue'
+import { defineComponent, ref, computed } from 'vue'
 
 interface TeamMember {
   id: number
@@ -163,8 +219,7 @@ export default defineComponent({
     const teamMembers = ref<TeamMember[]>([...veterinarians.value, ...assistants.value, ...administrators.value])
     const activeFilter = ref('все')
     const currentIndex = ref(0)
-    const slideRow = ref<HTMLElement | null>(null)
-    const main = ref<HTMLElement | null>(null)
+    const flippedCards = ref(new Set<number>())
 
     const filterOptions = computed(() => [
       { value: 'все', label: 'Вся команда', count: teamMembers.value.length },
@@ -177,9 +232,31 @@ export default defineComponent({
       const members = activeFilter.value === 'все'
         ? teamMembers.value
         : teamMembers.value.filter(member => member.roleType === activeFilter.value)
-      currentIndex.value = 0 // Reset index when filter changes
       return members
     })
+
+    const toggleCard = (memberId: number) => {
+      if (flippedCards.value.has(memberId)) {
+        flippedCards.value.delete(memberId)
+      } else {
+        flippedCards.value.clear()
+        flippedCards.value.add(memberId)
+      }
+    }
+
+    const nextSlide = () => {
+      if (currentIndex.value < filteredMembers.value.length - 1) {
+        currentIndex.value++
+        flippedCards.value.clear()
+      }
+    }
+
+    const previousSlide = () => {
+      if (currentIndex.value > 0) {
+        currentIndex.value--
+        flippedCards.value.clear()
+      }
+    }
 
     const getRoleBadgeClass = (roleType: string) => {
       switch (roleType) {
@@ -208,33 +285,16 @@ export default defineComponent({
       }
     }
 
-    const updateSlider = () => {
-      if (slideRow.value && main.value) {
-        const mainWidth = main.value.offsetWidth
-        const translateValue = currentIndex.value * -mainWidth
-        slideRow.value.style.transform = `translateX(${translateValue}px)`
-      }
-    }
-
-    onMounted(() => {
-      main.value = document.querySelector('main')
-      updateSlider()
-      window.addEventListener('resize', updateSlider)
-    })
-
-    onUnmounted(() => {
-      window.removeEventListener('resize', updateSlider)
-    })
-
     return {
       teamMembers,
       filterOptions,
       activeFilter,
       filteredMembers,
       currentIndex,
-      slideRow,
-      main,
-      updateSlider,
+      flippedCards,
+      toggleCard,
+      nextSlide,
+      previousSlide,
       getRoleBadgeClass,
       getRoleLabel,
       getRoleIcon
@@ -254,18 +314,20 @@ export default defineComponent({
 }
 
 .testimonials {
-  width: 1200px;
-  padding: 80px 15px;
+  width: 100%;
+  max-width: 1200px;
+  padding: 80px 0px;
   position: relative;
   margin: 0 auto;
+  background: transparent;
 }
 
 .testimonials h1 {
   text-align: center;
-  font-size: clamp(2rem, 4vw, 2.6rem);
+  font-size: clamp(2.5rem, 5vw, 3rem);
   font-family: 'Playfair Display', serif;
-  color: #83557b;
-  margin-bottom: 40px;
+  color: #fff;
+  margin-bottom: 60px;
 }
 
 .highlight {
@@ -279,7 +341,7 @@ export default defineComponent({
   bottom: 5px;
   left: 0;
   width: 100%;
-  height: 12px;
+  height: 14px;
   background-color: rgba(214, 122, 143, 0.2);
   z-index: -1;
   transform: skewY(-2deg);
@@ -288,116 +350,300 @@ export default defineComponent({
 .filter-buttons {
   display: flex;
   justify-content: center;
-  gap: 15px;
-  margin-bottom: 40px;
+  gap: 20px;
+  margin-bottom: 50px;
   flex-wrap: wrap;
 }
 
 .filter-buttons button {
-  padding: 10px 20px;
+  padding: 14px 28px;
   border: 2px solid #d67a8f;
-  border-radius: 25px;
+  border-radius: 30px;
   background: none;
   color: #d67a8f;
   font-family: 'Poppins', sans-serif;
   font-weight: 600;
+  font-size: 1rem;
   cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.filter-buttons button.active {
-  background: #d67a8f;
-  color: white;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .filter-buttons button:hover:not(.active) {
   background: #f9e8ee;
+  transform: scale(1.05);
+  box-shadow: 0 4px 15px rgba(214, 122, 143, 0.2);
+}
+
+.filter-buttons button.active {
+  background: linear-gradient(135deg, #d67a8f, #e8b3c3);
+  color: white;
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(214, 122, 143, 0.3);
+}
+
+.slider-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-bottom: 40px;
+}
+
+.nav-arrow {
+  width: 60px;
+  height: 60px;
+  border: none;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #d67a8f, #e8b3c3);
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 20px rgba(214, 122, 143, 0.3);
+  flex-shrink: 0;
+}
+
+.nav-arrow:hover:not(.disabled) {
+  transform: scale(1.1);
+  box-shadow: 0 6px 25px rgba(214, 122, 143, 0.4);
+}
+
+.nav-arrow.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .slider {
-  width: 100%;
+  flex: 1;
   overflow: hidden;
+  border-radius: 12px;
 }
 
 .slide-row {
   display: flex;
-  width: calc(100% * var(--slide-count));
   transition: transform 0.5s ease;
+  will-change: transform;
 }
 
 .slide-col {
   position: relative;
   width: 100%;
-  height: 400px;
+  min-width: 100%;
+  height: 500px;
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.specialist-card {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: 100%;
+  max-width: 1000px;
+  height: 100%;
+  position: relative;
 }
 
 .hero {
   position: absolute;
   top: 0;
   right: 0;
+  width: 400px;
   height: 100%;
+  z-index: 1;
 }
 
 .hero img {
+  width: 100%;
   height: 100%;
-  width: 320px;
   object-fit: cover;
-  border-radius: 10px;
-  pointer-events: none;
-  user-select: none;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
 
-.content {
+.content-wrapper {
   position: absolute;
   left: 0;
   top: 50%;
   transform: translateY(-50%);
-  width: 520px;
-  height: 270px;
-  color: #4d4352;
-  background: rgba(255, 255, 255, 0.7);
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(4.5px);
-  border-radius: 10px;
-  padding: 45px;
+  width: 650px;
+  height: 350px;
   z-index: 2;
-  user-select: none;
 }
 
-.content p {
-  font-size: 1.25rem;
-  font-weight: 400;
-  line-height: 1.3;
+.content {
+  color: #4d4352;
+  background: rgb(245 245 245 / 10%);
+  box-shadow: 0 6px 35px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border-radius: 12px;
+  padding: 50px;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  opacity: 1;
+  visibility: visible;
+  height: 100%;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.content.hidden {
+  opacity: 0;
+  visibility: hidden;
+  transform: scale(0.95);
+}
+
+.biography-content {
+  opacity: 0;
+  visibility: hidden;
+  transform: scale(0.95);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border-radius: 12px;
+  padding: 50px;
+  box-shadow: 0 6px 35px rgba(0, 0, 0, 0.15);
+}
+
+.biography-content.visible {
+  opacity: 1;
+  visibility: visible;
+  transform: scale(1);
 }
 
 .content h2 {
-  font-size: 1.5rem;
-  font-weight: 600;
-  margin-top: 35px;
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 20px;
   color: #4d4352;
+  font-family: 'Playfair Display', serif;
+}
+
+.content .role {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #d67a8f;
+  margin-bottom: 15px;
 }
 
 .content .specialization,
-.content .experience,
-.content .pets {
-  font-size: 0.95rem;
-  font-style: italic;
+.content .experience {
+  font-size: 1.2rem;
   color: #6b5a60;
-  margin-top: 10px;
+  margin-bottom: 12px;
+  line-height: 1.5;
+}
+
+.more-btn {
+  display: inline-flex;
+  align-items: center;
+  border: none;
+  border-radius: 50px;
+  padding: 10px;
+  background: linear-gradient(135deg, #d67a8f, #e8b3c3);
+  color: white;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 15px rgba(214, 122, 143, 0.3);
+  
+}
+
+.more-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(214, 122, 143, 0.4);
+}
+
+.more-btn svg {
+  transition: transform 0.3s ease;
+}
+
+.more-btn:hover svg {
+  transform: translateX(4px);
+}
+
+.back-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #d67a8f;
+}
+
+.back-header h3 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #4d4352;
+  font-family: 'Playfair Display', serif;
+}
+
+.close-btn {
+  width: 45px;
+  height: 45px;
+  border: none;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #d67a8f, #e8b3c3);
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.close-btn:hover {
+  transform: scale(1.1) rotate(90deg);
+}
+
+.biography-text {
+  flex: 1;
+  padding-right: 10px;
+}
+
+.biography-text p {
+  font-size: 1.15rem;
+  line-height: 1.6;
+  color: #4d4352;
+  margin-bottom: 20px;
+}
+
+.additional-info {
+  margin-top: 20px;
+}
+
+.info-item {
+  margin-bottom: 12px;
+  font-size: 1.15rem;
+  color: #6b5a60;
+}
+
+.info-item strong {
+  font-weight: 600;
+  color: #4d4352;
 }
 
 .role-badge {
   position: absolute;
-  top: 15px;
-  right: 15px;
+  top: 20px;
+  right: 20px;
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 8px 12px;
-  border-radius: 20px;
+  gap: 8px;
+  padding: 12px 18px;
+  border-radius: 25px;
   font-family: 'Poppins', sans-serif;
-  font-size: 0.75rem;
+  font-size: 0.9rem;
   font-weight: 700;
   text-transform: uppercase;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
@@ -423,8 +669,8 @@ export default defineComponent({
 }
 
 .badge-icon {
-  width: 16px;
-  height: 16px;
+  width: 20px;
+  height: 20px;
   fill: currentColor;
   flex-shrink: 0;
 }
@@ -432,111 +678,372 @@ export default defineComponent({
 .indicator {
   display: flex;
   justify-content: center;
+  gap: 10px;
   margin-top: 4rem;
 }
 
 .indicator .btn {
-  display: inline-block;
-  height: 15px;
-  width: 15px;
-  margin: 4px;
-  border-radius: 15px;
-  background: #fff;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #bbb3b3;
   cursor: pointer;
-  transition: all 0.5s ease-in-out;
+  transition: all 0.3s ease;
 }
 
 .indicator .btn.active {
-  width: 30px;
-  background: #d67a8f;
+  width: 32px;
+  height: 32px;
+  background: #e8b3c3;
+  
 }
 
-@media (max-width: 850px) {
+.indicator .btn:hover {
+  background: #e8b3c3;
+  transform: scale(1.2);
+}
+
+@media (max-width: 1024px) {
   .testimonials {
-    width: 500px;
+    max-width: 900px;
+    padding: 60px 15px;
   }
 
-  .slide-row {
-    width: calc(100% * var(--slide-count));
+  .testimonials h1 {
+    font-size: 2.2rem;
+    margin-bottom: 40px;
   }
 
   .slide-col {
-    width: 100%;
-    height: 250px;
+    height: 450px;
+  }
+
+  .specialist-card {
+    max-width: 800px;
+    justify-content: center;
+  }
+
+  .hero {
+    width: 350px;
+    height: 100%;
+  }
+
+  .content-wrapper {
+    width: 500px;
+    height: 300px;
+  }
+
+  .content,
+  .biography-content {
+    padding: 40px;
+  }
+
+  .content h2 {
+    font-size: 1.6rem;
+    margin-bottom: 15px;
+  }
+
+  .content .role {
+    font-size: 1.2rem;
+  }
+
+  .content .specialization,
+  .content .experience {
+    font-size: 1.1rem;
+  }
+
+  .biography-text p {
+    font-size: 1.05rem;
+  }
+
+  .filter-buttons {
+    gap: 15px;
+  }
+
+  .filter-buttons button {
+    padding: 12px 24px;
+    font-size: 0.95rem;
+  }
+
+  .nav-arrow {
+    width: 55px;
+    height: 55px;
+  }
+}
+
+@media (max-width: 768px) {
+  .testimonials {
+    max-width: 100%;
+    padding: 40px 15px;
+  }
+
+  .testimonials h1 {
+    font-size: 2rem;
+    margin-bottom: 30px;
+  }
+
+  .slide-col {
+    height: 580px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .specialist-card {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    max-width: 360px;
+    width: 90%;
+    height: 540px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 16px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+    position: relative;
+  }
+
+  .hero {
+    position: relative;
+    top: auto;
+    right: auto;
+    width: 140px;
+    height: 140px;
+    margin-top: 20px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 4px solid #d67a8f;
+    box-shadow: 0 4px 15px rgba(214, 122, 143, 0.3);
   }
 
   .hero img {
-    width: 200px;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    transform: none;
   }
 
-  .content {
-    width: 320px;
-    height: 200px;
-    padding: 20px;
+  .hero:hover img {
+    transform: scale(1.05);
   }
 
-  .content p {
-    font-size: 0.9rem;
+  .content-wrapper {
+    position: relative;
+    top: auto;
+    transform: none;
+    width: 100%;
+    height: auto;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .content,
+  .biography-content {
+    background: transparent;
+    box-shadow: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    padding: 20px 25px;
+    border-radius: 0;
+    height: auto;
+    min-height: 360px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+
+  .content.hidden {
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(0.95);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+  }
+
+  .biography-content.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: scale(1);
+    position: relative;
+  }
+
+  .content h2 {
+    font-size: 1.4rem;
+    text-align: center;
+    margin-bottom: 12px;
+  }
+
+  .content .role {
+    font-size: 1.1rem;
+    text-align: center;
+    margin-bottom: 10px;
+  }
+
+  .content .specialization,
+  .content .experience {
+    font-size: 0.95rem;
+    text-align: center;
+    margin-bottom: 10px;
+  }
+
+  .more-btn {
+    padding: 12px 24px;
+    font-size: 0.95rem;
+    margin: 15px auto 0;
+    width: fit-content;
+  }
+
+  .back-header {
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+  }
+
+  .back-header h3 {
+    font-size: 1.3rem;
+    text-align: center;
+    margin-bottom: 10px;
+  }
+
+  .close-btn {
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+  }
+
+  .biography-text {
+    padding-right: 0;
+    text-align: center;
+  }
+
+  .biography-text p {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin-bottom: 15px;
+  }
+
+  .additional-info {
+    margin-top: 15px;
+  }
+
+  .info-item {
+    font-size: 0.95rem;
+    text-align: center;
+  }
+
+  .role-badge {
+    top: 10px;
+    right: 10px;
+    padding: 8px 14px;
+    font-size: 0.8rem;
+    border-radius: 20px;
+  }
+
+  .badge-icon {
+    width: 16px;
+    height: 16px;
+  }
+
+  .filter-buttons {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .filter-buttons button {
+    width: 80%;
+    max-width: 300px;
+    padding: 10px 20px;
+    font-size: 0.95rem;
+  }
+
+  .nav-arrow {
+    width: 50px;
+    height: 50px;
+  }
+}
+
+@media (max-width: 480px) {
+  .testimonials {
+    padding: 30px 10px;
+  }
+
+  .testimonials h1 {
+    font-size: 1.8rem;
+  }
+
+  .slide-col {
+    height: 520px;
+  }
+
+  .specialist-card {
+    max-width: 320px;
+    height: 480px;
+  }
+
+  .hero {
+    width: 120px;
+    height: 120px;
+    margin-top: 15px;
+  }
+
+  .content,
+  .biography-content {
+    padding: 15px 20px;
+    min-height: 320px;
   }
 
   .content h2 {
     font-size: 1.2rem;
-    margin-top: 20px;
+  }
+
+  .content .role {
+    font-size: 1rem;
   }
 
   .content .specialization,
-  .content .experience,
-  .content .pets {
-    font-size: 0.85rem;
+  .content .experience {
+    font-size: 0.9rem;
+  }
+
+  .biography-text p {
+    font-size: 0.9rem;
+  }
+
+  .more-btn {
+    padding: 10px 20px;
+    font-size: 0.9rem;
+  }
+
+  .back-header h3 {
+    font-size: 1.2rem;
+  }
+
+  .filter-buttons button {
+    font-size: 0.9rem;
+  }
+
+  .nav-arrow {
+    width: 45px;
+    height: 45px;
   }
 
   .role-badge {
-    font-size: 0.7rem;
-    padding: 6px 10px;
+    padding: 7px 12px;
+    font-size: 0.75rem;
   }
 
   .badge-icon {
     width: 14px;
     height: 14px;
-  }
-}
-
-@media (max-width: 550px) {
-  .testimonials {
-    width: 300px;
-  }
-
-  .slide-row {
-    width: calc(100% * var(--slide-count));
-  }
-
-  .slide-col {
-    width: 100%;
-    height: 300px;
-  }
-
-  .hero {
-    top: 60%;
-    height: 100px;
-    z-index: 5;
-  }
-
-  .hero img {
-    width: 100px;
-  }
-
-  .content {
-    width: 300px;
-  }
-
-  .role-badge {
-    font-size: 0.65rem;
-    padding: 5px 8px;
-  }
-
-  .badge-icon {
-    width: 12px;
-    height: 12px;
   }
 }
 </style>

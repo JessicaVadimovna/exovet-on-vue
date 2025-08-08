@@ -5,6 +5,7 @@
       <div class="about-section">
         <div class="trust-section">
           <h3 class="trust-title">О нас</h3>
+          <p class="trust-subtitle">ExoVet - это специализированная клиника, которая предоставляет экспертную ветеринарную помощь исключительно экзотическим животным.</p>
           <TransitionGroup name="fade" tag="div" class="trust-indicators">
             <div v-for="(item, i) in trustItems" :key="i" class="trust-item">
               <div class="trust-icon">

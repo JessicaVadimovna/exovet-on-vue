@@ -276,6 +276,7 @@ export default {
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
+  padding: 20px 0;
 }
 
 .gallery-header {
@@ -600,4 +601,99 @@ export default {
     height: 50px;
   }
 }
+/* Заголовок */
+.gallery-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #a86d86;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.gallery-title img {
+  width: 48px;
+  height: 48px;
+  transition: transform 0.3s ease;
+}
+
+.gallery-title img:hover {
+  transform: scale(1.15);
+}
+
+/* Слайды */
+.carousel-slide {
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.slide-active {
+  opacity: 1;
+  transform: translateX(0) scale(1);
+}
+
+.slide-next {
+  opacity: 0.6;
+  transform: translateX(20%) scale(0.97);
+}
+
+.slide-prev {
+  opacity: 0.6;
+  transform: translateX(-20%) scale(0.97);
+}
+
+/* Кнопки навигации */
+.nav-button {
+  background: rgba(255, 255, 255, 0.9);
+  transition: transform 0.2s ease, background 0.3s ease;
+}
+
+.nav-button:hover {
+  background: white;
+  transform: translateY(-50%) scale(1.1);
+}
+
+/* Индикаторы */
+.indicator {
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.indicator.active {
+  background: #f3b2c5;
+  transform: scale(1.2);
+}
+
+/* Миниатюры */
+.thumbnail {
+  transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.thumbnail:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.thumbnail.active {
+  border-color: #f3b2c5;
+  transform: scale(1.05);
+}
+
+/* Модалка */
+.modal-backdrop {
+  animation: fadeIn 0.3s ease forwards;
+}
+
+.modal-content {
+  animation: scaleIn 0.3s ease forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scaleIn {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
 </style>
