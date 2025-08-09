@@ -8,7 +8,7 @@
         v-for="filter in filterOptions"
         :key="filter.value"
         :class="{ active: activeFilter === filter.value }"
-        @click="activeFilter = filter.value; currentIndex = 0; flippedCards.clear()"
+        @click="activeFilter = filter.value; currentIndex = 0; memberInfoIndex.clear()"
       >
         {{ filter.label }} ({{ filter.count }})
       </button>
@@ -36,7 +36,7 @@
         >
           <div v-for="(member) in filteredMembers" :key="'member-' + member.id" class="slide-col">
             <div class="specialist-card">
-              <!-- Фото специалиста -->
+              <!-- Фото специалиста слева -->
               <div class="hero">
                 <img :src="member.image" :alt="member.name" />
                 <div class="role-badge" :class="getRoleBadgeClass(member.roleType)">
@@ -46,39 +46,41 @@
                   <span>{{ getRoleLabel(member.roleType) }}</span>
                 </div>
               </div>
-              <!-- Карточка с информацией -->
+              
+              <!-- Контент справа -->
               <div class="content-wrapper">
-                <!-- Передняя сторона - основная информация -->
-                <div class="content" :class="{ hidden: flippedCards.has(member.id) }">
-                  <h2>{{ member.name }}</h2>
-                  <p class="role">{{ member.role }}</p>
-                  <p v-if="member.specialization" class="specialization">{{ member.specialization }}</p>
-                  <p v-if="member.experience" class="experience">Опыт: {{ member.experience }}</p>
-                  <button class="more-btn" @click="toggleCard(member.id)">
-                    Подробнее
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                      <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                  </button>
+                <div class="content">
+                  <!-- Основная информация -->
+                  <div class="info-slide" v-show="getCurrentMemberInfoIndex(member.id) === 0">
+                    <h2>{{ member.name }}</h2>
+                    <p class="role">{{ member.role }}</p>
+                    <p v-if="member.specialization" class="specialization">{{ member.specialization }}</p>
+                    <p v-if="member.experience" class="experience">Опыт: {{ member.experience }}</p>
+                  </div>
+                  
+                  <!-- Карьерный путь -->
+                  <div class="info-slide" v-show="getCurrentMemberInfoIndex(member.id) === 1">
+                    <p class="section-title">Карьерный путь</p>
+                    <p class="biography-text">{{ member.biography }}</p>
+                  </div>
+                  
+                  <!-- Питомцы -->
+                  <div class="info-slide" v-show="getCurrentMemberInfoIndex(member.id) === 2">
+                    <p class="section-title">Питомцы</p>
+                    <p v-if="member.pets" class="pets-text">{{ member.pets }}</p>
+                    <p v-else class="pets-text">Пока нет питомцев, но каждый пациент получает максимум заботы и внимания.</p>
+                  </div>
                 </div>
-                <!-- Задняя сторона - подробная биография -->
-                <div class="content biography-content" :class="{ visible: flippedCards.has(member.id) }">
-                  <div class="back-header">
-                    <h3>{{ member.name }}</h3>
-                    <button class="close-btn" @click="toggleCard(member.id)">
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                        <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                      </svg>
-                    </button>
-                  </div>
-                  <div class="biography-text">
-                    <p>{{ member.biography }}</p>
-                    <div class="additional-info">
-                      <div v-if="member.pets" class="info-item">
-                        <strong>Питомцы:</strong> {{ member.pets }}
-                      </div>
-                    </div>
-                  </div>
+                
+                <!-- Внутренняя пагинация -->
+                <div class="info-pagination">
+                  <span
+                    v-for="index in 3"
+                    :key="`info-${member.id}-${index-1}`"
+                    class="info-dot"
+                    :class="{ active: getCurrentMemberInfoIndex(member.id) === index-1 }"
+                    @click="setMemberInfoIndex(member.id, index-1)"
+                  ></span>
                 </div>
               </div>
             </div>
@@ -97,17 +99,6 @@
           <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </button>
-    </div>
-
-    <!-- Индикатор -->
-    <div class="indicator" v-if="filteredMembers.length > 1">
-      <span
-        v-for="(member, index) in filteredMembers"
-        :key="'indicator-' + index"
-        class="btn"
-        :class="{ active: currentIndex === index }"
-        @click="currentIndex = index; flippedCards.clear()"
-      ></span>
     </div>
   </main>
 </template>
@@ -184,7 +175,7 @@ export default defineComponent({
         name: 'Пыхтунова Альбина Павловна',
         role: 'Ассистент ветеринарного врача',
         specialization: '',
-        biography: 'Выросла в семье врачей, но выбрала ветеринарию, потому что с животными проще и теплее. Особенно любит кошек и экзотических животных. Ценит команду Exovet за поддержку и взаимоуважение. За день видит столько животных, сколько другие не встречают и за год, отдавая каждому тепло и внимание.',
+        biography: 'Выросла в семье врачей, но выбрала ветеринарию, потому что с животными теплее. Особенно любит кошек и экзотических животных. Ценит команду Exovet за поддержку и взаимоуважение. За день видит столько животных, сколько другие не встречают и за год, отдавая каждому тепло и внимание.',
         experience: '3 года',
         pets: 'Пока нет, но каждый пациент получает заботу как свой.',
         roleType: 'ассистент'
@@ -195,7 +186,7 @@ export default defineComponent({
         name: 'Шахова Ника Максимовна',
         role: 'Ассистент ветеринарного врача',
         specialization: '',
-        biography: 'Начала с курсов груминга и работы в салоне, где старалась спасать жизни малышей в колтунах и с паразитами. Превращает каждое посещение клиники в курорт для пушистиков, создавая атмосферу безопасности. Единственный грумер в Иркутске, который умеет стричь кроликов!',
+        biography: 'Начала с курсов груминга и работы в салоне, где старалась спасать жизни малышей в колтунах и с паразитами. Превращает каждое посещение клиники в курорт для пушистиков, создавая атмосферу безопасности.',
         experience: '3 года',
         pets: 'Белая шиншилла, котик-тапкогрыз и мамина собака бладхаунд.',
         roleType: 'ассистент'
@@ -219,7 +210,7 @@ export default defineComponent({
     const teamMembers = ref<TeamMember[]>([...veterinarians.value, ...assistants.value, ...administrators.value])
     const activeFilter = ref('все')
     const currentIndex = ref(0)
-    const flippedCards = ref(new Set<number>())
+    const memberInfoIndex = ref(new Map<number, number>())
 
     const filterOptions = computed(() => [
       { value: 'все', label: 'Вся команда', count: teamMembers.value.length },
@@ -235,26 +226,23 @@ export default defineComponent({
       return members
     })
 
-    const toggleCard = (memberId: number) => {
-      if (flippedCards.value.has(memberId)) {
-        flippedCards.value.delete(memberId)
-      } else {
-        flippedCards.value.clear()
-        flippedCards.value.add(memberId)
-      }
+    const getCurrentMemberInfoIndex = (memberId: number) => {
+      return memberInfoIndex.value.get(memberId) || 0
+    }
+
+    const setMemberInfoIndex = (memberId: number, index: number) => {
+      memberInfoIndex.value.set(memberId, index)
     }
 
     const nextSlide = () => {
       if (currentIndex.value < filteredMembers.value.length - 1) {
         currentIndex.value++
-        flippedCards.value.clear()
       }
     }
 
     const previousSlide = () => {
       if (currentIndex.value > 0) {
         currentIndex.value--
-        flippedCards.value.clear()
       }
     }
 
@@ -281,7 +269,7 @@ export default defineComponent({
         case 'врач': return 'M19.5,8A1.5,1.5 0 0,0 21,6.5A1.5,1.5 0 0,0 19.5,5A1.5,1.5 0 0,0 18,6.5A1.5,1.5 0 0,0 19.5,8M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M15.5,8A1.5,1.5 0 0,0 17,6.5A1.5,1.5 0 0,0 15.5,5A1.5,1.5 0 0,0 14,6.5A1.5,1.5 0 0,0 15.5,8M12,14C13.11,14 14,13.11 14,12C14,10.89 13.11,10 12,10C10.89,10 10,10.89 10,12C10,13.11 10.89,14 12,14Z'
         case 'ассистент': return 'M12,2A3,3 0 0,1 15,5V11A3,3 0 0,1 12,14A3,3 0 0,1 9,11V5A3,3 0 0,1 12,2M19,11C19,14.53 16.39,17.44 13,17.93V21H11V17.93C7.61,17.44 5,11H7A5,5 0 0,0 12,16A5,5 0 0,0 17,11H19Z'
         case 'администратор': return 'M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z'
-        default: return 'M19.5,8A1.5,1.5 0 0,0 21,6.5A1.5,1.5 0 0,0 19.5,5A1.5,1.5 0 0,0 18,6.5A1.5,1.5 0 0,0 19.5,8M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M15.5,8A1.5,1.5 0 0,0 17,6.5A1.5,1.5 0 0,0 15.5,5A1.5,1.5 0 0,0 14,6.5A1.5,1.5 0 0,0 15.5,8M12,14C13.11,14 14,13.11 14,12C14,10.89 13.11,10 12,10C10.89,10 10,10.89 10,12C10,13.11 10.89,14 12,14Z'
+        default: return 'M19.5,8A1.5,1.5 0 0,0 21,6.5A1.5,1.5 0 0,0 19.5,5A1.5,1.5 0 0,0 18,6.5A1.5,1.5 0 0,0 19.5,8M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,12 0 0,0 12,2M15.5,8A1.5,1.5 0 0,0 17,6.5A1.5,1.5 0 0,0 15.5,5A1.5,1.5 0 0,0 14,6.5A1.5,1.5 0 0,0 15.5,8M12,14C13.11,14 14,13.11 14,12C14,10.89 13.11,10 12,10C10.89,10 10,10.89 10,12C10,13.11 10.89,14 12,14Z'
       }
     }
 
@@ -291,8 +279,9 @@ export default defineComponent({
       activeFilter,
       filteredMembers,
       currentIndex,
-      flippedCards,
-      toggleCard,
+      memberInfoIndex,
+      getCurrentMemberInfoIndex,
+      setMemberInfoIndex,
       nextSlide,
       previousSlide,
       getRoleBadgeClass,
@@ -316,7 +305,7 @@ export default defineComponent({
 .testimonials {
   width: 100%;
   max-width: 1200px;
-  padding: 80px 0px;
+  padding: 80px 20px;
   position: relative;
   margin: 0 auto;
   background: transparent;
@@ -325,8 +314,6 @@ export default defineComponent({
 .testimonials h1 {
   text-align: center;
   font-size: clamp(2.5rem, 5vw, 3rem);
-  font-family: 'Playfair Display', serif;
-  color: #fff;
   margin-bottom: 60px;
 }
 
@@ -353,6 +340,7 @@ export default defineComponent({
   gap: 20px;
   margin-bottom: 50px;
   flex-wrap: wrap;
+  padding: 0 20px;
 }
 
 .filter-buttons button {
@@ -386,6 +374,7 @@ export default defineComponent({
   display: flex;
   align-items: center;
   margin-bottom: 40px;
+  gap: 20px;
 }
 
 .nav-arrow {
@@ -412,12 +401,13 @@ export default defineComponent({
 .nav-arrow.disabled {
   opacity: 0.5;
   cursor: not-allowed;
+  transform: none;
 }
 
 .slider {
   flex: 1;
   overflow: hidden;
-  border-radius: 12px;
+  border-radius: 16px;
 }
 
 .slide-row {
@@ -427,7 +417,6 @@ export default defineComponent({
 }
 
 .slide-col {
-  position: relative;
   width: 100%;
   min-width: 100%;
   height: 500px;
@@ -440,95 +429,110 @@ export default defineComponent({
 .specialist-card {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
   width: 100%;
-  max-width: 1000px;
-  height: 100%;
-  position: relative;
+  max-width: 100%;
+  height: 450px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 20px;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+    border: 5px dashed rgba(143, 143, 143, 0.2);
+  box-shadow: 0 0 2px 1px rgba(187, 181, 248, 0.2); /* Размытая "тень" бордера */
+  margin: 0 -40px;
 }
 
 .hero {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 400px;
+  width: 40%;
   height: 100%;
-  z-index: 1;
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
 }
 
 .hero img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease;
+}
+
+.hero:hover img {
+  transform: scale(1.05);
 }
 
 .content-wrapper {
-  position: absolute;
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 650px;
-  height: 350px;
-  z-index: 2;
+  flex: 1;
+  height: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
 }
 
 .content {
-  color: #4d4352;
-  background: rgb(245 245 245 / 10%);
-  box-shadow: 0 6px 35px rgba(0, 0, 0, 0.15);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-  border-radius: 12px;
-  padding: 50px;
-  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-  opacity: 1;
-  visibility: visible;
-  height: 100%;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.content.hidden {
-  opacity: 0;
-  visibility: hidden;
-  transform: scale(0.95);
-}
-
-.biography-content {
-  opacity: 0;
-  visibility: hidden;
-  transform: scale(0.95);
-  position: absolute;
-  top: 0;
-  left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-  border-radius: 12px;
-  padding: 50px;
-  box-shadow: 0 6px 35px rgba(0, 0, 0, 0.15);
+  padding: 60px 70px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: #4d4352;
 }
 
-.biography-content.visible {
+.info-slide {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   opacity: 1;
-  visibility: visible;
-  transform: scale(1);
+  transition: opacity 0.3s ease;
+}
+
+.info-pagination {
+  position: absolute;
+  right: 30px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 10;
+}
+
+.info-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(214, 122, 143, 0.4);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid rgba(214, 122, 143, 0.6);
+}
+
+.info-dot.active {
+  background: #d67a8f;
+  transform: scale(1.3);
+  border-color: #d67a8f;
+  box-shadow: 0 0 10px rgba(214, 122, 143, 0.5);
+}
+
+.info-dot:hover {
+  background: #d67a8f;
+  transform: scale(1.2);
 }
 
 .content h2 {
-  font-size: 1.8rem;
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
   font-weight: 700;
   margin-bottom: 20px;
   color: #4d4352;
   font-family: 'Playfair Display', serif;
+  line-height: 1.2;
 }
 
 .content .role {
-  font-size: 1.4rem;
+  font-size: clamp(1.2rem, 2.5vw, 1.6rem);
   font-weight: 600;
   color: #d67a8f;
   margin-bottom: 15px;
@@ -536,101 +540,31 @@ export default defineComponent({
 
 .content .specialization,
 .content .experience {
-  font-size: 1.2rem;
+  font-size: clamp(1rem, 2vw, 1.3rem);
   color: #6b5a60;
   margin-bottom: 12px;
   line-height: 1.5;
 }
 
-.more-btn {
-  display: inline-flex;
-  align-items: center;
-  border: none;
-  border-radius: 50px;
-  padding: 10px;
-  background: linear-gradient(135deg, #d67a8f, #e8b3c3);
-  color: white;
-  font-family: 'Poppins', sans-serif;
+.section-title {
+  font-size: clamp(1.3rem, 2.5vw, 1.7rem);
   font-weight: 600;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 15px rgba(214, 122, 143, 0.3);
-  
-}
-
-.more-btn:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 25px rgba(214, 122, 143, 0.4);
-}
-
-.more-btn svg {
-  transition: transform 0.3s ease;
-}
-
-.more-btn:hover svg {
-  transform: translateX(4px);
-}
-
-.back-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  color: #d67a8f;
   margin-bottom: 20px;
-  padding-bottom: 15px;
-  border-bottom: 2px solid #d67a8f;
-}
-
-.back-header h3 {
-  font-size: 1.6rem;
-  font-weight: 700;
-  color: #4d4352;
-  font-family: 'Playfair Display', serif;
-}
-
-.close-btn {
-  width: 45px;
-  height: 45px;
-  border: none;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #d67a8f, #e8b3c3);
-  color: white;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s ease;
-}
-
-.close-btn:hover {
-  transform: scale(1.1) rotate(90deg);
 }
 
 .biography-text {
-  flex: 1;
-  padding-right: 10px;
-}
-
-.biography-text p {
-  font-size: 1.15rem;
+  font-size: clamp(1rem, 2vw, 1.2rem);
   line-height: 1.6;
   color: #4d4352;
-  margin-bottom: 20px;
+  text-align: left;
 }
 
-.additional-info {
-  margin-top: 20px;
-}
-
-.info-item {
-  margin-bottom: 12px;
-  font-size: 1.15rem;
-  color: #6b5a60;
-}
-
-.info-item strong {
-  font-weight: 600;
+.pets-text {
+  font-size: clamp(1rem, 2vw, 1.2rem);
+  line-height: 1.6;
   color: #4d4352;
+  font-style: italic;
 }
 
 .role-badge {
@@ -639,9 +573,9 @@ export default defineComponent({
   right: 20px;
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 12px 18px;
-  border-radius: 25px;
+  gap: 10px;
+  padding: 12px 20px;
+  border-radius: 30px;
   font-family: 'Poppins', sans-serif;
   font-size: 0.9rem;
   font-weight: 700;
@@ -669,315 +603,53 @@ export default defineComponent({
 }
 
 .badge-icon {
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
   fill: currentColor;
   flex-shrink: 0;
 }
 
-.indicator {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-top: 4rem;
-}
+/* Удаляем старые стили индикаторов */
 
-.indicator .btn {
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background: #bbb3b3;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.indicator .btn.active {
-  width: 32px;
-  height: 32px;
-  background: #e8b3c3;
-  
-}
-
-.indicator .btn:hover {
-  background: #e8b3c3;
-  transform: scale(1.2);
-}
-
-@media (max-width: 1024px) {
+/* Адаптивные стили */
+@media (max-width: 1200px) {
   .testimonials {
-    max-width: 900px;
-    padding: 60px 15px;
-  }
-
-  .testimonials h1 {
-    font-size: 2.2rem;
-    margin-bottom: 40px;
-  }
-
-  .slide-col {
-    height: 450px;
+    padding: 60px 20px;
   }
 
   .specialist-card {
-    max-width: 800px;
-    justify-content: center;
+    margin: 0 -20px;
   }
 
-  .hero {
-    width: 350px;
-    height: 100%;
+  .slide-col {
+    height: 460px;
   }
 
-  .content-wrapper {
-    width: 500px;
-    height: 300px;
+  .specialist-card {
+    height: 420px;
   }
 
-  .content,
-  .biography-content {
-    padding: 40px;
+  .content {
+    padding: 50px 60px;
+  }
+}
+
+@media (max-width: 992px) {
+  .testimonials {
+    padding: 50px 20px;
   }
 
-  .content h2 {
-    font-size: 1.6rem;
-    margin-bottom: 15px;
+  .specialist-card {
+    margin: 0 -10px;
   }
 
-  .content .role {
-    font-size: 1.2rem;
-  }
-
-  .content .specialization,
-  .content .experience {
-    font-size: 1.1rem;
-  }
-
-  .biography-text p {
-    font-size: 1.05rem;
-  }
-
-  .filter-buttons {
+  .slider-container {
     gap: 15px;
-  }
-
-  .filter-buttons button {
-    padding: 12px 24px;
-    font-size: 0.95rem;
   }
 
   .nav-arrow {
     width: 55px;
     height: 55px;
-  }
-}
-
-@media (max-width: 768px) {
-  .testimonials {
-    max-width: 100%;
-    padding: 40px 15px;
-  }
-
-  .testimonials h1 {
-    font-size: 2rem;
-    margin-bottom: 30px;
-  }
-
-  .slide-col {
-    height: 580px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .specialist-card {
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    max-width: 360px;
-    width: 90%;
-    height: 540px;
-    background: rgba(255, 255, 255, 0.9);
-    border-radius: 16px;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
-    overflow: hidden;
-    position: relative;
-  }
-
-  .hero {
-    position: relative;
-    top: auto;
-    right: auto;
-    width: 140px;
-    height: 140px;
-    margin-top: 20px;
-    border-radius: 50%;
-    overflow: hidden;
-    border: 4px solid #d67a8f;
-    box-shadow: 0 4px 15px rgba(214, 122, 143, 0.3);
-  }
-
-  .hero img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 50%;
-    transform: none;
-  }
-
-  .hero:hover img {
-    transform: scale(1.05);
-  }
-
-  .content-wrapper {
-    position: relative;
-    top: auto;
-    transform: none;
-    width: 100%;
-    height: auto;
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-
-  .content,
-  .biography-content {
-    background: transparent;
-    box-shadow: none;
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-    padding: 20px 25px;
-    border-radius: 0;
-    height: auto;
-    min-height: 360px;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-  }
-
-  .content.hidden {
-    opacity: 0;
-    visibility: hidden;
-    transform: scale(0.95);
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-  }
-
-  .biography-content.visible {
-    opacity: 1;
-    visibility: visible;
-    transform: scale(1);
-    position: relative;
-  }
-
-  .content h2 {
-    font-size: 1.4rem;
-    text-align: center;
-    margin-bottom: 12px;
-  }
-
-  .content .role {
-    font-size: 1.1rem;
-    text-align: center;
-    margin-bottom: 10px;
-  }
-
-  .content .specialization,
-  .content .experience {
-    font-size: 0.95rem;
-    text-align: center;
-    margin-bottom: 10px;
-  }
-
-  .more-btn {
-    padding: 12px 24px;
-    font-size: 0.95rem;
-    margin: 15px auto 0;
-    width: fit-content;
-  }
-
-  .back-header {
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 15px;
-    padding-bottom: 10px;
-  }
-
-  .back-header h3 {
-    font-size: 1.3rem;
-    text-align: center;
-    margin-bottom: 10px;
-  }
-
-  .close-btn {
-    width: 40px;
-    height: 40px;
-    position: absolute;
-    top: 10px;
-    right: 10px;
-  }
-
-  .biography-text {
-    padding-right: 0;
-    text-align: center;
-  }
-
-  .biography-text p {
-    font-size: 0.95rem;
-    line-height: 1.5;
-    margin-bottom: 15px;
-  }
-
-  .additional-info {
-    margin-top: 15px;
-  }
-
-  .info-item {
-    font-size: 0.95rem;
-    text-align: center;
-  }
-
-  .role-badge {
-    top: 10px;
-    right: 10px;
-    padding: 8px 14px;
-    font-size: 0.8rem;
-    border-radius: 20px;
-  }
-
-  .badge-icon {
-    width: 16px;
-    height: 16px;
-  }
-
-  .filter-buttons {
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .filter-buttons button {
-    width: 80%;
-    max-width: 300px;
-    padding: 10px 20px;
-    font-size: 0.95rem;
-  }
-
-  .nav-arrow {
-    width: 50px;
-    height: 50px;
-  }
-}
-
-@media (max-width: 480px) {
-  .testimonials {
-    padding: 30px 10px;
-  }
-
-  .testimonials h1 {
-    font-size: 1.8rem;
   }
 
   .slide-col {
@@ -985,50 +657,173 @@ export default defineComponent({
   }
 
   .specialist-card {
-    max-width: 320px;
+    flex-direction: column;
     height: 480px;
+    max-width: 600px;
   }
 
   .hero {
-    width: 120px;
-    height: 120px;
-    margin-top: 15px;
+    width: 100%;
+    height: 200px;
+    flex-shrink: 0;
   }
 
-  .content,
+  .content-wrapper {
+    flex: 1;
+    width: 100%;
+  }
+
+  .content {
+    padding: 40px 50px;
+  }
+
+  .info-pagination {
+    right: 20px;
+    gap: 10px;
+  }
+
+  .info-dot {
+    width: 10px;
+    height: 10px;
+  }
+
+  .role-badge {
+    top: 15px;
+    right: 15px;
+    padding: 10px 16px;
+    font-size: 0.8rem;
+  }
+
+  .badge-icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  .specialist-card {
+    flex-direction: column;
+    height: 480px;
+    max-width: 600px;
+  }
+
+  .hero {
+    width: 100%;
+    height: 200px;
+    flex-shrink: 0;
+  }
+
+  .content-wrapper {
+    flex: 1;
+    width: 100%;
+  }
+
+  .content {
+    padding: 40px 35px;
+  }
+
   .biography-content {
-    padding: 15px 20px;
-    min-height: 320px;
+    padding: 35px;
   }
 
-  .content h2 {
-    font-size: 1.2rem;
+  .role-badge {
+    top: 15px;
+    right: 15px;
+    padding: 10px 16px;
+    font-size: 0.8rem;
   }
 
-  .content .role {
-    font-size: 1rem;
+  .badge-icon {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+@media (max-width: 768px) {
+  .testimonials {
+    padding: 40px 20px;
   }
 
-  .content .specialization,
-  .content .experience {
-    font-size: 0.9rem;
+  .specialist-card {
+    margin: 0 -5px;
   }
 
-  .biography-text p {
-    font-size: 0.9rem;
+  .testimonials h1 {
+    font-size: 2.2rem;
+    margin-bottom: 40px;
   }
 
-  .more-btn {
-    padding: 10px 20px;
-    font-size: 0.9rem;
-  }
-
-  .back-header h3 {
-    font-size: 1.2rem;
+  .filter-buttons {
+    gap: 12px;
+    margin-bottom: 35px;
   }
 
   .filter-buttons button {
+    padding: 12px 20px;
     font-size: 0.9rem;
+  }
+
+  .slider-container {
+    gap: 12px;
+  }
+
+  .nav-arrow {
+    width: 50px;
+    height: 50px;
+  }
+
+  .slide-col {
+    height: 580px;
+  }
+
+  .specialist-card {
+    height: 540px;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+
+  .hero {
+    height: 180px;
+  }
+
+  .content {
+    padding: 35px 40px 35px 40px;
+  }
+
+  .info-pagination {
+    right: 15px;
+    gap: 8px;
+  }
+
+  .info-dot {
+    width: 8px;
+    height: 8px;
+  }
+}
+
+@media (max-width: 576px) {
+  .testimonials {
+    padding: 30px 10px;
+  }
+
+  .testimonials h1 {
+    font-size: 1.8rem;
+    margin-bottom: 30px;
+  }
+
+  .filter-buttons {
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .filter-buttons button {
+    width: 90%;
+    max-width: 280px;
+    padding: 10px 18px;
+    font-size: 0.85rem;
+  }
+
+  .slider-container {
+    gap: 8px;
   }
 
   .nav-arrow {
@@ -1036,9 +831,69 @@ export default defineComponent({
     height: 45px;
   }
 
+  .slide-col {
+    height: 520px;
+  }
+
+  .specialist-card {
+    height: 480px;
+    max-width: 350px;
+    border-radius: 16px;
+  }
+
+  .hero {
+    height: 160px;
+  }
+
+  .content {
+    padding: 25px 20px 25px 20px;
+  }
+
+  .info-pagination {
+    right: 10px;
+    gap: 6px;
+  }
+
+  .info-dot {
+    width: 6px;
+    height: 6px;
+  }
+
   .role-badge {
-    padding: 7px 12px;
-    font-size: 0.75rem;
+    top: 12px;
+    right: 12px;
+    padding: 8px 12px;
+    font-size: 0.7rem;
+    gap: 6px;
+  }
+
+  .badge-icon {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+@media (max-width: 400px) {
+  .specialist-card {
+    max-width: 320px;
+    height: 460px;
+  }
+
+  .hero {
+    height: 140px;
+  }
+
+  .content {
+    padding: 20px 15px 20px 15px;
+  }
+
+  .info-pagination {
+    right: 8px;
+  }
+
+  .role-badge {
+    padding: 6px 10px;
+    font-size: 0.65rem;
   }
 
   .badge-icon {
