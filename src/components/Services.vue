@@ -295,6 +295,10 @@ export default defineComponent({
 }
 
 @media (max-width: 768px) {
+  .container {
+    padding: 0 20px;
+  }
+  
   .service-grid {
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: 20px;
@@ -316,6 +320,10 @@ export default defineComponent({
 @media (max-width: 480px) {
   .services {
     padding: 60px 0;
+  }
+  
+  .container {
+    padding: 0 16px;
   }
   
   .section-header {
