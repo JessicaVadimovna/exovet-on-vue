@@ -1,4 +1,15 @@
-<template>
+.role-badge {
+    top: 12px;
+    right: 12px;
+    padding: 8px 12px;
+    font-size: 0.7rem;
+    gap: 6px;
+  }
+
+  .badge-icon {
+    width: 16px;
+    height: 16px;
+  }<template>
   <main class="testimonials">
     <h1>Наша <span class="highlight">команда</span></h1>
 
@@ -35,11 +46,11 @@
           }"
         >
           <div v-for="(member) in filteredMembers" :key="'member-' + member.id" class="slide-col">
-            <div class="specialist-card">
+            <div class="specialist-card" :class="{ 'career-mode': getCurrentMemberInfoIndex(member.id) === 1 }">
               <!-- Фото специалиста слева -->
-              <div class="hero">
+              <div class="hero" :class="{ 'hidden-on-mobile': getCurrentMemberInfoIndex(member.id) === 1 }">
                 <img :src="member.image" :alt="member.name" />
-                <div class="role-badge" :class="getRoleBadgeClass(member.roleType)">
+                <div class="role-badge" :class="[getRoleBadgeClass(member.roleType), { 'hidden-on-mobile': getCurrentMemberInfoIndex(member.id) === 1 }]">
                   <svg class="badge-icon" viewBox="0 0 24 24">
                     <path :d="getRoleIcon(member.roleType)" />
                   </svg>
@@ -48,7 +59,7 @@
               </div>
               
               <!-- Контент справа -->
-              <div class="content-wrapper">
+              <div class="content-wrapper" :class="{ 'full-width': getCurrentMemberInfoIndex(member.id) === 1 }">
                 <div class="content">
                   <!-- Основная информация -->
                   <div class="info-slide" v-show="getCurrentMemberInfoIndex(member.id) === 0">
@@ -60,24 +71,22 @@
                   
                   <!-- Карьерный путь -->
                   <div class="info-slide" v-show="getCurrentMemberInfoIndex(member.id) === 1">
-                    <p class="section-title">Карьерный путь</p>
+                    <h2 class="career-name">{{ member.name }}</h2>
                     <p class="biography-text">{{ member.biography }}</p>
-                  </div>
-                  
-                  <!-- Питомцы -->
-                  <div class="info-slide" v-show="getCurrentMemberInfoIndex(member.id) === 2">
-                    <p class="section-title">Питомцы</p>
-                    <p v-if="member.pets" class="pets-text">{{ member.pets }}</p>
-                    <p v-else class="pets-text">Пока нет питомцев, но каждый пациент получает максимум заботы и внимания.</p>
+                    <div class="pets-section">
+                      <p class="pets-title">Питомцы</p>
+                      <p v-if="member.pets" class="pets-text-inline">{{ member.pets }}</p>
+                      <p v-else class="pets-text-inline">Пока нет питомцев, но каждый пациент получает максимум заботы и внимания.</p>
+                    </div>
                   </div>
                 </div>
                 
                 <!-- Внутренняя пагинация -->
                 <div class="info-pagination">
                   <span
-                    v-for="index in 3"
+                    v-for="index in 2"
                     :key="`info-${member.id}-${index-1}`"
-                    class="info-dot"
+                    class="info-bar"
                     :class="{ active: getCurrentMemberInfoIndex(member.id) === index-1 }"
                     @click="setMemberInfoIndex(member.id, index-1)"
                   ></span>
@@ -437,9 +446,10 @@ export default defineComponent({
   overflow: hidden;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-    border: 5px dashed rgba(143, 143, 143, 0.2);
-  box-shadow: 0 0 2px 1px rgba(187, 181, 248, 0.2); /* Размытая "тень" бордера */
+  border: 5px dashed rgba(143, 143, 143, 0.2);
+  box-shadow: 0 0 2px 1px rgba(187, 181, 248, 0.2);
   margin: 0 -40px;
+  transition: all 0.3s ease;
 }
 
 .hero {
@@ -448,6 +458,7 @@ export default defineComponent({
   position: relative;
   overflow: hidden;
   flex-shrink: 0;
+  transition: all 0.3s ease;
 }
 
 .hero img {
@@ -467,6 +478,12 @@ export default defineComponent({
   position: relative;
   display: flex;
   align-items: center;
+  transition: all 0.3s ease;
+}
+
+/* Модификатор для полной ширины контента */
+.content-wrapper.full-width {
+  flex: 1;
 }
 
 .content {
@@ -500,26 +517,53 @@ export default defineComponent({
   z-index: 10;
 }
 
-.info-dot {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: rgba(214, 122, 143, 0.4);
+.info-bar {
+  width: 11px;
+  height: 11px;
+  border-radius: 10px;
+  background: rgba(214, 122, 143, 0.2);
   cursor: pointer;
   transition: all 0.3s ease;
-  border: 2px solid rgba(214, 122, 143, 0.6);
+  border: none;
 }
 
-.info-dot.active {
+.info-bar.active {
   background: #d67a8f;
-  transform: scale(1.3);
-  border-color: #d67a8f;
-  box-shadow: 0 0 10px rgba(214, 122, 143, 0.5);
+  height: 30px;
+  box-shadow: 0px 0px 20px rgba(214, 122, 143, 0.3);
 }
 
-.info-dot:hover {
-  background: #d67a8f;
-  transform: scale(1.2);
+.info-bar:hover:not(.active) {
+  background: rgba(214, 122, 143, 0.5);
+}
+
+.career-name {
+  font-size: clamp(1.4rem, 2.8vw, 1.8rem) !important;
+  font-weight: 700;
+  margin-bottom: 15px !important;
+  color: #4d4352;
+  font-family: 'Playfair Display', serif;
+  line-height: 1.2;
+}
+
+.pets-section {
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px solid rgba(214, 122, 143, 0.3);
+}
+
+.pets-title {
+  font-size: clamp(1.1rem, 2vw, 1.3rem);
+  font-weight: 600;
+  color: #d67a8f;
+  margin-bottom: 8px;
+}
+
+.pets-text-inline {
+  font-size: clamp(0.9rem, 1.8vw, 1.1rem);
+  line-height: 1.5;
+  color: #4d4352;
+  font-style: italic;
 }
 
 .content h2 {
@@ -609,7 +653,28 @@ export default defineComponent({
   flex-shrink: 0;
 }
 
-/* Удаляем старые стили индикаторов */
+/* Скрытие фото и бейджа на маленьких экранах при просмотре карьерного пути */
+@media (max-width: 992px) {
+  .hero.hidden-on-mobile {
+    display: none;
+  }
+
+  .role-badge.hidden-on-mobile {
+    display: none;
+  }
+
+  .specialist-card.career-mode {
+    flex-direction: column;
+  }
+
+  .specialist-card.career-mode .content-wrapper {
+    width: 100%;
+  }
+
+  .specialist-card.career-mode .content {
+    padding: 40px 50px;
+  }
+}
 
 /* Адаптивные стили */
 @media (max-width: 1200px) {
@@ -679,49 +744,16 @@ export default defineComponent({
 
   .info-pagination {
     right: 20px;
-    gap: 10px;
+    gap: 8px;
   }
 
-  .info-dot {
-    width: 10px;
-    height: 10px;
+  .info-bar {
+    width: 9px;
+    height: 9px;
   }
 
-  .role-badge {
-    top: 15px;
-    right: 15px;
-    padding: 10px 16px;
-    font-size: 0.8rem;
-  }
-
-  .badge-icon {
-    width: 18px;
-    height: 18px;
-  }
-
-  .specialist-card {
-    flex-direction: column;
-    height: 480px;
-    max-width: 600px;
-  }
-
-  .hero {
-    width: 100%;
-    height: 200px;
-    flex-shrink: 0;
-  }
-
-  .content-wrapper {
-    flex: 1;
-    width: 100%;
-  }
-
-  .content {
-    padding: 40px 35px;
-  }
-
-  .biography-content {
-    padding: 35px;
+  .info-bar.active {
+    height: 25px;
   }
 
   .role-badge {
@@ -734,6 +766,11 @@ export default defineComponent({
   .badge-icon {
     width: 18px;
     height: 18px;
+  }
+
+
+  .specialist-card.career-mode .content {
+    padding: 40px 50px;
   }
 }
 
@@ -778,9 +815,11 @@ export default defineComponent({
     height: 540px;
     max-width: 500px;
     margin: 0 auto;
+    flex-direction: column;
   }
 
   .hero {
+    width: 100%;
     height: 180px;
   }
 
@@ -790,12 +829,21 @@ export default defineComponent({
 
   .info-pagination {
     right: 15px;
-    gap: 8px;
+    gap: 6px;
   }
 
-  .info-dot {
+  .info-bar {
     width: 8px;
     height: 8px;
+  }
+
+  .info-bar.active {
+    height: 22px;
+  }
+
+
+  .specialist-card.career-mode .content {
+    padding: 35px 40px;
   }
 }
 
@@ -839,9 +887,11 @@ export default defineComponent({
     height: 480px;
     max-width: 350px;
     border-radius: 16px;
+    flex-direction: column;
   }
 
   .hero {
+    width: 100%;
     height: 160px;
   }
 
@@ -851,25 +901,41 @@ export default defineComponent({
 
   .info-pagination {
     right: 10px;
-    gap: 6px;
+    gap: 5px;
   }
 
-  .info-dot {
-    width: 6px;
-    height: 6px;
+  .info-bar {
+    width: 7px;
+    height: 7px;
   }
 
-  .role-badge {
-    top: 12px;
-    right: 12px;
-    padding: 8px 12px;
-    font-size: 0.7rem;
-    gap: 6px;
+  .info-bar.active {
+    height: 20px;
   }
 
-  .badge-icon {
-    width: 16px;
-    height: 16px;
+
+  .specialist-card.career-mode .content {
+    padding: 25px 20px;
+  }
+
+  .specialist-card.career-mode .biography-text {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin-bottom: 15px;
+  }
+
+  .specialist-card.career-mode .pets-section {
+    margin-top: 15px;
+    padding-top: 12px;
+  }
+
+  .specialist-card.career-mode .pets-title {
+    font-size: 1rem;
+    margin-bottom: 6px;
+  }
+
+  .specialist-card.career-mode .pets-text-inline {
+    font-size: 0.85rem;
   }
 }
 
@@ -877,9 +943,11 @@ export default defineComponent({
   .specialist-card {
     max-width: 320px;
     height: 460px;
+    flex-direction: column;
   }
 
   .hero {
+    width: 100%;
     height: 140px;
   }
 
@@ -889,6 +957,16 @@ export default defineComponent({
 
   .info-pagination {
     right: 8px;
+    gap: 4px;
+  }
+
+  .info-bar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .info-bar.active {
+    height: 18px;
   }
 
   .role-badge {
@@ -899,6 +977,41 @@ export default defineComponent({
   .badge-icon {
     width: 14px;
     height: 14px;
+  }
+
+  .specialist-card.career-mode .content {
+    padding: 20px 15px;
+  }
+
+  .specialist-card.career-mode .career-name {
+    font-size: 1.2rem !important;
+    margin-bottom: 12px !important;
+  }
+
+  .specialist-card.career-mode .section-title {
+    font-size: 1rem;
+    margin-bottom: 12px;
+  }
+
+  .specialist-card.career-mode .biography-text {
+    font-size: 0.8rem;
+    line-height: 1.4;
+    margin-bottom: 12px;
+  }
+
+  .specialist-card.career-mode .pets-section {
+    margin-top: 12px;
+    padding-top: 10px;
+  }
+
+  .specialist-card.career-mode .pets-title {
+    font-size: 0.9rem;
+    margin-bottom: 5px;
+  }
+
+  .specialist-card.career-mode .pets-text-inline {
+    font-size: 0.75rem;
+    line-height: 1.3;
   }
 }
 </style>
