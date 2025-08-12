@@ -163,17 +163,18 @@ export default defineComponent({
       }
     }
 
-    onMounted((): void => {
-      updateSliderHeight()
-      slideInterval.value = setInterval(nextSlide, 5000)
-      bubbleInterval.value = setInterval(createBubble, 300)
-      console.log('Component mounted, initial slide:', currentSlide.value, 'Text:', slides[currentSlide.value].text)
-    })
+onMounted(() => {
+  updateSliderHeight()
+  window.addEventListener('resize', updateSliderHeight) // ← добавляем
+  slideInterval.value = setInterval(nextSlide, 5000)
+  bubbleInterval.value = setInterval(createBubble, 300)
+})
 
-    onBeforeUnmount((): void => {
-      if (slideInterval.value) clearInterval(slideInterval.value)
-      if (bubbleInterval.value) clearInterval(bubbleInterval.value)
-    })
+onBeforeUnmount(() => {
+  if (slideInterval.value) clearInterval(slideInterval.value)
+  if (bubbleInterval.value) clearInterval(bubbleInterval.value)
+  window.removeEventListener('resize', updateSliderHeight) // ← чистим
+})
 
     return { 
       currentSlide, 

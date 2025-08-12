@@ -676,7 +676,7 @@ export default defineComponent({
   }
 }
 
-/* Адаптивные стили */
+/* Адаптивные стили для увеличенного фото */
 @media (max-width: 1200px) {
   .testimonials {
     padding: 60px 20px;
@@ -718,18 +718,18 @@ export default defineComponent({
   }
 
   .slide-col {
-    height: 520px;
+    height: 580px; /* Увеличено для большего фото */
   }
 
   .specialist-card {
     flex-direction: column;
-    height: 480px;
+    height: 540px; /* Увеличено для большего фото */
     max-width: 600px;
   }
 
   .hero {
     width: 100%;
-    height: 200px;
+    height: 280px; /* Увеличено с 200px до 280px */
     flex-shrink: 0;
   }
 
@@ -767,7 +767,6 @@ export default defineComponent({
     width: 18px;
     height: 18px;
   }
-
 
   .specialist-card.career-mode .content {
     padding: 40px 50px;
@@ -808,11 +807,11 @@ export default defineComponent({
   }
 
   .slide-col {
-    height: 580px;
+    height: 640px; /* Увеличено для большего фото */
   }
 
   .specialist-card {
-    height: 540px;
+    height: 600px; /* Увеличено для большего фото */
     max-width: 500px;
     margin: 0 auto;
     flex-direction: column;
@@ -820,7 +819,7 @@ export default defineComponent({
 
   .hero {
     width: 100%;
-    height: 180px;
+    height: 250px; /* Увеличено с 180px до 250px */
   }
 
   .content {
@@ -840,7 +839,6 @@ export default defineComponent({
   .info-bar.active {
     height: 22px;
   }
-
 
   .specialist-card.career-mode .content {
     padding: 35px 40px;
@@ -880,11 +878,11 @@ export default defineComponent({
   }
 
   .slide-col {
-    height: 520px;
+    height: 580px; /* Увеличено для большего фото */
   }
 
   .specialist-card {
-    height: 480px;
+    height: 540px; /* Увеличено для большего фото */
     max-width: 350px;
     border-radius: 16px;
     flex-direction: column;
@@ -892,7 +890,7 @@ export default defineComponent({
 
   .hero {
     width: 100%;
-    height: 160px;
+    height: 220px; /* Увеличено с 160px до 220px */
   }
 
   .content {
@@ -912,7 +910,6 @@ export default defineComponent({
   .info-bar.active {
     height: 20px;
   }
-
 
   .specialist-card.career-mode .content {
     padding: 25px 20px;
@@ -940,15 +937,19 @@ export default defineComponent({
 }
 
 @media (max-width: 400px) {
+  .slide-col {
+    height: 560px; /* Увеличено для большего фото */
+  }
+
   .specialist-card {
     max-width: 320px;
-    height: 460px;
+    height: 520px; /* Увеличено для большего фото */
     flex-direction: column;
   }
 
   .hero {
     width: 100%;
-    height: 140px;
+    height: 200px; /* Увеличено с 140px до 200px */
   }
 
   .content {
@@ -972,6 +973,8 @@ export default defineComponent({
   .role-badge {
     padding: 6px 10px;
     font-size: 0.65rem;
+    top: 5px;
+    right: 5px;
   }
 
   .badge-icon {

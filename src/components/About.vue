@@ -5,17 +5,16 @@
       <div class="about-section">
         <div class="trust-section">
           <h3 class="trust-title">О нас</h3>
-          <p class="trust-subtitle">ExoVet - это специализированная клиника, которая предоставляет экспертную ветеринарную помощь исключительно экзотическим животным.</p>
           <TransitionGroup name="fade" tag="div" class="trust-indicators">
-            <div v-for="(item, i) in trustItems" :key="i" class="trust-item">
-              <div class="trust-icon">
-                <svg viewBox="0 0 24 24" aria-label="Trust Icon">
-                  <path :d="item.icon" />
-                </svg>
-              </div>
-              <h4 class="trust-item-title">{{ item.title }}</h4>
-              <p class="trust-item-text">{{ item.text }}</p>
-            </div>
+        <div v-for="(item, i) in trustItems" :key="i" class="trust-item">
+          <div class="trust-icon">
+            <svg viewBox="0 0 24 24" aria-label="Trust Icon">
+              <path :d="item.icon" fill="currentColor" />
+            </svg>
+          </div>
+          <h4 class="trust-item-title">{{ item.title }}</h4>
+          <p class="trust-item-text">{{ item.text }}</p>
+        </div>
           </TransitionGroup>
         </div>
       </div>
@@ -77,7 +76,9 @@
             </div>
             <div class="cta-content">
               <h4>Другие экзотические животные</h4>
-              <p>Не нашли своего питомца? Свяжитесь с нами для консультации <a href="tel:+79526220616">+7 (952) 622-06-16</a></p>
+              <p>Не нашли своего питомца? Свяжитесь с нами для консультации 
+  <a href="tel:+79526220616"><span class="no-wrap">+7 (952) 622-06-16</span></a>
+</p>
             </div>
             <div class="cta-decoration"></div>
           </div>
@@ -323,6 +324,16 @@ export default defineComponent({
   --trust-gradient-start: #e91e63;
   --trust-gradient-end: #f48fb1;
   --text-color: #5a4a4a;
+
+  /* Улучшения типографики */
+  --font-family-base: 'Inter', 'Arial', system-ui, -apple-system, sans-serif;
+  --font-family-heading: 'Montserrat', 'Arial', sans-serif;
+  --line-height-base: 1.6;
+  --line-height-heading: 1.2;
+  --letter-spacing-base: 0.02em;
+  --letter-spacing-heading: 0.04em;
+  --text-contrast-dark: #3a0a5c; /* Темнее для лучшего контраста */
+  --text-contrast-medium: #5e0f7e;
 }
 
 .about-animals-section {
@@ -334,6 +345,7 @@ export default defineComponent({
   position: relative;
   overflow: hidden;
   min-height: 100vh;
+  font-family: var(--font-family-base);
 }
 
 .container {
@@ -353,7 +365,6 @@ export default defineComponent({
   position: relative;
 }
 
-/* Убрана линия перед "О нас" */
 .trust-section::before {
   display: none;
 }
@@ -363,11 +374,17 @@ export default defineComponent({
   text-align: center;
   margin-bottom: 70px;
   position: relative;
-  color: var(--text-dark);
   font-weight: 800;
-  letter-spacing: 0.02em;
-  /* Убран градиент для лучшей читаемости */
-  color: #a1808f;
+
+      font-size: clamp(2.75rem, 5.5vw, 4rem);
+    font-weight: 900;
+    margin-bottom: 1.25rem;
+    margin-bottom: 20px;
+    color: var(--primary-color);
+    letter-spacing: 1px;
+    font-weight: 700;
+    padding-left: 15px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .trust-title::after {
@@ -380,6 +397,16 @@ export default defineComponent({
   height: 3px;
   background: linear-gradient(90deg, var(--trust-gradient-start), var(--trust-gradient-end));
   border-radius: 2px;
+}
+
+.trust-subtitle {
+  font-size: 1.2rem;
+  text-align: center;
+  color: #686d72;
+  margin-bottom: 3rem;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .trust-indicators {
@@ -438,16 +465,23 @@ export default defineComponent({
 
 .trust-item-title {
   font-size: 1.3rem;
-  color: var(--text-dark);
+  color: #a1808f;
   margin-bottom: 15px;
   font-weight: 700;
 }
 
 .trust-item-text {
   font-size: 0.95rem;
-  color: var(--text-medium);
-  line-height: 1.6;
+  color: #686d72;
   opacity: 0.95;
+}
+
+.trust-icon {
+  color: var(--trust-icon-color, #4d4c4c); /* оранжевый по умолчанию */
+}
+
+.trust-icon path {
+  transition: fill 0.3s ease;
 }
 
 /* Animals Section Styles */
@@ -464,16 +498,21 @@ export default defineComponent({
   font-size: clamp(2.75rem, 5.5vw, 4rem);
   font-weight: 900;
   margin-bottom: 1.25rem;
-  color: #a1808f;
-  letter-spacing: 0.02em;
+    margin-bottom: 20px;
+    color: var(--primary-color);
+    letter-spacing: 1px;
+    font-weight: 700;
+    padding-left: 15px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .section-subtitle {
   font-size: 1.3rem;
-  color: var(--text-medium);
+  color: var(--text-contrast-medium);
   font-weight: 500;
-  letter-spacing: 0.02em;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  letter-spacing: var(--letter-spacing-base);
+  line-height: var(--line-height-base);
+  font-family: var(--font-family-base);
 }
 
 .animal-groups {
@@ -509,7 +548,7 @@ export default defineComponent({
   display: inline-block;
   font-size: 1.5rem;
   font-weight: 800;
-  color: var(--text-dark);
+  color: var(--text-contrast-dark);
   background: linear-gradient(135deg, var(--bg-card), rgba(255, 255, 255, 0.95));
   padding: 0.9rem 2.5rem;
   border-radius: var(--radius-lg);
@@ -519,9 +558,9 @@ export default defineComponent({
   position: relative;
   overflow: hidden;
   transition: var(--transition);
-  color: var(--text-dark);
-  font-weight: 700;
-  letter-spacing: 0.02em;
+  font-family: var(--font-family-heading);
+  letter-spacing: var(--letter-spacing-heading);
+  line-height: var(--line-height-heading);
 }
 
 .title-bg:hover {
@@ -597,7 +636,7 @@ export default defineComponent({
   position: relative;
   overflow: hidden;
   height: 100%;
-  color: var(--text-dark);
+  color: var(--text-contrast-dark);
 }
 
 .card-content:hover {
@@ -659,17 +698,20 @@ export default defineComponent({
 .animal-name {
   font-size: 1.1rem;
   font-weight: 700;
-  color: var(--text-dark);
+  color: var(--text-contrast-dark);
   margin: 0 0 0.5rem 0;
-  line-height: 1.3;
+  line-height: var(--line-height-heading);
+  letter-spacing: var(--letter-spacing-heading);
+  font-family: var(--font-family-heading);
 }
 
 .animal-examples {
   font-size: 0.9rem;
-  color: var(--text-light);
+  color: var(--text-contrast-medium);
   margin: 0;
-  line-height: 1.5;
+  line-height: var(--line-height-base);
   font-style: italic;
+  letter-spacing: var(--letter-spacing-base);
 }
 
 .cta-section {
@@ -693,7 +735,7 @@ export default defineComponent({
   backdrop-filter: blur(20px);
   position: relative;
   overflow: hidden;
-  color: var(--text-dark);
+  color: var(--text-contrast-dark);
 }
 
 .cta-card:hover {
@@ -763,15 +805,19 @@ export default defineComponent({
 .cta-content h4 {
   font-size: 1.4rem;
   font-weight: 800;
-  color: var(--text-dark);
+  color: var(--text-contrast-dark);
   margin: 0 0 1rem 0;
+  line-height: var(--line-height-heading);
+  letter-spacing: var(--letter-spacing-heading);
+  font-family: var(--font-family-heading);
 }
 
 .cta-content p {
   font-size: 1.1rem;
-  color: var(--text-medium);
+  color: var(--text-contrast-medium);
   margin: 0;
-  line-height: 1.6;
+  line-height: var(--line-height-base);
+  letter-spacing: var(--letter-spacing-base);
 }
 
 .cta-content p a {
@@ -785,13 +831,18 @@ export default defineComponent({
   color: var(--primary);
 }
 
-::v-deep(.cta-content p a[href^="tel"]) {
-  color: var(--text-medium);
+.no-wrap {
+  white-space: nowrap;
+}
+
+
+::v-deep(.no-wrap p a[href^="tel"]) {
+  color: var(--text-contrast-medium);
   text-decoration: none;
   font-weight: 700;
 }
 
-::v-deep(.cta-content p a[href^="tel"]:hover) {
+::v-deep(.no-wrap p a[href^="tel"]:hover) {
   color: var(--primary);
 }
 
@@ -931,9 +982,6 @@ export default defineComponent({
   .trust-indicators {
     grid-template-columns: 1fr;
     gap: 20px;
-  }
-  .trust-item {
-    padding: 30px 25px;
   }
   .trust-title {
     font-size: 2.2rem;

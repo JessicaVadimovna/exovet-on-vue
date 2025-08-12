@@ -463,4 +463,15 @@ export default defineComponent({
     font-size: 11px;
   }
 }
+.footer-address a,
+.footer-phone a,
+.footer-email a {
+  color: var(--white);
+  text-decoration: none;
+  transition: color 0.3s ease;
+  white-space: normal; /* разрешаем нормальный перенос */
+  overflow-wrap: break-word; /* переносим длинные слова только при необходимости */
+  word-break: normal; /* отменяем жесткий разрыв */
+}
+
 </style>
