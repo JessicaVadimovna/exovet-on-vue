@@ -555,6 +555,10 @@ export default {
 }
 
 @media (max-width: 768px) {
+  .gallery-container {
+    padding: 20px 15px;
+  }
+
   .gallery-title {
     font-size: 2rem;
   }
@@ -575,6 +579,10 @@ export default {
 }
 
 @media (max-width: 480px) {
+  .gallery-container {
+    padding: 20px 10px;
+  }
+
   .gallery-title {
     font-size: 1.75rem;
   }
