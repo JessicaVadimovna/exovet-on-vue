@@ -95,4 +95,11 @@ export default defineComponent({
     transform: translateY(-7px);
   }
 }
+
+/* Скрываем текст на мобильных экранах */
+@media (max-width: 768px) {
+  .phone-callout {
+    display: none;
+  }
+}
 </style>
