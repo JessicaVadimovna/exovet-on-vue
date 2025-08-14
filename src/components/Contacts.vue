@@ -4,7 +4,7 @@
     <div class="header">
       <div class="header-content">
         <div class="phone-container">
-<svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-phone"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 4h4l2 5l-2.5 1.5a11 11 0 0 0 5 5l1.5 -2.5l5 2v4a2 2 0 0 1 -2 2a16 16 0 0 1 -15 -15a2 2 0 0 1 2 -2" /></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-phone"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 4h4l2 5l-2.5 1.5a11 11 0 0 0 5 5l1.5 -2.5l5 2v4a2 2 0 0 1 -2 2a16 16 0 0 1 -15 -15a2 2 0 0 1 2 -2" /></svg>
         </div>
         
         <h1 class="title">Контакты</h1>
@@ -115,50 +115,50 @@ export default {
         {
           icon: 'MapPinIcon',
           title: 'Адрес',
-          content: 'г. Иркутск, ул. Ленина, д. 123',
+          content: 'г. Иркутск, ул. Декабрьских Событий, 105в',
           actionButton: {
             text: 'Открыть карту',
-            href: 'https://maps.google.com',
+            href: 'https://go.2gis.com/eA8Qs',
             icon: 'MapPinIcon',
           },
         },
         {
           icon: 'PhoneIcon',
           title: 'Телефон',
-          content: '+7 (3952) 123-45-67',
+          content: '+7 (952) 622-06-16',
           actionButton: {
             text: 'Позвонить',
-            href: 'tel:+739521234567',
+            href: 'tel:+79526220616',
             icon: 'PhoneIcon',
           },
         },
         {
           icon: 'MailIcon',
           title: 'Email',
-          content: 'info@vetclinic-irk.ru',
+          content: 'exovet_irk@mail.ru',
           actionButton: {
             text: 'Написать',
-            href: 'mailto:info@vetclinic-irk.ru',
+            href: 'mailto:exovet_irk@mail.ru',
             icon: 'SendIcon',
           },
         },
         {
           icon: 'WhatsAppIcon',
           title: 'WhatsApp',
-          content: '+7 (3952) 123-45-67',
+          content: '+7 (952) 622-06-16',
           actionButton: {
             text: 'Написать в WhatsApp',
-            href: 'https://wa.me/+739521234567',
+            href: 'https://wa.me/79526220616',
             icon: 'WhatsAppIcon',
           },
         },
         {
           icon: 'TelegramIcon',
           title: 'Telegram',
-          content: 'Подписывайтесь на @VetClinicIrk —  Получайте экспертные советы, новости клиники и специальные предложения. Задавайте вопросы ветеринарам и будьте в курсе всего, что важно для ваших питомцев!',
+          content: 'Подписывайтесь на @exovet_irk38 - Получайте экспертные советы, новости клиники и специальные предложения. Задавайте вопросы ветеринарам и будьте в курсе всего, что важно для ваших питомцев!',
           actionButton: {
             text: 'Перейти в Telegram',
-            href: 'https://t.me/VetClinicIrk',
+            href: 'https://t.me/exovet_irk38',
             icon: 'TelegramIcon',
           },
         },

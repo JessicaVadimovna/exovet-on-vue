@@ -124,7 +124,8 @@ export default defineComponent({
 
 /* Скрываем текст на мобильных экранах */
 @media (max-width: 768px) {
-  .callout-text {
+  .callout-text, 
+  .callout-arrow {
     display: none;
   }
 }
