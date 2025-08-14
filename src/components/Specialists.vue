@@ -1,15 +1,4 @@
-.role-badge {
-    top: 12px;
-    right: 12px;
-    padding: 8px 12px;
-    font-size: 0.7rem;
-    gap: 6px;
-  }
-
-  .badge-icon {
-    width: 16px;
-    height: 16px;
-  }<template>
+<template>
   <main class="testimonials">
     <h1>Наша <span class="highlight">команда</span></h1>
 
@@ -26,18 +15,6 @@
     </div>
 
     <div class="slider-container">
-      <!-- Стрелка назад -->
-      <button 
-        class="nav-arrow nav-arrow-left" 
-        @click="previousSlide"
-        :disabled="currentIndex === 0"
-        :class="{ disabled: currentIndex === 0 }"
-      >
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-          <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </button>
-
       <div class="slider">
         <div 
           class="slide-row" 
@@ -49,7 +26,7 @@
             <div class="specialist-card" :class="{ 'career-mode': getCurrentMemberInfoIndex(member.id) === 1 }">
               <!-- Фото специалиста слева -->
               <div class="hero" :class="{ 'hidden-on-mobile': getCurrentMemberInfoIndex(member.id) === 1 }">
-                <img :src="member.image" :alt="member.name" />
+                <img :src="member.image" :alt="member.name" loading="lazy" />
                 <div class="role-badge" :class="[getRoleBadgeClass(member.roleType), { 'hidden-on-mobile': getCurrentMemberInfoIndex(member.id) === 1 }]">
                   <svg class="badge-icon" viewBox="0 0 24 24">
                     <path :d="getRoleIcon(member.roleType)" />
@@ -67,6 +44,14 @@
                     <p class="role">{{ member.role }}</p>
                     <p v-if="member.specialization" class="specialization">{{ member.specialization }}</p>
                     <p v-if="member.experience" class="experience">Опыт: {{ member.experience }}</p>
+                    
+                    <!-- Кнопка "Подробнее" -->
+                    <button class="details-button" @click="setMemberInfoIndex(member.id, 1)">
+                      <span>Подробнее</span>
+                      <svg class="details-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none">
+                        <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </button>
                   </div>
                   
                   <!-- Карьерный путь -->
@@ -78,6 +63,14 @@
                       <p v-if="member.pets" class="pets-text-inline">{{ member.pets }}</p>
                       <p v-else class="pets-text-inline">Пока нет питомцев, но каждый пациент получает максимум заботы и внимания.</p>
                     </div>
+                    
+                    <!-- Кнопка "Назад" -->
+                    <button class="back-button" @click="setMemberInfoIndex(member.id, 0)">
+                      <svg class="back-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none">
+                        <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                      <span>Назад</span>
+                    </button>
                   </div>
                 </div>
                 
@@ -97,17 +90,30 @@
         </div>
       </div>
 
-      <!-- Стрелка вперед -->
-      <button 
-        class="nav-arrow nav-arrow-right" 
-        @click="nextSlide"
-        :disabled="currentIndex === filteredMembers.length - 1"
-        :class="{ disabled: currentIndex === filteredMembers.length - 1 }"
-      >
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-          <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </button>
+      <!-- Стрелки навигации внизу -->
+      <div class="navigation-arrows">
+        <button 
+          class="nav-arrow nav-arrow-left" 
+          @click="previousSlide"
+          :disabled="currentIndex === 0"
+          :class="{ disabled: currentIndex === 0 }"
+        >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+
+        <button 
+          class="nav-arrow nav-arrow-right" 
+          @click="nextSlide"
+          :disabled="currentIndex === filteredMembers.length - 1"
+          :class="{ disabled: currentIndex === filteredMembers.length - 1 }"
+        >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
     </div>
   </main>
 </template>
@@ -133,7 +139,7 @@ export default defineComponent({
     const veterinarians = ref<TeamMember[]>([
       {
         id: 1,
-        image: './assets/img/specialists/VS.JPG',
+        image: './assets/img/specialists/VS.webp',
         name: 'Еланцева Валерия Сергеевна',
         role: 'Главный врач',
         specialization: 'Специалист по экзотическим животным',
@@ -144,7 +150,7 @@ export default defineComponent({
       },
       {
         id: 2,
-        image: './assets/img/specialists/KB.JPG',
+        image: './assets/img/specialists/KB.webp',
         name: 'Гаржилова Ксения Батоевна',
         role: 'Терапевт',
         specialization: 'Врач УЗИ экзотических животных',
@@ -155,7 +161,7 @@ export default defineComponent({
       },
       {
         id: 3,
-        image: './assets/img/specialists/EA.jpg',
+        image: './assets/img/specialists/EA.webp',
         name: 'Черных Елена Александровна',
         role: 'Терапевт',
         specialization: 'Специалист герпетолог (лечение рептилий и амфибий)',
@@ -166,7 +172,7 @@ export default defineComponent({
       },
       {
         id: 4,
-        image: './assets/img/specialists/AV.jpg',
+        image: './assets/img/specialists/AV.webp',
         name: 'Тимофеева Арина Владимировна',
         role: 'Терапевт',
         specialization: 'Специалист орнитолог',
@@ -180,7 +186,7 @@ export default defineComponent({
     const assistants = ref<TeamMember[]>([
       {
         id: 5,
-        image: './assets/img/specialists/AP.png',
+        image: './assets/img/specialists/AP.webp',
         name: 'Пыхтунова Альбина Павловна',
         role: 'Ассистент ветеринарного врача',
         specialization: '',
@@ -191,7 +197,7 @@ export default defineComponent({
       },
       {
         id: 6,
-        image: './assets/img/specialists/NM.jpg',
+        image: './assets/img/specialists/NM.webp',
         name: 'Шахова Ника Максимовна',
         role: 'Ассистент ветеринарного врача',
         specialization: '',
@@ -205,7 +211,7 @@ export default defineComponent({
     const administrators = ref<TeamMember[]>([
       {
         id: 7,
-        image: './assets/img/specialists/UD.jpg',
+        image: './assets/img/specialists/UD.webp',
         name: 'Дворянская Ульяна Дмитриевна',
         role: 'Администратор',
         specialization: '',
@@ -381,6 +387,7 @@ export default defineComponent({
 .slider-container {
   position: relative;
   display: flex;
+  flex-direction: column;
   align-items: center;
   margin-bottom: 40px;
   gap: 20px;
@@ -414,9 +421,10 @@ export default defineComponent({
 }
 
 .slider {
-  flex: 1;
+  width: 100%;
   overflow: hidden;
   border-radius: 16px;
+  order: 0;
 }
 
 .slide-row {
@@ -448,7 +456,7 @@ export default defineComponent({
   -webkit-backdrop-filter: blur(10px);
   border: 5px dashed rgba(143, 143, 143, 0.2);
   box-shadow: 0 0 2px 1px rgba(187, 181, 248, 0.2);
-  margin: 0 -40px;
+  margin: 0;
   transition: all 0.3s ease;
 }
 
@@ -613,15 +621,15 @@ export default defineComponent({
 
 .role-badge {
   position: absolute;
-  top: 20px;
-  right: 20px;
+  top: 12px;
+  right: 12px;
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 12px 20px;
+  gap: 6px;
+  padding: 8px 12px;
   border-radius: 30px;
   font-family: 'Poppins', sans-serif;
-  font-size: 0.9rem;
+  font-size: 0.7rem;
   font-weight: 700;
   text-transform: uppercase;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
@@ -647,10 +655,86 @@ export default defineComponent({
 }
 
 .badge-icon {
-  width: 22px;
-  height: 22px;
+  width: 16px;
+  height: 16px;
   fill: currentColor;
   flex-shrink: 0;
+}
+
+/* Кнопка "Подробнее" */
+.details-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  margin-top: 25px;
+  border: 2px solid #d67a8f;
+  border-radius: 30px;
+  background: none;
+  color: #d67a8f;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  align-self: flex-start;
+}
+
+.details-button:hover {
+  background: linear-gradient(135deg, #d67a8f, #e8b3c3);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(214, 122, 143, 0.3);
+}
+
+.details-arrow {
+  transition: transform 0.3s ease;
+}
+
+.details-button:hover .details-arrow {
+  transform: translateX(3px);
+}
+
+/* Кнопка "Назад" */
+.back-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  margin-top: 20px;
+  border: 1px solid rgba(214, 122, 143, 0.5);
+  border-radius: 25px;
+  background: none;
+  color: #d67a8f;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  align-self: flex-start;
+}
+
+.back-button:hover {
+  background: rgba(214, 122, 143, 0.1);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(214, 122, 143, 0.2);
+}
+
+.back-arrow {
+  transition: transform 0.3s ease;
+  transform: rotate(180deg);
+}
+
+.back-button:hover .back-arrow {
+  transform: rotate(180deg) translateX(3px);
+}
+
+/* Стрелки навигации внизу */
+.navigation-arrows {
+  display: flex;
+  gap: 30px;
+  justify-content: center;
+  order: 3;
 }
 
 /* Скрытие фото и бейджа на маленьких экранах при просмотре карьерного пути */
@@ -682,10 +766,6 @@ export default defineComponent({
     padding: 60px 20px;
   }
 
-  .specialist-card {
-    margin: 0 -20px;
-  }
-
   .slide-col {
     height: 460px;
   }
@@ -704,10 +784,6 @@ export default defineComponent({
     padding: 50px 20px;
   }
 
-  .specialist-card {
-    margin: 0 -10px;
-  }
-
   .slider-container {
     gap: 15px;
   }
@@ -717,13 +793,17 @@ export default defineComponent({
     height: 55px;
   }
 
+  .navigation-arrows {
+    gap: 25px;
+  }
+
   .slide-col {
-    height: 580px; /* Увеличено для большего фото */
+    height: 620px; /* Увеличено для кнопки */
   }
 
   .specialist-card {
     flex-direction: column;
-    height: 540px; /* Увеличено для большего фото */
+    height: 580px; /* Увеличено для кнопки */
     max-width: 600px;
   }
 
@@ -771,15 +851,23 @@ export default defineComponent({
   .specialist-card.career-mode .content {
     padding: 40px 50px;
   }
+
+  .details-button {
+    padding: 10px 20px;
+    font-size: 0.9rem;
+    margin-top: 20px;
+  }
+
+  .back-button {
+    padding: 8px 16px;
+    font-size: 0.85rem;
+    margin-top: 15px;
+  }
 }
 
 @media (max-width: 768px) {
   .testimonials {
     padding: 40px 20px;
-  }
-
-  .specialist-card {
-    margin: 0 -5px;
   }
 
   .testimonials h1 {
@@ -806,12 +894,16 @@ export default defineComponent({
     height: 50px;
   }
 
+  .navigation-arrows {
+    gap: 20px;
+  }
+
   .slide-col {
-    height: 640px; /* Увеличено для большего фото */
+    height: 680px; /* Увеличено для кнопки */
   }
 
   .specialist-card {
-    height: 600px; /* Увеличено для большего фото */
+    height: 640px; /* Увеличено для кнопки */
     max-width: 500px;
     margin: 0 auto;
     flex-direction: column;
@@ -842,6 +934,18 @@ export default defineComponent({
 
   .specialist-card.career-mode .content {
     padding: 35px 40px;
+  }
+
+  .details-button {
+    padding: 10px 18px;
+    font-size: 0.85rem;
+    margin-top: 18px;
+  }
+
+  .back-button {
+    padding: 8px 14px;
+    font-size: 0.8rem;
+    margin-top: 12px;
   }
 }
 
@@ -877,12 +981,16 @@ export default defineComponent({
     height: 45px;
   }
 
+  .navigation-arrows {
+    gap: 15px;
+  }
+
   .slide-col {
-    height: 580px; /* Увеличено для большего фото */
+    height: 620px; /* Увеличено для кнопки */
   }
 
   .specialist-card {
-    height: 540px; /* Увеличено для большего фото */
+    height: 580px; /* Увеличено для кнопки */
     max-width: 350px;
     border-radius: 16px;
     flex-direction: column;
@@ -934,16 +1042,36 @@ export default defineComponent({
   .specialist-card.career-mode .pets-text-inline {
     font-size: 0.85rem;
   }
+
+  .details-button {
+    padding: 9px 16px;
+    font-size: 0.8rem;
+    margin-top: 15px;
+    gap: 6px;
+  }
+
+  .back-button {
+    padding: 7px 12px;
+    font-size: 0.75rem;
+    margin-top: 10px;
+    gap: 6px;
+  }
+
+  .details-arrow,
+  .back-arrow {
+    width: 14px;
+    height: 14px;
+  }
 }
 
 @media (max-width: 400px) {
   .slide-col {
-    height: 560px; /* Увеличено для большего фото */
+    height: 600px; /* Увеличено для кнопки */
   }
 
   .specialist-card {
     max-width: 320px;
-    height: 520px; /* Увеличено для большего фото */
+    height: 560px; /* Увеличено для кнопки */
     flex-direction: column;
   }
 
@@ -1015,6 +1143,26 @@ export default defineComponent({
   .specialist-card.career-mode .pets-text-inline {
     font-size: 0.75rem;
     line-height: 1.3;
+  }
+
+  .details-button {
+    padding: 8px 14px;
+    font-size: 0.75rem;
+    margin-top: 12px;
+    gap: 5px;
+  }
+
+  .back-button {
+    padding: 6px 10px;
+    font-size: 0.7rem;
+    margin-top: 8px;
+    gap: 5px;
+  }
+
+  .details-arrow,
+  .back-arrow {
+    width: 12px;
+    height: 12px;
   }
 }
 </style>

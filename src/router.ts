@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import type { RouteRecordRaw, RouterScrollBehavior } from 'vue-router'
+import type { RouteRecordRaw } from 'vue-router'
 
 const routes: RouteRecordRaw[] = [
   { path: '/', component: () => import('./components/Home.vue') },
@@ -12,14 +12,17 @@ const routes: RouteRecordRaw[] = [
 ]
 
 const router = createRouter({
-  history: createWebHistory('/exovet-on-vue/'), // Базовый путь для GitHub Pages
+  history: createWebHistory('/exovet-on-vue/'),
   routes,
-  scrollBehavior: ((savedPosition) => {
+  scrollBehavior: (to, from, savedPosition) => {
     if (savedPosition) {
       return savedPosition
     }
     return { top: 0, behavior: 'smooth' }
-  }) as RouterScrollBehavior
+  }
 })
 
 export default router
+
+export { routes }
+export type { RouteRecordRaw }

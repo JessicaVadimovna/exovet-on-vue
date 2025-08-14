@@ -1,63 +1,21 @@
 <template>
   <div class="container">
     <!-- Contact Header -->
-    <div
-      class="header"
-      :style="{ opacity: headerOpacity, transform: `translateY(${headerY}px)` }"
-    >
-      <!-- Animated background elements -->
-      <div
-        class="heart-bg"
-        :style="{ transform: `translate(${heartX}px, ${heartY}px)` }"
-      >
-        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
-        </svg>
-      </div>
-      
-      <div
-        class="stethoscope-bg"
-        :style="{ transform: `translate(${stethoscopeX}px, ${stethoscopeY}px) rotate(${stethoscopeRotate}deg)` }"
-      >
-        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M11 2v8a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2v-2a6 6 0 0 0-5-5.92V2m0 0H9m3 0V4m6 14a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
-        </svg>
-      </div>
-      
-      <div
-        class="circle-bg"
-        :style="{ transform: `scale(${circleScale})`, opacity: circleOpacity }"
-      >
-        <div class="circle"></div>
-      </div>
-
+    <div class="header">
       <div class="header-content">
-        <div
-          class="heart-container"
-          :style="{ transform: `scale(${heartScale})` }"
-        >
-          <svg class="heart-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
-          </svg>
+        <div class="phone-container">
+<svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-phone"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 4h4l2 5l-2.5 1.5a11 11 0 0 0 5 5l1.5 -2.5l5 2v4a2 2 0 0 1 -2 2a16 16 0 0 1 -15 -15a2 2 0 0 1 2 -2" /></svg>
         </div>
         
-        <h1
-          class="title"
-          :style="{ opacity: titleOpacity }"
-        >
-          Контакты
-        </h1>
+        <h1 class="title">Контакты</h1>
         
-        <div
-          class="description"
-          :style="{ opacity: descriptionOpacity }"
-        >
+        <div class="description">
           <p class="description-text">
-            Ветеринарная клиника в Иркутске. Заботимся о здоровье ваших питомцев с любовью и профессионализмом.
+            Ветеринарная клиника для экзотических животных в Иркутске. Заботимся о здоровье ваших питомцев с любовью и профессионализмом.
           </p>
           <div class="working-hours">
             <div class="working-hours-header">
-              <div class="icon-container working-hours-icon" :style="{ transform: `rotate(${clockRotate}deg)` }">
+              <div class="icon-container working-hours-icon">
                 <ClockIcon class="icon" />
               </div>
               <h3 class="working-hours-title">Режим работы</h3>
@@ -65,9 +23,9 @@
             <div class="working-hours-content">
               <div class="working-hours-row">
                 <span class="working-hours-label">Ежедневно</span>
-                <span class="working-hours-time">10:00 - 20:00</span>
+                <span class="working-hours-time">10:00–20:00</span>
               </div>
-              <div class="working-hours-status" :style="{ transform: `scale(${statusScale})` }">
+              <div class="working-hours-status">
                 <span class="status-icon" :class="{ 'open': isOpen, 'closed': !isOpen }">
                   {{ isOpen ? 'Открыто' : 'Закрыто' }}
                 </span>
@@ -81,29 +39,15 @@
 
     <!-- Contact Cards -->
     <div class="grid">
-      <div v-for="(card, index) in contactCards" :key="'contact-' + index" class="card-container">
+      <div v-for="(card, index) in contactCards.slice(0, 4)" :key="'contact-' + index" class="card-container">
         <div
           class="card"
-          :style="{ 
-            opacity: cardOpacity[index], 
-            transform: `translateY(${cardY[index]}px)`,
-            transition: 'all 0.3s ease'
-          }"
           @mouseenter="handleCardHover(index, true)"
           @mouseleave="handleCardHover(index, false)"
         >
-          <div
-            class="card-overlay"
-            :style="{ 
-              opacity: cardOverlayOpacity[index],
-              transform: `scale(${cardOverlayScale[index]})`
-            }"
-          ></div>
+          <div class="card-overlay"></div>
           <div class="card-content">
-            <div
-              class="card-header"
-              :style="{ transform: `scale(${cardHeaderScale[index]})` }"
-            >
+            <div class="card-header">
               <div class="icon-container">
                 <component :is="card.icon" class="icon" />
               </div>
@@ -112,25 +56,49 @@
             
             <p class="card-text">{{ card.content }}</p>
             
-            <div
-              v-if="card.actionButton"
-              class="button-container"
-              :style="{ transform: `scale(${cardButtonScale[index]})` }"
-            >
+            <div v-if="card.actionButton" class="button-container">
               <a
                 :href="card.actionButton.href"
                 :target="card.actionButton.href.startsWith('http') ? '_blank' : undefined"
                 :rel="card.actionButton.href.startsWith('http') ? 'noopener noreferrer' : undefined"
                 class="button"
-                @mouseenter="cardButtonScale[index] = 1.02"
-                @mouseleave="cardButtonScale[index] = 1"
-                @mousedown="cardButtonScale[index] = 0.98"
-                @mouseup="cardButtonScale[index] = 1"
               >
                 <component :is="card.actionButton.icon" class="button-icon" />
                 {{ card.actionButton.text }}
               </a>
             </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Telegram Card -->
+    <div class="telegram-container">
+      <div
+        class="card telegram-card"
+        @mouseenter="handleCardHover(4, true)"
+        @mouseleave="handleCardHover(4, false)"
+      >
+        <div class="card-overlay"></div>
+        <div class="card-content">
+          <div class="card-header">
+            <div class="icon-container">
+              <component :is="contactCards[4].icon" class="icon" />
+            </div>
+            <h3 class="card-title">{{ contactCards[4].title }}</h3>
+          </div>
+          
+          <p class="card-text">{{ contactCards[4].content }}</p>
+          
+          <div v-if="contactCards[4].actionButton" class="button-container">
+            <a
+              :href="contactCards[4].actionButton.href"
+              :target="contactCards[4].actionButton.href.startsWith('http') ? '_blank' : undefined"
+              :rel="contactCards[4].actionButton.href.startsWith('http') ? 'noopener noreferrer' : undefined"
+              class="button"
+            >
+              <component :is="contactCards[4].actionButton.icon" class="button-icon" />
+              {{ contactCards[4].actionButton.text }}
+            </a>
           </div>
         </div>
       </div>
@@ -143,27 +111,6 @@ export default {
   name: 'Contact',
   data() {
     return {
-      headerOpacity: 0,
-      headerY: -30,
-      heartX: 0,
-      heartY: 0,
-      stethoscopeX: 0,
-      stethoscopeY: 0,
-      stethoscopeRotate: 0,
-      circleScale: 1,
-      circleOpacity: 0.1,
-      heartScale: 0,
-      titleOpacity: 0,
-      descriptionOpacity: 0,
-      cardOpacity: [0, 0, 0],
-      cardY: [20, 20, 20],
-      cardOverlayOpacity: [0, 0, 0],
-      cardOverlayScale: [1, 1, 1],
-      cardHeaderScale: [1, 1, 1],
-      cardButtonScale: [1, 1, 1],
-      clockRotate: 0,
-      statusScale: 1,
-      currentHour: new Date().getHours(),
       contactCards: [
         {
           icon: 'MapPinIcon',
@@ -195,102 +142,39 @@ export default {
             icon: 'SendIcon',
           },
         },
+        {
+          icon: 'WhatsAppIcon',
+          title: 'WhatsApp',
+          content: '+7 (3952) 123-45-67',
+          actionButton: {
+            text: 'Написать в WhatsApp',
+            href: 'https://wa.me/+739521234567',
+            icon: 'WhatsAppIcon',
+          },
+        },
+        {
+          icon: 'TelegramIcon',
+          title: 'Telegram',
+          content: 'Подписывайтесь на @VetClinicIrk —  Получайте экспертные советы, новости клиники и специальные предложения. Задавайте вопросы ветеринарам и будьте в курсе всего, что важно для ваших питомцев!',
+          actionButton: {
+            text: 'Перейти в Telegram',
+            href: 'https://t.me/VetClinicIrk',
+            icon: 'TelegramIcon',
+          },
+        },
       ],
     };
   },
   computed: {
     isOpen() {
-      return this.currentHour >= 10 && this.currentHour < 20;
+      const currentHour = new Date().getHours();
+      return currentHour >= 10 && currentHour < 20;
     },
   },
   methods: {
     handleCardHover(index, isHovering) {
-      this.cardOverlayOpacity[index] = isHovering ? 1 : 0;
-      this.cardOverlayScale[index] = isHovering ? 1.1 : 1;
-      this.cardHeaderScale[index] = isHovering ? 1.05 : 1;
-      this.cardY[index] = isHovering ? -5 : 0;
-      this.cardOpacity[index] = isHovering ? 1 : 1;
+      this.$set(this.cardOpacity, index, isHovering ? 1 : 1);
     },
-    animate() {
-      // Header animations
-      setTimeout(() => {
-        this.headerOpacity = 1;
-        this.headerY = 0;
-      }, 100);
-
-      setTimeout(() => {
-        this.heartScale = 1;
-      }, 400);
-
-      setTimeout(() => {
-        this.titleOpacity = 1;
-      }, 600);
-
-      setTimeout(() => {
-        this.descriptionOpacity = 1;
-      }, 800);
-
-      // Background animations
-      let heartTime = 0;
-      const animateHeart = () => {
-        heartTime += 0.05;
-        this.heartX = Math.sin(heartTime) * 100;
-        this.heartY = Math.cos(heartTime) * -50;
-        requestAnimationFrame(animateHeart);
-      };
-
-      let stethoscopeTime = 0;
-      const animateStethoscope = () => {
-        stethoscopeTime += 0.05;
-        this.stethoscopeX = Math.sin(stethoscopeTime) * -80;
-        this.stethoscopeY = Math.cos(stethoscopeTime) * 60;
-        this.stethoscopeRotate = (stethoscopeTime * 180 / Math.PI) % 360;
-        requestAnimationFrame(animateStethoscope);
-      };
-
-      let circleTime = 0;
-      const animateCircle = () => {
-        circleTime += 0.05;
-        this.circleScale = 1 + Math.sin(circleTime) * 0.2;
-        this.circleOpacity = 0.1 + Math.sin(circleTime) * 0.2;
-        requestAnimationFrame(animateCircle);
-      };
-
-      // Card animations
-      this.contactCards.forEach((_, index) => {
-        setTimeout(() => {
-          this.cardOpacity[index] = 1;
-          this.cardY[index] = 0;
-        }, 300 + index * 200);
-      });
-
-      // Working hours status animation
-      if (this.isOpen) {
-        let statusTime = 0;
-        const animateStatus = () => {
-          statusTime += 0.05;
-          this.statusScale = 1 + Math.sin(statusTime) * 0.2;
-          requestAnimationFrame(animateStatus);
-        };
-        animateStatus();
-      }
-
-      // Clock animation
-      let clockTime = 0;
-      const animateClock = () => {
-        clockTime += 0.05;
-        this.clockRotate = (clockTime * 180 / Math.PI) % 360;
-        requestAnimationFrame(animateClock);
-      };
-
-      animateHeart();
-      animateStethoscope();
-      animateCircle();
-      animateClock();
-    },
-  },
-  mounted() {
-    this.animate();
   },
   components: {
     MapPinIcon: {
@@ -332,6 +216,20 @@ export default {
         </svg>
       `,
     },
+    WhatsAppIcon: {
+      template: `
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.45 3.45 1.32 4.95L2 22l5.29-1.39c1.45.87 3.08 1.33 4.75 1.33 5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2zm-1.83 16.13a8.37 8.37 0 0 1-4.25-1.15l-.3-.18-3.14.83.85-3.06-.19-.31a8.27 8.27 0 0 1-1.26-4.43c0-4.6 3.75-8.35 8.35-8.35s8.35 3.75 8.35 8.35-3.75 8.35-8.36 8.35zm4.94-6.07c-.27-.14-1.61-.8-1.86-.89-.25-.09-.43-.14-.62.14-.19.28-.73.89-.89 1.07-.17.18-.34.2-.62.07-.28-.14-1.18-.44-2.25-1.41-.83-.75-1.39-1.68-1.55-1.96-.17-.28-.02-.43.12-.57.13-.13.28-.34.42-.51.14-.17.19-.29.28-.48.09-.19.05-.36-.02-.51-.08-.14-.62-1.5-.85-2.06-.23-.55-.46-.47-.62-.48-.16-.01-.34-.02-.52-.02s-.48.07-.73.36c-.25.28-.96.96-.96 2.34s.98 2.73 1.12 2.92c.14.19 1.94 2.96 4.7 4.15.66.28 1.18.45 1.58.58.67.22 1.27.19 1.75.11.53-.09 1.61-.66 1.84-1.29.23-.64.23-1.18.16-1.29-.07-.11-.25-.18-.52-.32z"/>
+        </svg>
+      `,
+    },
+    TelegramIcon: {
+      template: `
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M22 2.5L2.5 12.5l5 2.5 8-5-6.5 4.5 7 5.5L22 2.5z"/>
+        </svg>
+      `,
+    },
   },
 };
 </script>
@@ -340,181 +238,148 @@ export default {
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem 1rem;
+  padding: 1.5rem 1rem;
 }
 
 .header {
   position: relative;
-  overflow: hidden;
-  background: linear-gradient(to bottom right, #fce4ec, #f8bbd0, #f48fb1);
-  color: white;
-  padding: 4rem 1.5rem;
-  border-radius: 1rem;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-  margin-bottom: 2rem;
-  transition: all 0.6s ease;
-}
-
-.heart-bg, .stethoscope-bg {
-  position: absolute;
-  opacity: 0.2;
-}
-
-.heart-bg {
-  top: 2.5rem;
-  left: 2.5rem;
-}
-
-.stethoscope-bg {
-  top: 5rem;
-  right: 5rem;
-}
-
-.circle-bg {
-  position: absolute;
-  bottom: -2.5rem;
-  right: -2.5rem;
-}
-
-.circle {
-  width: 10rem;
-  height: 10rem;
-  border-radius: 50%;
-  background: white;
+  background: linear-gradient(to bottom right, #f7e4e9, #f0d3e0);
+  color: #37474f;
+  padding: 2rem 1rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1.5rem;
 }
 
 .header-content {
-  position: relative;
   text-align: center;
-  max-width: 64rem;
+  max-width: 48rem;
   margin: 0 auto;
 }
 
-.heart-container {
+.phone-container {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 5rem;
-  height: 5rem;
-  background: rgba(255, 255, 255, 0.2);
+  width: 3rem;
+  height: 3rem;
+  background: rgba(255, 255, 255, 0.3);
   border-radius: 50%;
-  backdrop-filter: blur(4px);
-  margin-bottom: 1.5rem;
-  transition: all 0.3s ease;
-}
-
-.heart-icon {
-  width: 2.5rem;
-  height: 2.5rem;
+  margin-bottom: 1rem;
 }
 
 .title {
-  font-size: 2.25rem;
-  margin-bottom: 1rem;
-  letter-spacing: -0.025em;
-  transition: opacity 0.5s ease;
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  letter-spacing: -0.02em;
 }
 
 .description {
-  font-size: 1.25rem;
-  color: #fce4ec;
-  max-width: 32rem;
+  font-size: 1rem;
+  color: #455a64;
+  max-width: 28rem;
   margin: 0 auto;
-  line-height: 1.5;
-  transition: opacity 0.5s ease;
+  line-height: 1.6;
 }
 
 .description-text {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 .working-hours {
-  background: rgba(255, 255, 255, 0.15);
-  border-radius: 0.75rem;
-  padding: 1rem;
-  backdrop-filter: blur(4px);
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 0.5rem;
+  padding: 0.75rem;
   text-align: left;
-  max-width: 20rem;
+  max-width: 16rem;
   margin: 0 auto;
 }
 
 .working-hours-header {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  margin-bottom: 0.75rem;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
 }
 
 .working-hours-icon {
-  padding: 0.5rem;
+  padding: 0.4rem;
   background: linear-gradient(to bottom right, #b0bec5, #90a4ae);
   color: white;
   border-radius: 50%;
-  transition: all 0.3s ease;
 }
 
 .working-hours-title {
-  color: white;
-  font-size: 1.1rem;
+  color: #37474f;
+  font-size: 1rem;
+  font-weight: 500;
 }
 
 .working-hours-content {
-  padding: 0.5rem 0;
+  padding: 0.25rem 0;
 }
 
 .working-hours-row {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.25rem;
 }
 
 .working-hours-label {
-  color: #fce4ec;
+  color: #455a64;
+  font-weight: 500;
 }
 
 .working-hours-time {
-  color: white;
+  color: #37474f;
 }
 
 .working-hours-status {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem;
-  border-radius: 0.5rem;
-  background: rgba(255, 255, 255, 0.2);
+  gap: 0.4rem;
+  padding: 0.4rem;
+  border-radius: 0.4rem;
+  background: rgba(255, 255, 255, 0.25);
 }
 
 .status-icon {
-  transition: all 0.3s ease;
-  color: white;
+  color: #37474f;
+  font-weight: 500;
 }
 
 .status-icon.open {
-  color: #a5d6a7;
+  color: #2e7d32;
 }
 
 .status-icon.closed {
-  color: #ef9a9a;
+  color: #c62828;
 }
 
 .working-hours-note {
-  font-size: 0.875rem;
-  color: #fce4ec;
+  font-size: 0.75rem;
+  color: #546e7a;
   font-style: italic;
-  margin-top: 0.5rem;
+  margin-top: 0.4rem;
 }
 
 .grid {
   display: grid;
   grid-template-columns: repeat(1, 1fr);
-  gap: 1.5rem;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
 }
 
 @media (min-width: 768px) {
   .grid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
   }
+}
+
+.telegram-container {
+  display: flex;
+  justify-content: center;
 }
 
 .card-container {
@@ -523,52 +388,77 @@ export default {
 
 .card {
   height: 100%;
-  background: linear-gradient(to bottom right, white, #fff5f7);
-  border: 1px solid #fce4ec;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
-  overflow: hidden;
+  background: white;
+  border: 1px solid #eceff1;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   position: relative;
-  border-radius: 0.75rem;
+  border-radius: 0.5rem;
+}
+
+.telegram-card {
+  width: 100%;
+  max-width: 1200px;
+  padding: 1.5rem;
 }
 
 .card-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to bottom right, rgba(252, 228, 236, 0.2), transparent);
-  transition: all 0.3s ease;
+  background: linear-gradient(to bottom right, rgba(247, 228, 233, 0.1), transparent);
 }
 
 .card-content {
-  padding: 1.5rem;
+  padding: 1rem;
   position: relative;
   z-index: 10;
+}
+
+.telegram-card .card-content {
+  padding: 1.5rem;
 }
 
 .card-header {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.telegram-card .card-header {
   margin-bottom: 1rem;
-  transition: all 0.3s ease;
 }
 
 .icon-container {
-  padding: 0.75rem;
-  background: linear-gradient(to bottom right, #f8bbd0, #f48fb1);
+  padding: 0.5rem;
+  background: linear-gradient(to bottom right, #f0d3e0, #e8c5d6);
   color: white;
   border-radius: 50%;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.telegram-card .icon-container {
+  padding: 0.75rem;
 }
 
 .card-title {
-  color: #37474f;
+  color: #263238;
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.telegram-card .card-title {
+  font-size: 1.25rem;
 }
 
 .card-text {
-  color: #607d8b;
-  margin-bottom: 1rem;
+  color: #546e7a;
+  margin-bottom: 0.75rem;
   line-height: 1.5;
+  font-size: 0.95rem;
+}
+
+.telegram-card .card-text {
+  font-size: 1rem;
+  margin-bottom: 1rem;
 }
 
 .button-container {
@@ -578,39 +468,47 @@ export default {
 .button {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  background: linear-gradient(to right, #f8bbd0, #f48fb1);
+  gap: 0.4rem;
+  background: linear-gradient(to right, #f0d3e0, #e8c5d6);
   color: white;
-  padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
+  padding: 0.4rem 0.8rem;
+  border-radius: 0.4rem;
   text-decoration: none;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
+  font-size: 0.9rem;
+}
+
+.telegram-card .button {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
 }
 
 .button:hover {
-  background: linear-gradient(to right, #f48fb1, #ec407a);
+  background: linear-gradient(to right, #e8c5d6, #e0b7cc);
 }
 
 .button-icon {
+  width: 1rem;
+  height: 1rem;
+}
+
+.telegram-card .button-icon {
   width: 1.25rem;
   height: 1.25rem;
 }
 
 .icon {
+  width: 1rem;
+  height: 1rem;
+}
+
+.telegram-card .icon {
   width: 1.25rem;
   height: 1.25rem;
 }
 
-.heart-bg .icon,
-.stethoscope-bg .icon {
-  width: 3rem;
-  height: 3rem;
-}
-
 @media (min-width: 768px) {
   .title {
-    font-size: 3rem;
+    font-size: 2.25rem;
   }
 }
 </style>

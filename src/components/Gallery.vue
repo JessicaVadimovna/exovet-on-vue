@@ -3,7 +3,7 @@
     <!-- Заголовок -->
     <div class="gallery-header">
       <h1 class="gallery-title">
-        Наши экзотические пациенты <img src="/public/assets/img/heart (2).png" alt="">
+        Наши пациенты <img src="/public/assets/img/heart (2).png" alt="">
       </h1>
     </div>
     
@@ -26,6 +26,7 @@
               :src="image.src"
               :alt="image.alt"
               class="carousel-image"
+              loading="lazy"
               @error="handleImageError"
             />
           </div>
@@ -75,7 +76,7 @@
           :class="{ 'active': image.originalIndex === currentIndex }"
           @click="goToSlide(image.originalIndex)"
         >
-          <img :src="image.src" :alt="image.alt" />
+          <img :src="image.src" :alt="image.alt" loading="lazy" />
         </div>
       </div>
     </div>
@@ -93,6 +94,7 @@
               :src="selectedImage.src"
               :alt="selectedImage.alt"
               class="modal-image"
+              loading="lazy"
               @error="handleImageError"
             />
             <button
@@ -703,5 +705,4 @@ export default {
   from { transform: scale(0.95); opacity: 0; }
   to { transform: scale(1); opacity: 1; }
 }
-
 </style>
