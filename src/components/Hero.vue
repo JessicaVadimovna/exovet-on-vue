@@ -1,20 +1,5 @@
 <template>
   <section class="hero">
-    <!-- Анимированные пузыри -->
-    <div class="bubble-container">
-      <div
-        v-for="bubble in bubbles"
-        :key="bubble.id"
-        class="bubble"
-        :style="{
-          left: bubble.x + 'vw',
-          width: bubble.size + 'px',
-          height: bubble.size + 'px',
-          animationDuration: bubble.duration + 's',
-          animationDelay: bubble.delay + 's'
-        }"
-      ></div>
-    </div>
     
     <div class="hero-content">
       <div class="hero-image-wrapper">
@@ -42,19 +27,10 @@ interface Slide {
   text: string
 }
 
-interface Bubble {
-  id: number
-  x: number
-  size: number
-  duration: number
-  delay: number
-}
-
 export default defineComponent({
   name: 'Hero',
   setup() {
     const currentSlide = ref<number>(0)
-    const bubbles = ref<Bubble[]>([])
     const slides: Slide[] = [
       { text: 'Мы заботимся о ваших необычных питомцах с любовью и профессионализмом!' },
       { text: 'Часы работы: ежедневно с 10:00-20:00 (по предварительному звонку)' },
@@ -66,28 +42,10 @@ export default defineComponent({
       { text: 'Записаться на прием: <a href="tel:+79526220616">+7 (952) 622-06-16</a>' }
     ]
     const slideInterval = ref<number | null>(null)
-    const bubbleInterval = ref<number | null>(null)
     const touchStartX = ref<number>(0)
     const touchEndX = ref<number>(0)
     const touchThreshold = 50
     const sliderHeight = ref<string>('120px')
-
-    // Создание пузырьков
-    const createBubble = (): void => {
-      const newBubble: Bubble = {
-        id: Date.now() + Math.random(), // Уникальный ID
-        x: Math.random() * 100, // Позиция по X в процентах
-        size: Math.random() * 80 + 20, // Размер от 20 до 100px
-        duration: 6 + Math.random() * 6, // Длительность анимации от 6 до 12 секунд
-        delay: Math.random() * 2 // Задержка до 2 секунд
-      }
-      bubbles.value.push(newBubble)
-
-      // Удаление пузырька после завершения анимации
-      setTimeout(() => {
-        bubbles.value = bubbles.value.filter(b => b.id !== newBubble.id)
-      }, (newBubble.duration + newBubble.delay) * 1000)
-    }
 
     const updateSliderHeight = (): void => {
       const slider = document.querySelector('.slider') as HTMLElement | null
@@ -167,19 +125,16 @@ onMounted(() => {
   updateSliderHeight()
   window.addEventListener('resize', updateSliderHeight) // ← добавляем
   slideInterval.value = setInterval(nextSlide, 5000)
-  bubbleInterval.value = setInterval(createBubble, 300)
 })
 
 onBeforeUnmount(() => {
   if (slideInterval.value) clearInterval(slideInterval.value)
-  if (bubbleInterval.value) clearInterval(bubbleInterval.value)
   window.removeEventListener('resize', updateSliderHeight) // ← чистим
 })
 
     return { 
       currentSlide, 
-      slides, 
-      bubbles,
+      slides,
       sliderHeight, 
       showSlide, 
       handleTouchStart, 
@@ -198,42 +153,6 @@ onBeforeUnmount(() => {
   min-height: 25vh;
   overflow: hidden;
   background-color: #fcf6f8;
-}
-
-.bubble-container {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 1;
-}
-
-.bubble {
-  position: absolute;
-  bottom: -100px;
-  border-radius: 50%;
-  background: radial-gradient(
-    circle at 30% 30%,
-    rgba(255, 245, 245, 0.9), /* Brighter starting point */
-    rgba(233, 30, 99, 0.5) /* Vibrant pinkish hue for contrast */
-  );
-  opacity: 0.8; /* Slightly increased opacity for visibility */
-  animation: rise linear infinite;
-  backdrop-filter: blur(2px);
-  border: 2px solid rgba(216, 99, 138, 0.7); /* Bolder, matching border */
-}
-
-@keyframes rise {
-  0% {
-    transform: translateY(0) scale(1);
-    opacity: 0.7;
-  }
-  100% {
-    transform: translateY(-120vh) scale(1.1);
-    opacity: 0;
-  }
 }
 
 .hero-content {
@@ -367,15 +286,6 @@ onBeforeUnmount(() => {
   .slide p {
     font-size: 16px;
     padding: 12px 20px;
-  }
-  
-  .bubble {
-    opacity: 0.5;
-  }
-  
-  /* Уменьшаем количество пузырьков на мобильных */
-  .bubble:nth-child(n+26) {
-    display: none;
   }
 }
 </style>
